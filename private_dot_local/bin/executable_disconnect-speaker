@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+bluetoothctl disconnect "$(bluetoothctl devices Connected | grep Aura | awk '{print $2}')"

@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+bluetoothctl connect "$(bluetoothctl devices | grep Aura | awk '{print $2}')"

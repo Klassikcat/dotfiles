@@ -1,0 +1,138 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+script_name=$(basename "$0")
+
+usage() {
+  echo "Usage:"
+  echo "  $script_name HEADSET_NAME [a2dp|high-quality|headset|voice]"
+  echo
+  echo "Examples:"
+  echo "  $script_name \"WH-XB910N\""
+  echo "  $script_name \"WH-XB910N\" a2dp"
+  echo "  $script_name \"WH-XB910N\" voice"
+  echo
+  echo "Omit the second argument to toggle between A2DP and HSP/HFP."
+}
+
+if [[ ${1-} == "-h" || ${1-} == "--help" || $# -lt 1 ]]; then
+  usage
+  exit 1
+fi
+
+HEADSET_NAME="$1"
+MODE_RAW="${2-}"
+
+if ! command -v pactl >/dev/null 2>&1; then
+  echo "Error: pactl not found." >&2
+  exit 2
+fi
+
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "Error: python3 not found. It is required for parsing pactl JSON output." >&2
+  exit 2
+fi
+
+cards_json=$(pactl -f json list cards 2>/dev/null || true)
+if [[ -z "$cards_json" ]]; then
+  echo "Error: pactl did not return JSON for cards. Your pactl may be too old." >&2
+  exit 3
+fi
+
+export HEADSET_NAME
+info=$(printf '%s' "$cards_json" | python3 -c '
+import json, sys, os
+name = os.environ.get("HEADSET_NAME","")
+cards = json.load(sys.stdin)
+for c in cards:
+    desc = c.get("properties",{}).get("device.description","")
+    if name.lower() in desc.lower():
+        print(c.get("name",""))
+        print(c.get("active_profile",""))
+        print(" ".join(sorted(c.get("profiles",{}).keys())))
+        sys.exit(0)
+sys.exit(1)
+' || true)
+
+if [[ -z "$info" ]]; then
+  echo "Error: Could not find a Bluetooth card for headset name '$HEADSET_NAME'." >&2
+  exit 4
+fi
+
+CARD_NAME=$(printf '%s\n' "$info" | sed -n '1p')
+CURRENT_PROFILE=$(printf '%s\n' "$info" | sed -n '2p')
+AVAILABLE_PROFILES=$(printf '%s\n' "$info" | sed -n '3p')
+
+MODE="toggle"
+if [[ -n "${MODE_RAW:-}" ]]; then
+  lr=$(printf '%s' "$MODE_RAW" | tr '[:upper:]' '[:lower:]')
+  case "$lr" in
+    a2dp|high-quality|hq|music|a2dp-sink|a2dp_sink) MODE="a2dp" ;;
+    headset|voice|call|hfp|hsp|headset-head-unit|headset_head_unit|headset-head-unit-cvsd|headset_head_unit_cvsd) MODE="voice" ;;
+    *)
+      echo "Error: Invalid profile '$MODE_RAW'. Use: a2dp|high-quality or headset|voice. Omit the second argument to toggle." >&2
+      exit 5
+      ;;
+  esac
+fi
+
+has_profile() {
+  printf '%s\n' "$AVAILABLE_PROFILES" | tr ' ' '\n' | grep -x -q "$1"
+}
+
+A2DP_PROFILE=""
+for p in a2dp-sink a2dp_sink; do
+  if has_profile "$p"; then A2DP_PROFILE="$p"; break; fi
+done
+
+VOICE_PROFILE=""
+for p in headset-head-unit headset_head_unit headset-head-unit-cvsd headset_head_unit_cvsd; do
+  if has_profile "$p"; then VOICE_PROFILE="$p"; break; fi
+done
+
+if [[ -z "$A2DP_PROFILE" ]]; then
+  echo "Error: A2DP profile not available on card '$CARD_NAME'. Available: $AVAILABLE_PROFILES" >&2
+  exit 6
+fi
+if [[ -z "$VOICE_PROFILE" ]]; then
+  echo "Error: Voice profile not available on card '$CARD_NAME'. Available: $AVAILABLE_PROFILES" >&2
+  exit 7
+fi
+
+TARGET_PROFILE=""
+case "$MODE" in
+  a2dp) TARGET_PROFILE="$A2DP_PROFILE" ;;
+  voice) TARGET_PROFILE="$VOICE_PROFILE" ;;
+  toggle)
+    if [[ "$CURRENT_PROFILE" =~ ^a2dp([-_])sink$ ]]; then
+      TARGET_PROFILE="$VOICE_PROFILE"
+    elif [[ "$CURRENT_PROFILE" =~ ^headset([-_])head([-_])unit ]]; then
+      TARGET_PROFILE="$A2DP_PROFILE"
+    else
+      TARGET_PROFILE="$A2DP_PROFILE"
+    fi
+    ;;
+esac
+
+echo "Headset: $HEADSET_NAME"
+echo "Card: $CARD_NAME"
+echo "Current profile: $CURRENT_PROFILE"
+echo "Switching to: $TARGET_PROFILE"
+
+if ! pactl set-card-profile "$CARD_NAME" "$TARGET_PROFILE"; then
+  echo "Error: Failed to set profile '$TARGET_PROFILE' on '$CARD_NAME'." >&2
+  exit 8
+fi
+
+new_active=$(pactl -f json list cards | CARD="$CARD_NAME" python3 -c '
+import json, sys, os
+cname = os.environ.get("CARD","")
+cards = json.load(sys.stdin)
+for c in cards:
+    if c.get("name","") == cname:
+        print(c.get("active_profile",""))
+        break
+')
+
+echo "New profile: $new_active"
+exit 0

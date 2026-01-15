@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# Display numbers (1 = first monitor, 2 = second monitor)
+DISPLAYS=(1 2)
+
+BRIGHTNESS_FILE="/tmp/brightness_value"
+
+# Get current brightness from cache
+if [ -f "$BRIGHTNESS_FILE" ]; then
+    current=$(cat "$BRIGHTNESS_FILE")
+else
+    # Get from first monitor via D-Bus
+    current=$(busctl --user call com.ddcutil.DdcutilService /com/ddcutil/DdcutilObject com.ddcutil.DdcutilInterface GetVcp isyu 1 "" 16 4 2>/dev/null | awk '{print $2}')
+    [ -z "$current" ] && current=50
+    echo "$current" > "$BRIGHTNESS_FILE"
+fi
+
+# Calculate new brightness
+if [ "$1" == "up" ]; then
+    # Increase by 5%
+    new=$((current + 5))
+elif [ "$1" == "down" ]; then
+    # Decrease by 5%
+    new=$((current - 5))
+elif [[ "$1" =~ ^[0-9]+$ ]]; then
+    # Direct value (0-100)
+    new=$1
+else
+    echo "Usage: $0 [up|down|0-100]"
+    exit 1
+fi
+
+# Clamp between 0 and 100
+[ $new -gt 100 ] && new=100
+[ $new -lt 0 ] && new=0
+
+# Save new value
+echo "$new" > "$BRIGHTNESS_FILE"
+
+# Apply to all displays via D-Bus (much faster than ddcutil CLI)
+for display in "${DISPLAYS[@]}"; do
+    busctl --user call com.ddcutil.DdcutilService /com/ddcutil/DdcutilObject com.ddcutil.DdcutilInterface SetVcp isyqu $display "" 16 $new 4 >/dev/null 2>&1 &
+done
+
+echo "Brightness: ${new}%"
+
+# Show notification (replace if exists, stays visible while adjusting)
+notify-send -u low -t 2000 -h string:x-canonical-private-synchronous:brightness -h int:value:$new "Brightness" "${new}%"

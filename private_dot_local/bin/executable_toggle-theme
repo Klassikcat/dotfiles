@@ -1,0 +1,335 @@
+#!/bin/bash
+## /* ---- 💫 https://github.com/JaKooLit 💫 ---- */  ##
+# For Dark and Light switching
+# Note: Scripts are looking for keywords Light or Dark except for wallpapers as the are in a separate directories
+
+# Paths
+wallpaper_base_path="$HOME/Pictures/wallpapers/Dynamic-Wallpapers"
+dark_wallpapers="$wallpaper_base_path/Dark"
+light_wallpapers="$wallpaper_base_path/Light"
+hypr_config_path="$HOME/.config/hypr"
+swaync_style="$HOME/.config/swaync/style.css"
+PREFERED_THEME_FILE="$HOME/.cache/prefered-theme"
+ags_style="$HOME/.config/ags/user/style.css"
+SCRIPTSDIR="$HOME/.config/hypr/scripts"
+notif="$HOME/.config/swaync/images/bell.png"
+wallust_rofi="$HOME/.config/wallust/templates/colors-rofi.rasi"
+
+kitty_conf="$HOME/.config/kitty/kitty.conf"
+
+wallust_config="$HOME/.config/wallust/wallust.toml"
+pallete_dark="dark16"
+pallete_light="light16"
+
+play_wallpaper() {
+    local wallpaper_dir="$1"
+    hyprctl dispatch exec "mpvpaper '*' -o 'no-audio --loop-file=inf --keepaspect --panscan=1.0 --hwdec=auto --scale=bilinear --cache=yes --no-resume-playback' '$wallpaper_dir'"
+}
+
+# Handle 'auto' argument to control the systemd timer
+if [ "$1" = "auto" ]; then
+    # Remove lock and last run files to allow immediate execution
+    rm -f /tmp/.hyprland_theme.lock /tmp/.hyprland_theme_last_run
+    rm -f "$PREFERED_THEME_FILE"
+    
+    # Restore correct theme based on current time (using heliocron logic)
+    $HOME/.local/bin/hyprland-theme-init.sh
+    
+    # Start services to ensure automation continues
+    systemctl --user start hyprland-theme@sunset-dark
+    systemctl --user start hyprland-theme@sunrise-light
+    systemctl --user start hyprland-theme.timer
+    
+    notify-send -u low -i "$notif" "Theme Automation" "Enabled and synchronized."
+    exit 0
+# If the second argument is not 'system', this is a manual call, so disable the timer.
+elif [ "$2" != "system" ]; then
+    # Stop theme automation services
+    systemctl --user stop hyprland-theme@sunset-dark
+    systemctl --user stop hyprland-theme@sunrise-light
+    systemctl --user stop hyprland-theme.timer
+    notify-send -u low -i "$notif" "Theme Automation" "Disabled."
+fi
+
+# Get current theme state
+current_theme=$(cat "$HOME/.cache/.theme_mode" 2>/dev/null || echo "Dark")
+
+# Check if a theme was specified as argument
+if [ "$1" = "light" ]; then
+    next_mode="Light"
+    wallpaper_path="$light_wallpapers"
+elif [ "$1" = "dark" ]; then
+    next_mode="Dark"
+    wallpaper_path="$dark_wallpapers"
+elif [ "$1" = "midnight" ]; then
+    # Midnight mode: Dark theme with alternative wallpaper
+    next_mode="Midnight"
+    wallpaper_path="$dark_wallpapers"
+else
+    # Determine current theme mode if no argument provided
+    if [ "$current_theme" = "Light" ]; then
+        next_mode="Dark"
+        wallpaper_path="$dark_wallpapers"
+    elif [ "$current_theme" = "Dark" ]; then
+        next_mode="Midnight"
+        wallpaper_path="$dark_wallpapers"
+    else
+        # Midnight or unknown state
+        next_mode="Light"
+        wallpaper_path="$light_wallpapers"
+    fi
+fi
+
+# Determine if we need to skip theme change (wallpaper-only update)
+skip_theme_change=false
+if [ "$next_mode" = "Dark" ] && [ "$current_theme" = "Dark" ]; then
+    skip_theme_change=true
+elif [ "$next_mode" = "Midnight" ] && [ "$current_theme" = "Midnight" ]; then
+    skip_theme_change=true
+elif ([ "$next_mode" = "Dark" ] && [ "$current_theme" = "Midnight" ]) || ([ "$next_mode" = "Midnight" ] && [ "$current_theme" = "Dark" ]); then
+    # Dark ↔ Midnight: same theme, only wallpaper changes
+    skip_theme_change=true
+elif [ "$next_mode" = "Light" ] && [ "$current_theme" = "Light" ]; then
+    skip_theme_change=true
+fi
+
+# intial kill process (skip if only changing wallpaper)
+if [ "$skip_theme_change" != "true" ]; then
+    for pid in waybar rofi swaync ags swaybg; do
+        killall -SIGUSR1 "$pid"
+    done
+fi
+
+# Set swww options (will only start daemon if needed for static wallpapers)
+swww="swww img"
+effect="--transition-bezier .43,1.19,1,.4 --transition-fps 60 --transition-type grow --transition-pos 0.925,0.977 --transition-duration 2"
+
+# Function to update theme mode for the next cycle
+update_theme_mode() {
+    echo "$next_mode" > "$HOME/.cache/.theme_mode"
+}
+
+# Function to notify user
+notify_user() {
+    notify-send -u low -i "$notif" " Switching to" " $1 mode"
+}
+
+set_theme_properties() {
+    local theme_mode=$1
+    
+    if [ "$theme_mode" = "Dark" ]; then
+        # Dark Mode Properties
+        palette="$pallete_dark"
+        waybar_style_file="$HOME/.config/waybar/style/[Catppuccin] Mocha Clean.css"
+        swaync_bg_color="rgba(0, 0, 0, 0.8)"
+        ags_bg_color="rgba(0, 0, 0, 0.4)"
+        ags_text_color="rgba(255, 255, 255, 0.7)"
+        ags_bg_alt_color="#111111"
+        kitty_theme="OneDark.conf"
+        kvantum_theme="catppuccin-mocha-blue"
+        rofi_bg="rgba(0,0,0,0.7)"
+        gtk_search_keywords="*Dark*"
+        gsettings_color_scheme='prefer-dark'
+        live_wallpaper_file="$HOME/Videos/LiveWallpaper/seia-vaporwave-summer-blue-archive-moewalls-com.mp4"
+        static_wallpaper_file="$HOME/Pictures/wallpapers/Dynamic-Wallpapers/Dark/yuuka_call.jpg"
+    elif [ "$theme_mode" = "Midnight" ]; then
+        # Midnight Mode Properties (Dark theme with noa_pajama wallpaper)
+        palette="$pallete_dark"
+        waybar_style_file="$HOME/.config/waybar/style/[Catppuccin] Mocha Clean.css"
+        swaync_bg_color="rgba(0, 0, 0, 0.8)"
+        ags_bg_color="rgba(0, 0, 0, 0.4)"
+        ags_text_color="rgba(255, 255, 255, 0.7)"
+        ags_bg_alt_color="#111111"
+        kitty_theme="OneDark.conf"
+        kvantum_theme="catppuccin-mocha-blue"
+        rofi_bg="rgba(0,0,0,0.7)"
+        gtk_search_keywords="*Dark*"
+        gsettings_color_scheme='prefer-dark'
+        live_wallpaper_file="$HOME/Videos/LiveWallpaper/noa_pajama_out.mp4"
+        static_wallpaper_file="$HOME/Pictures/wallpapers/Dynamic-Wallpapers/Dark/yuuka_call.jpg"
+    else
+        # Light and Intermediate Mode Properties
+        palette="$pallete_light"
+        waybar_style_file="$HOME/.config/waybar/style/[Catppuccin] Latte Clean.css"
+        swaync_bg_color="rgba(255, 255, 255, 0.9)"
+        ags_bg_color="rgba(255, 255, 255, 0.4)"
+        ags_text_color="rgba(0, 0, 0, 0.7)"
+        ags_bg_alt_color="#F0F0F0"
+        kitty_theme="Github.conf"
+        kvantum_theme="catppuccin-latte-blue"
+        rofi_bg="rgba(255,255,255,0.9)"
+        gtk_search_keywords="*Light*"
+        gsettings_color_scheme='prefer-light'
+        live_wallpaper_file="$HOME/Videos/LiveWallpaper/hayase-yuuka-sportswear-blue-archive-wallpaperwaifu-com-loop.mp4"
+        static_wallpaper_file="$HOME/Pictures/wallpapers/Dynamic-Wallpapers/Light/wallpaper48.png"
+    fi
+}
+
+# Skip theme configuration if only updating wallpaper
+if [ "$skip_theme_change" != "true" ]; then
+    set_theme_properties "$next_mode"
+    
+    # Use sed to replace the palette setting in the wallust config file
+    sed -i "s/^palette = .*/palette = \"$palette\"/" "$wallust_config"
+    
+    # Set Waybar style
+    if [ -f "$waybar_style_file" ]; then
+        ln -sf "$waybar_style_file" "$HOME/.config/waybar/style.css"
+    else
+        echo "Style file not found: $waybar_style_file"
+    fi
+    
+    notify_user "$next_mode"
+    
+    # swaync color change
+    sed -i "/@define-color noti-bg/s/rgba([0-9]*,\\s*[0-9]*,\\s*[0-9]*,\\s*[0-9.]*);/$swaync_bg_color;/" "${swaync_style}"
+    
+    # ags color change
+    if command -v ags >/dev/null 2>&1; then
+        sed -i "/@define-color noti-bg/s/rgba([0-9]*,\\s*[0-9]*,\\s*[0-9]*,\\s*[0-9.]*);/$ags_bg_color;/" "${ags_style}"
+        sed -i "/@define-color text-color/s/rgba([0-9]*,\\s*[0-9]*,\\s*[0-9]*,\\s*[0-9.]*);/$ags_text_color;/" "${ags_style}"
+        sed -i "/@define-color noti-bg-alt/s/#.*;/$ags_bg_alt_color;/" "${ags_style}"
+    fi
+    
+    # kitty theme change
+    sed -i "s|^include .*kitty-themes/.*\\.conf|include ./kitty-themes/$kitty_theme|" "${kitty_conf}"
+    
+    for pid_kitty in $(pidof kitty); do
+        kill -SIGUSR1 "$pid_kitty"
+    done
+else
+    # Wallpaper-only update, just show notification
+    notify-send -u low -i "$notif" " Wallpaper updated" " $next_mode mode"
+fi
+
+# Set Dynamic Wallpaper for Dark, Light, or Intermediate Mode
+set_theme_properties "$next_mode"
+
+if [ -f "$live_wallpaper_file" ]; then
+    # Kill existing mpvpaper instances and swww to avoid conflicts
+    killall mpvpaper swww-daemon 2>/dev/null
+    sleep 0.5
+    # Start mpvpaper via hyprctl to ensure proper Wayland context
+    play_wallpaper "$live_wallpaper_file"
+    # Update lock screen wallpaper to static image
+    mkdir -p "$HOME/.config/hypr/wallpaper_effects"
+    cp -f "$static_wallpaper_file" "$HOME/.config/hypr/wallpaper_effects/.wallpaper_current"
+else
+    # Fallback to static wallpaper if video not found
+    killall mpvpaper 2>/dev/null
+    $swww "${static_wallpaper_file}" $effect
+    # Update lock screen wallpaper
+    mkdir -p "$HOME/.config/hypr/wallpaper_effects"
+    cp -f "$static_wallpaper_file" "$HOME/.config/hypr/wallpaper_effects/.wallpaper_current"
+fi
+
+
+# Set Kvantum Manager theme & QT5/QT6 settings
+set_theme_properties "$next_mode"
+sed -i "s|^color_scheme_path=.*$|color_scheme_path=$qt5ct_color_scheme|" "$HOME/.config/qt5ct/qt5ct.conf"
+sed -i "s|^color_scheme_path=.*$|color_scheme_path=$qt6ct_color_scheme|" "$HOME/.config/qt6ct/qt6ct.conf"
+QT_QPA_PLATFORM=offscreen kvantummanager --set "$kvantum_theme"
+
+
+# Only continue with full theme changes if not wallpaper-only update
+if [ "$skip_theme_change" != "true" ]; then
+    set_theme_properties "$next_mode"
+    
+    # set the rofi color for background
+    sed -i "/^background:/s/.*/background: $rofi_bg;/" $wallust_rofi
+    
+    # GTK themes and icons switching
+    set_custom_gtk_theme() {
+        mode=$1
+        gtk_themes_directory="$HOME/.themes"
+        icon_directory="$HOME/.icons"
+        color_setting="org.gnome.desktop.interface color-scheme"
+        theme_setting="org.gnome.desktop.interface gtk-theme"
+        icon_setting="org.gnome.desktop.interface icon-theme"
+        
+        set_theme_properties "$mode"
+        gsettings set $color_setting "$gsettings_color_scheme"
+        
+        themes=()
+        icons=()
+        
+        while IFS= read -r -d '' theme_search; do
+            themes+=("$(basename "$theme_search")")
+        done < <(find "$gtk_themes_directory" -maxdepth 1 -type d -iname "$gtk_search_keywords" -print0)
+        
+        while IFS= read -r -d '' icon_search; do
+            icons+=("$(basename "$icon_search")")
+        done < <(find "$icon_directory" -maxdepth 1 -type d -iname "$gtk_search_keywords" -print0)
+        
+        if [ ${#themes[@]} -gt 0 ]; then
+            selected_theme=${themes[RANDOM % ${#themes[@]}]}
+            echo "Selected GTK theme for $mode mode: $selected_theme"
+            gsettings set $theme_setting "$selected_theme"
+            
+            # Flatpak GTK apps (themes)
+            if command -v flatpak &> /dev/null; then
+                flatpak --user override --filesystem=$HOME/.themes
+                sleep 0.5
+                flatpak --user override --env=GTK_THEME="$selected_theme"
+            fi
+        else
+            echo "No $mode GTK theme found"
+        fi
+        
+        if [ ${#icons[@]} -gt 0 ]; then
+            selected_icon=${icons[RANDOM % ${#icons[@]}]}
+            echo "Selected icon theme for $mode mode: $selected_icon"
+            gsettings set $icon_setting "$selected_icon"
+            
+            ## QT5ct icon_theme
+            sed -i "s|^icon_theme=.*$|icon_theme=$selected_icon|" "$HOME/.config/qt5ct/qt5ct.conf"
+            sed -i "s|^icon_theme=.*$|icon_theme=$selected_icon|" "$HOME/.config/qt6ct/qt6ct.conf"
+            
+            # Flatpak GTK apps (icons)
+            if command -v flatpak &> /dev/null; then
+                flatpak --user override --filesystem=$HOME/.icons
+                sleep 0.5
+                flatpak --user override --env=ICON_THEME="$selected_icon"
+            fi
+        else
+            echo "No $mode icon theme found"
+        fi
+    }
+    
+    # Call the function to set GTK theme and icon theme based on mode
+    set_custom_gtk_theme "$next_mode"
+    
+    # Only run WallustSwww.sh if using static wallpaper
+    if [ ! -f "$live_wallpaper_file" ]; then
+        swww query || swww-daemon --format xrgb
+        ${SCRIPTSDIR}/WallustSwww.sh
+    fi
+    
+    sleep 2
+    # kill process
+    for pid1 in waybar rofi swaync ags swaybg; do
+        killall "$pid1"
+    done
+    
+    sleep 1
+    ${SCRIPTSDIR}/Refresh.sh
+fi
+
+# Update theme mode for the next cycle (always do this)
+update_theme_mode
+
+sleep 0.5
+# Display notifications for theme and icon changes
+if [ "$skip_theme_change" = "true" ]; then
+    notify-send -u low -i "$notif" " Wallpaper updated" " $next_mode Mode"
+else
+    notify-send -u low -i "$notif" " Themes switched to:" " $next_mode Mode"
+fi
+
+# If the call was manual, save the theme as preferred
+if [ "$2" != "system" ]; then
+    echo "$next_mode" > "$PREFERED_THEME_FILE"
+fi
+
+exit 0
+

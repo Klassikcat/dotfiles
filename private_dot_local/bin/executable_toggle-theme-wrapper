@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# Usage: toggle-theme-wrapper <EVENT> <THEME>
+# Example: toggle-theme-wrapper sunset dark
+
+EVENT="$1"
+THEME="$2"
+HELIOCRON="$HOME/.cargo/bin/heliocron"
+LAT="37.56"
+LON="126.97"
+
+# 1. 오늘 해당 이벤트 시간 확인 (JSON 파싱 없이 grep 사용)
+TODAY=$(date +%Y-%m-%d)
+# 날짜 옵션 위치 수정 (글로벌 옵션으로 이동)
+REPORT=$($HELIOCRON --latitude $LAT --longitude $LON --date "$TODAY" report --json)
+
+# 이벤트 시간 추출 (예: "sunset":"2025-11-23T17:16:45+09:00")
+EVENT_ISO=$(echo "$REPORT" | grep -o "\"$EVENT\":\"[^\"]*\"" | cut -d'"' -f4)
+
+if [ -z "$EVENT_ISO" ]; then
+    echo "Error: Could not find event '$EVENT' in heliocron report."
+    exit 1
+fi
+
+EVENT_TS=$(date -d "$EVENT_ISO" +%s)
+NOW_TS=$(date +%s)
+
+# 2. 날짜 결정
+if [ "$NOW_TS" -ge "$EVENT_TS" ]; then
+    # 이미 지났으면 내일 날짜 사용
+    TARGET_DATE=$(date -d "tomorrow" +%Y-%m-%d)
+    echo "Event '$EVENT' has passed for today ($TODAY). Waiting for tomorrow ($TARGET_DATE)."
+else
+    # 아직 안 지났으면 오늘 날짜 사용
+    TARGET_DATE="$TODAY"
+    echo "Event '$EVENT' has not passed yet. Waiting for today ($TARGET_DATE)."
+fi
+
+# 3. Heliocron Wait 실행
+# 날짜(--date)를 명시적으로 지정하여 에러 방지 (글로벌 옵션 위치 수정)
+$HELIOCRON --latitude $LAT --longitude $LON --date "$TARGET_DATE" wait --event "$EVENT"
+
+# 4. 테마 변경 실행 (Wait가 정상 종료되면 실행됨)
+EXIT_CODE=$?
+if [ $EXIT_CODE -eq 0 ]; then
+    # prefered-theme 파일이 없을 때만 실행 (자동 모드)
+    if [ ! -f "$HOME/.cache/prefered-theme" ]; then
+        echo "Applying theme: $THEME"
+        $HOME/.local/bin/toggle-theme "$THEME" system
+    else
+        echo "Manual override active (prefered-theme exists). Skipping automation."
+    fi
+else
+    echo "Heliocron wait failed with exit code $EXIT_CODE"
+    exit $EXIT_CODE
+fi

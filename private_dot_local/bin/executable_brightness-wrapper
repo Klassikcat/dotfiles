@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# Usage: brightness-wrapper <EVENT> <BRIGHTNESS_VALUE>
+# Example: brightness-wrapper sunrise 100
+
+EVENT="$1"
+BRIGHTNESS="$2"
+HELIOCRON="$HOME/.cargo/bin/heliocron"
+LAT="37.56"
+LON="126.97"
+
+# 1. 오늘 해당 이벤트 시간 확인
+TODAY=$(date +%Y-%m-%d)
+REPORT=$($HELIOCRON --latitude $LAT --longitude $LON --date "$TODAY" report --json)
+
+# 이벤트 시간 추출
+EVENT_ISO=$(echo "$REPORT" | grep -o "\"$EVENT\":\"[^\"]*\"" | cut -d'"' -f4)
+
+if [ -z "$EVENT_ISO" ]; then
+    echo "Error: Could not find event '$EVENT' in heliocron report."
+    exit 1
+fi
+
+EVENT_TS=$(date -d "$EVENT_ISO" +%s)
+NOW_TS=$(date +%s)
+
+# 2. 날짜 결정
+if [ "$NOW_TS" -ge "$EVENT_TS" ]; then
+    # 이미 지났으면 내일 날짜 사용
+    TARGET_DATE=$(date -d "tomorrow" +%Y-%m-%d)
+    echo "Event '$EVENT' has passed for today ($TODAY). Waiting for tomorrow ($TARGET_DATE)."
+else
+    # 아직 안 지났으면 오늘 날짜 사용
+    TARGET_DATE="$TODAY"
+    echo "Event '$EVENT' has not passed yet. Waiting for today ($TARGET_DATE)."
+fi
+
+# 3. Heliocron Wait 실행
+$HELIOCRON --latitude $LAT --longitude $LON --date "$TARGET_DATE" wait --event "$EVENT"
+
+# 4. 밝기 조절 실행 (Wait가 정상 종료되면 실행됨)
+EXIT_CODE=$?
+if [ $EXIT_CODE -eq 0 ]; then
+    echo "Applying brightness: $BRIGHTNESS%"
+    $HOME/.local/bin/brightness "$BRIGHTNESS"
+else
+    echo "Heliocron wait failed with exit code $EXIT_CODE"
+    exit $EXIT_CODE
+fi
