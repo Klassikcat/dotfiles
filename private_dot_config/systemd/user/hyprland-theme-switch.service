@@ -1,0 +1,10 @@
+[Unit]
+Description=Hyprland Theme Switcher
+
+[Service]
+Type=oneshot
+Environment=DISPLAY=:1
+Environment=WAYLAND_DISPLAY=wayland-1
+ExecStart=%h/.local/bin/toggle-theme %i
+StandardOutput=null
+StandardError=null

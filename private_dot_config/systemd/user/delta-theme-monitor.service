@@ -1,0 +1,13 @@
+[Unit]
+Description=Delta & Bat Theme Monitor
+After=graphical-session.target
+
+[Service]
+Type=simple
+Environment="PATH=/usr/local/bin:/usr/bin:/bin"
+ExecStart=/bin/bash -c 'dconf watch /org/gnome/desktop/interface/ | while read line; do if [[ "$line" == *"color-scheme"* ]]; then source /home/shinjungtae/.local/bin/delta-smart-check.sh; fi; done'
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

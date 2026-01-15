@@ -1,0 +1,47 @@
+-- Terraform LSP auto-restart fix
+return {
+  {
+    "AstroNvim/astrocore",
+    opts = {
+      autocmds = {
+        terraform_lsp_fix = {
+          {
+            event = "BufWritePost",
+            pattern = "*.tf",
+            callback = function()
+              -- .tf 파일 저장 시 LSP 재시작
+              vim.defer_fn(function()
+                vim.cmd("LspRestart")
+              end, 200)
+            end,
+          },
+          {
+            event = { "BufEnter", "BufWinEnter" },
+            pattern = "*.tf",
+            callback = function()
+              -- .tf 파일 진입 시 LSP 상태 확인 후 필요시 재시작
+              vim.defer_fn(function()
+                local clients = vim.lsp.get_clients({ bufnr = 0 })
+                local has_terraform_ls = false
+                for _, client in ipairs(clients) do
+                  if client.name == "terraformls" or client.name == "terraform_lsp" then
+                    has_terraform_ls = true
+                    -- LSP가 실행 중이지만 초기화되지 않은 경우 체크
+                    if not client.initialized then
+                      vim.cmd("LspRestart")
+                      return
+                    end
+                    break
+                  end
+                end
+                if not has_terraform_ls then
+                  vim.cmd("LspStart terraformls")
+                end
+              end, 500)
+            end,
+          },
+        },
+      },
+    },
+  },
+}

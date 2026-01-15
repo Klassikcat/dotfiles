@@ -1,0 +1,18 @@
+/* ---- 💫 https://github.com/JaKooLit 💫 ---- */
+/* Ja KooLit - Global rofi fonts */
+
+/* This is where you can change fonts and sizes */
+
+
+/*****-- Fonts Size and Font Size -----*****/
+configuration {
+  /* ~1.2x scale from 15 → 18 */
+  font: "JetBrainsMono Nerd Font SemiBold 18";
+}
+
+
+/*****-- Elements Font Size -----*****/
+element-text {
+  /* ~1.2x scale from 13 → 16 */
+  font: "JetBrainsMono Nerd Font SemiBold 16";
+}

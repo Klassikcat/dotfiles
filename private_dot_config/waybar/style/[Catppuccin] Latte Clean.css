@@ -1,0 +1,317 @@
+/* ---- 💫 https://github.com/JaKooLit 💫 ---- */
+/* Catppuccin Latte - Clean Style */
+/* Based on official Catppuccin Waybar theme */
+
+@import "/home/shinjungtae/.config/waybar/style/catppuccin-themes/latte.css";
+
+* {
+	font-family: "JetBrainsMono Nerd Font";
+	font-weight: bold;
+	min-height: 0;
+	font-size: 97%;
+	font-feature-settings: '"zero", "ss01", "ss02", "ss03", "ss04", "ss05", "cv31"';
+}
+
+window#waybar {
+	background-color: @base;
+	color: @text;
+	border-radius: 1rem;
+	margin: 5px 10px;
+	padding: 0px 10px;
+	opacity: 0.95;
+}
+
+window#waybar.hidden {
+	opacity: 0.2;
+}
+
+tooltip {
+	background: @base;
+	border: 2px solid @lavender;
+	border-radius: 10px;
+}
+
+tooltip label {
+	color: @text;
+}
+
+/* Workspaces */
+#workspaces {
+	background-color: transparent;
+	padding: 5px 10px;
+	margin: 0px;
+}
+
+#workspaces button {
+	color: @lavender;
+	border-radius: 0.8rem;
+	padding: 0.4rem 0.6rem;
+	margin: 2px;
+	background-color: transparent;
+	transition: all 0.3s ease;
+}
+
+#workspaces button.active {
+	color: @sky;
+	background-color: @surface1;
+	border-radius: 0.8rem;
+}
+
+#workspaces button:hover {
+	color: @sapphire;
+	background-color: @surface1;
+	border-radius: 0.8rem;
+}
+
+#workspaces button.urgent {
+	color: @red;
+	background-color: @surface1;
+	border-radius: 0.8rem;
+}
+
+/* Taskbar */
+#taskbar button {
+	color: @text;
+	border-radius: 0.8rem;
+	padding: 0.4rem 0.6rem;
+	margin: 2px;
+	background-color: transparent;
+	transition: all 0.3s ease;
+}
+
+#taskbar button:hover {
+	color: @sapphire;
+	background-color: @surface1;
+}
+
+#taskbar button.active {
+	color: @mauve;
+	background-color: @surface1;
+}
+
+/* Module groups - transparent as they're now in unified bar */
+.modules-left,
+.modules-center,
+.modules-right {
+	background-color: transparent;
+	padding: 0px;
+	margin: 0px;
+}
+
+/* Individual modules */
+#backlight,
+#backlight-slider,
+#battery,
+#bluetooth,
+#clock,
+#cpu,
+#disk,
+#idle_inhibitor,
+#keyboard-state,
+#memory,
+#mode,
+#mpris,
+#network,
+#power-profiles-daemon,
+#pulseaudio,
+#pulseaudio-slider,
+#taskbar,
+#temperature,
+#tray,
+#window,
+#wireplumber,
+#workspaces,
+#custom-backlight,
+#custom-browser,
+#custom-cava_mviz,
+#custom-cycle_wall,
+#custom-dot_update,
+#custom-file_manager,
+#custom-keybinds,
+#custom-keyboard,
+#custom-light_dark,
+#custom-lock,
+#custom-hint,
+#custom-hypridle,
+#custom-menu,
+#custom-playerctl,
+#custom-power_vertical,
+#custom-power,
+#custom-quit,
+#custom-reboot,
+#custom-settings,
+#custom-spotify,
+#custom-swaync,
+#custom-tty,
+#custom-updater,
+#custom-hyprpicker,
+#custom-weather,
+#custom-weather.clearNight,
+#custom-weather.cloudyFoggyDay,
+#custom-weather.cloudyFoggyNight,
+#custom-weather.default,
+#custom-weather.rainyDay,
+#custom-weather.rainyNight,
+#custom-weather.severe,
+#custom-weather.showyIcyDay,
+#custom-weather.snowyIcyNight,
+#custom-weather.sunnyDay,
+#custom-gpu {
+	padding: 0.5rem 0.8rem;
+	margin: 0px;
+	background-color: transparent;
+}
+
+/* Color assignments */
+#bluetooth,
+#backlight {
+	color: @blue;
+}
+
+#battery {
+	color: @green;
+}
+
+@keyframes blink {
+	to {
+		color: @base;
+	}
+}
+
+#battery.critical:not(.charging) {
+	background-color: @red;
+	color: @crust;
+	animation-name: blink;
+	animation-duration: 3.0s;
+	animation-timing-function: steps(12);
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+}
+
+#clock {
+	color: @yellow;
+}
+
+#cpu {
+	color: @green;
+}
+
+#custom-keyboard,
+#memory {
+	color: @sky;
+}
+
+#disk {
+	color: @sapphire;
+}
+
+#temperature {
+	color: @teal;
+}
+
+#temperature.critical {
+	background-color: @red;
+	color: @crust;
+}
+
+#tray > .passive {
+	-gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+	-gtk-icon-effect: highlight;
+}
+
+#keyboard-state {
+	color: @flamingo;
+}
+
+#custom-cava_mviz {
+	color: @pink;
+}
+
+#custom-menu {
+	color: @rosewater;
+}
+
+#custom-power {
+	color: @red;
+}
+
+#custom-updater {
+	color: @red;
+}
+
+#custom-light_dark {
+	color: @blue;
+}
+
+#custom-weather {
+	color: @lavender;
+}
+
+#custom-lock {
+	color: @maroon;
+}
+
+#pulseaudio {
+	color: @sapphire;
+}
+
+#pulseaudio.bluetooth {
+	color: @pink;
+}
+
+#pulseaudio.muted {
+	color: @red;
+}
+
+#window {
+	color: @mauve;
+}
+
+#mpris {
+	color: @lavender;
+}
+
+#network {
+	color: @teal;
+}
+
+#network.disconnected,
+#network.disabled {
+	background-color: @surface0;
+	color: @text;
+}
+
+/* Indicators */
+#custom-hypridle.notactive,
+#idle_inhibitor.activated {
+	color: #39FF14;
+}
+
+/* Sliders */
+#backlight-slider slider,
+#pulseaudio-slider slider {
+	min-width: 0px;
+	min-height: 0px;
+	opacity: 0;
+	background-image: none;
+	border: none;
+	box-shadow: none;
+}
+
+#backlight-slider trough,
+#pulseaudio-slider trough {
+	min-width: 80px;
+	min-height: 5px;
+	border-radius: 5px;
+	background-color: @surface1;
+}
+
+#backlight-slider highlight,
+#pulseaudio-slider highlight {
+	min-height: 10px;
+	border-radius: 5px;
+	background-color: @blue;
+}

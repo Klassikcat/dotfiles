@@ -1,0 +1,8 @@
+[Unit]
+Description=Apply Brightness based on time (triggered by timer)
+After=graphical-session.target
+
+[Service]
+Type=oneshot
+KillMode=process
+ExecStart=/bin/bash -c 'HOUR=$(date +%%H); if [ "$HOUR" -eq 0 ]; then /home/shinjungtae/.local/bin/brightness 30; fi'

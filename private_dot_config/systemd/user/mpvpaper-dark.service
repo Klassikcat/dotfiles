@@ -1,0 +1,14 @@
+[Unit]
+Description=MPVPaper Dark Theme Wallpaper
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/mpvpaper '*' -o "no-audio --loop --keepaspect --panscan=1.0 --hwdec=auto --scale=bilinear" /home/shinjungtae/Videos/LiveWallpaper/yuuka-eating-blue-archive-moewalls-com.mp4
+Restart=on-failure
+Environment=DISPLAY=:1
+Environment=WAYLAND_DISPLAY=wayland-1
+Environment=XDG_RUNTIME_DIR=/run/user/%U
+Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/%U/bus
+
+[Install]
+WantedBy=default.target

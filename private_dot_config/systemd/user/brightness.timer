@@ -1,0 +1,9 @@
+[Unit]
+Description=Switch Display Brightness at scheduled times
+
+[Timer]
+OnCalendar=*-*-* 00:00:00
+Persistent=false
+
+[Install]
+WantedBy=timers.target

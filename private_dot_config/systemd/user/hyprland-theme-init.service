@@ -1,0 +1,13 @@
+[Unit]
+Description=Initialize Hyprland Theme Based on Time
+After=graphical-session.target
+
+[Service]
+Type=oneshot
+ExecStart=/home/shinjungtae/.local/bin/hyprland-theme-init.sh
+Environment=DISPLAY=:0
+Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/%U/bus
+RemainAfterExit=no
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,84 @@
+parameters:
+  importExistingResources: {true|false}
+  retryCounts: {integer}
+  awsProfile: {string}
+requirements:
+  - Language: Terraform
+  - Task: Infrastructure as Code (IaC)
+  - Skill Level: ${skillLevel:Beginner, Intermediate, Advanced}
+  - Domain: Cloud Computing
+  - Tools: Terraform CLI, AWS CLI
+task:
+  - title: Refactor from monolithic infrastructure code to modular Terraform code
+  - retry: ${retryCounts}
+  - cloud info:
+    - name: AWS
+      profile: ${awsProfile}
+  - description: |
+      You're and infrastructure engineer responsible for managing cloud 
+      resources using Terraform. 
+      You have a monolithic Terraform configuration that defines various AWS resources. 
+      Your task is to refactor this configuration into a modular structure, making 
+      it easier to manage and reuse components. 
+      Additionally, you need to import existing AWS infrastructure into your 
+      Terraform state to ensure that all resources are tracked and managed 
+      through Terraform.
+  - target infrastructure:
+    - Import:
+      - ${Service}: ${Name} 
+    - Create:
+      - ${Service}: ${Name}
+        ${Attribute}: ${Value}
+        instruction:
+          - ${Instruction}
+  - target files:
+    - ${fileName}
+  - steps:
+    - check existing states:
+      skipable: false
+      orders:
+        - step: 1
+          description: Review the existing monolithic Terraform configuration and codes
+            to understand the resources defined.
+        - step: 2
+          description: Identify logical groupings of resources that can be modularized.
+        - step: 3
+          description: Identify the existing AWS resources that need to be imported into 
+            Terraform state.
+    - refactor to modules:
+      skipable: false
+      orders:
+        - step: 1
+          description: Create separate directories for each module (e.g., VPC, EC2, S3).
+        - step: 2
+          description: Move the relevant resource definitions into their respective module
+            files (main.tf, variables.tf, outputs.tf).
+        - step: 3
+          description: Update the root module to call these new modules, passing necessary
+            variables.
+    - import existing resources:
+      skipable: true
+      when: ${importExistingResources:false}
+      orders:
+        - step: 1
+          description: Use the `terraform import` command to import each existing AWS
+            resource into your Terraform state.
+        - step: 2
+          description: Verify the import by running `terraform plan` to ensure that the
+            state matches the actual resources.
+        - step: 3
+          description: Adjust your Terraform configuration files as necessary to match
+            the existing resources.'
+        - step: 4
+          description: Test the new modular configuration by running `terraform plan` and
+            to ensure everything works as expected.
+
+  - tips:
+    - Use the `terraform import` command to import each resource into your Terraform 
+      state. The syntax is `terraform import <resource_type>.<resource_name> <resource_id>`.
+    - After importing, run `terraform plan` to see if there are any differences between
+      the imported resources and your Terraform configuration. Adjust your configurati-
+      on files as necessary to match the existing resources.
+    - If there is interactive outputs, use `var=$(aws exec) | jq` to filter the outputs
+    - Make sure you should use `data` blocks to reference existing resources that you 
+      did not import.

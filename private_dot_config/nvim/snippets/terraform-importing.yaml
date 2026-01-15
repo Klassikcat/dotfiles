@@ -1,0 +1,40 @@
+requirements:
+  - Language: Terraform
+  - Task: Infrastructure as Code (IaC)
+  - Skill Level: ${skillLevel:Beginner, Intermediate, Advanced}
+  - Domain: Cloud Computing
+  - Tools: Terraform CLI, AWS CLI
+task:
+  - title: Import Existing AWS Infrastructure into Terraform
+  - retry: ${retryCounts}
+  - cloud info:
+    - name: AWS
+      profile: ${awsProfile}
+  - description: |
+      You have an Existing AWS infrastructure that was created manually or through other means. 
+      Your task is to import this existing infrastructure into Terraform so that it can be managed as code. 
+      This involves identifying the resources, creating corresponding Terraform configuration files, and using the `terraform import` command to bring the resources under Terraform management.
+  - target infrastructure:
+    - Import:
+      - ${Service}: ${Name} 
+    - Create:
+      - ${Service}: ${Name}
+        ${Attribute}: ${Value}
+        instruction:
+          - ${Instruction}
+  - target files:
+    - ${fileName}
+  - steps:
+    - check existing resources:
+      - 1. Use the AWS Management Console or AWS CLI to list and identify the existing resources you want to import.
+      - 2. Import Existing AWS Infrastructure into Terraform
+      - 3. Find drift between existing resources and terraform state
+      - 4. Modify terraform file to match existing resources
+      - 5. Use `terraform plan` to see the changes
+        - if there are no drift, proceed to the next step 
+        - if there are drift, return to step 4
+  - tips:
+    - Use the `terraform import` command to import each resource into your Terraform state. The syntax is `terraform import <resource_type>.<resource_name> <resource_id>`.
+    - After importing, run `terraform plan` to see if there are any differences between the imported resources and your Terraform configuration. Adjust your configuration files as necessary to match the existing resources.
+    - If there is interactive outputs, use `var=$(aws exec) | jq` to filter the outputs
+    - Make sure you should use `data` blocks to reference existing resources that you did not import.

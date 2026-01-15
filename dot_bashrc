@@ -1,0 +1,282 @@
+# ~/.bashrc: executed by bash(1) for non-login shells.
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# for examples
+
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+HISTCONTROL=ignoreboth
+export DOCKER_HOST=unix:///run/user/$UID/podman/podman.sock
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+#shopt -s globstar
+
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+# set variable identifying the chroot you work in (used in the prompt below)
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+    debian_chroot=$(cat /etc/debian_chroot)
+fi
+
+# set a fancy prompt (non-color, unless we know we "want" color)
+case "$TERM" in
+    xterm-color|*-256color) color_prompt=yes;;
+esac
+
+# uncomment for a colored prompt, if the terminal has the capability; turned
+# off by default to not distract the user: the focus in a terminal window
+# should be on the output of commands, not on the prompt
+force_color_prompt=yes
+
+if [ -n "$force_color_prompt" ]; then
+    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+	# We have color support; assume it's compliant with Ecma-48
+	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+	# a case would tend to support setf rather than setaf.)
+	color_prompt=yes
+    else
+	color_prompt=
+    fi
+fi
+
+# Function to get current git branch
+parse_git_branch() {
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+}
+
+if [ "$color_prompt" = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[01;31m\]$(parse_git_branch)\[\033[00m\]\n\$ '
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w$(parse_git_branch)\n\$ '
+fi
+unset color_prompt force_color_prompt
+
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+xterm*|rxvt*)
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    ;;
+*)
+    ;;
+esac
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+# colored GCC warnings and errors
+#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+# Alias definitions.
+# You may want to put all your additions into a separate file like
+# ~/.bash_aliases, instead of adding them here directly.
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+. "$HOME/.local/bin/env"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+. "$HOME/.cargo/env"
+
+# Eza tree aliases with hidden files but excluding build/cache/env folders
+# Comprehensive exclusion list for multiple languages and tools
+EZA_IGNORE='node_modules|__pycache__|.venv|venv|env|.terraform*|.git|target|build|dist|out|bin|obj|.next|.nuxt|.svelte-kit|coverage|.nyc_output|*.pyc|*.pyo|*.pyd|.DS_Store|.idea|.vs|*.egg-info|.pytest_cache|.mypy_cache|.tox|.coverage|htmlcov|.sass-cache|.cache|.parcel-cache|vendor|Pods|DerivedData|.gradle|.m2|.cargo|.rustup'
+
+# t1: Basic tree view with hidden files and icons, excluding common build/cache folders
+alias t1="eza --tree --level=1 --all --icons --ignore-glob='$EZA_IGNORE'"
+
+# t2: Deeper tree view (3 levels) with icons
+alias t2="eza --tree --level=2 --all --icons --ignore-glob='$EZA_IGNORE'"
+
+# t3: Even deeper tree view (4 levels) with icons
+alias t3="eza --tree --level=3 --all --icons --ignore-glob='$EZA_IGNORE'"
+
+# t4: Full tree view with icons and git status
+alias t4="eza --tree --level=4 --all --icons --git --ignore-glob='$EZA_IGNORE'"
+
+# t4: Full tree view with icons and git status
+alias t5="eza --tree --level=5 --all --icons --git --ignore-glob='$EZA_IGNORE'"
+
+# t5: Complete tree view with all metadata
+alias ta="eza --tree --all --icons --git --long --header --ignore-glob='$EZA_IGNORE'"
+
+# Bonus: Quick directory listing aliases
+alias l1="eza --all --icons --ignore-glob='$EZA_IGNORE'"
+alias l2="eza --all --icons --long --header --git --ignore-glob='$EZA_IGNORE'"
+
+[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path bash)"
+alias mj-down="podman-compose down -v --remove-orphans -t 10"
+alias bat="batcat"
+
+# Syntax highlighting aliases
+alias cat="bat --paging=never"
+alias catn="bat --style=numbers --paging=never"  # with line numbers
+alias catg="bat --style=changes --paging=never"  # with git changes
+alias catl="bat"  # with paging (for long files)
+
+# Smart bat theme selection based on terminal background
+smart_bat() {
+    # Try to detect terminal background
+    # This is a simple heuristic - you might need to adjust based on your terminal
+    
+    # Check if COLORFGBG is set (some terminals set this)
+    if [[ -n "$COLORFGBG" ]]; then
+        # COLORFGBG format: foreground;background
+        bg_color=${COLORFGBG##*;}
+        if [[ $bg_color -lt 8 ]]; then
+            # Dark background
+            bat --theme="Dracula" "$@"
+        else
+            # Light background
+            bat --theme="GitHub" "$@"
+        fi
+    # Check terminal name for known light/dark themes
+    elif [[ "$TERM_PROGRAM" == "vscode" ]] || [[ "$COLORTERM" == "truecolor" ]]; then
+        # Default to auto-detection or user preference
+        # You can customize this part
+        bat --theme="OneHalfDark" "$@"
+    else
+        # Fallback to default bat behavior
+        bat "$@"
+    fi
+}
+
+# Enhanced aliases with smart theme selection
+alias catsmart="smart_bat --paging=never"
+alias catlight="bat --theme='GitHub' --paging=never"          # Force light theme
+alias catdark="bat --theme='Dracula' --paging=never"          # Force dark theme
+alias catsol="bat --theme='Solarized (light)' --paging=never" # Solarized light
+alias catsolark="bat --theme='Solarized (dark)' --paging=never" # Solarized dark
+
+# Catppuccin theme switching based on GNOME system color scheme
+catppuccin_bat() {
+    # Get GNOME color scheme
+    local color_scheme=$(gsettings get org.gnome.desktop.interface color-scheme 2>/dev/null)
+    
+    # Select theme based on system preference
+    if [[ "$color_scheme" == "'prefer-light'" || "$color_scheme" == "'default'" ]]; then
+        bat --theme="Catppuccin Latte" "$@"
+    else
+        bat --theme="Catppuccin Mocha" "$@"
+    fi
+}
+
+# Enhanced aliases using Catppuccin themes
+alias cat="catppuccin_bat --paging=never"
+alias catn="catppuccin_bat --style=numbers --paging=never"
+alias catg="catppuccin_bat --style=changes --paging=never"  
+alias catl="catppuccin_bat"
+
+# Manual theme override aliases
+alias catlatte="bat --theme='Catppuccin Latte' --paging=never"      # Force light theme
+alias catmocha="bat --theme='Catppuccin Mocha' --paging=never"      # Force dark theme
+alias catfrappe="bat --theme='Catppuccin Frappe' --paging=never"    # Force frappe theme
+alias catmacchiato="bat --theme='Catppuccin Macchiato' --paging=never" # Force macchiato theme
+
+# Debug function to show current theme selection
+cattime() {
+    local hour=$(date +%H)
+    local minute=$(date +%M)
+    local minutes=$((10#$hour * 60 + 10#$minute))
+    
+    echo "Current time: ${hour}:${minute} (${minutes} minutes since midnight)"
+    
+    if [[ $minutes -ge 360 && $minutes -lt 1200 ]]; then
+        echo "Using: Catppuccin Latte (Light theme)"
+        echo "Active period: 06:00 - 20:00"
+    else
+        echo "Using: Catppuccin Mocha (Dark theme)"
+        echo "Active period: 20:00 - 06:00"
+    fi
+    
+    if [[ $# -gt 0 ]]; then
+        catppuccin_bat "$@"
+    fi
+}
+export PATH=$PATH:/home/shinjungtae/go/bin
+
+if [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+fi
+
+# eza tree aliases
+alias t='eza --tree --level=2 --icons'
+alias tt='eza --tree --level=3 --icons --ignore-glob="__pycache__"'
+alias tall='eza --tree --level=2 --icons --all'
+alias tg='eza --tree --level=2 --icons --git-ignore'
+alias ts='eza --tree --level=2'
+alias td='eza --tree --level=2 --icons --only-dirs'
+
+# Git root navigation
+alias cdroot='cd $(git rev-parse --show-toplevel)'
+alias gr='cd $(git rev-parse --show-toplevel)'  # shorter version
+
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+export EDITOR=vim
+export VISUAL=vim
+export LIBVA_DRIVER_NAME=nvidia
+export NVD_BACKEND=direct
+alias toggle-bar='pkill -SIGUSR1 waybar'
+alias toggle-theme='/home/shinjungtae/.local/bin/toggle-theme >/dev/null 2>&1'
+export PATH="$HOME/bin:$PATH"
+
+export SYSTEMD_EDITOR=vim
+
+# opencode
+export PATH=/home/shinjungtae/.opencode/bin:$PATH
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
