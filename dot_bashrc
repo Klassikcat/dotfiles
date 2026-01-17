@@ -280,9 +280,6 @@ export PATH=/home/shinjungtae/.opencode/bin:$PATH
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-# Display system info on startup
-fastfetch
-
 eval "$(starship init bash)"
 
 
