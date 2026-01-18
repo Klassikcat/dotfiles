@@ -147,6 +147,7 @@ $env.config.cursor_shape = {
     vi_normal: block
 }
 $env.config.color_config = $catppuccin_theme
+$env.config.render_right_prompt_on_last_line = true
 
 alias mj-down = podman-compose down -v --remove-orphans -t 10
 alias bat = batcat
