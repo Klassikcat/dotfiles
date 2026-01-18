@@ -5,6 +5,7 @@ $username\
 $hostname\
 $directory\
 $git_branch\
+$git_commit\
 $git_state\
 $git_status\
 $cmd_duration\
@@ -13,7 +14,9 @@ $python\
 $character"""
 
 [directory]
-style = "blue"
+style = "bold blue"
+truncation_length = 0
+truncate_to_repo = false
 
 [character]
 success_symbol = "[❯](purple)"
@@ -22,7 +25,12 @@ vimcmd_symbol = "[❮](green)"
 
 [git_branch]
 format = "[$branch]($style)"
-style = "green"
+style = "bold green"
+
+[git_commit]
+only_detached = true
+format = '[:$hash]($style) '
+style = "bold purple"
 
 [git_status]
 format = "[[(*$conflicted$untracked$modified$staged$renamed$deleted)](218) ($ahead_behind$stashed)]($style)"
