@@ -52,3 +52,12 @@ $env.PROMPT_INDICATOR = " "
 $env.PROMPT_INDICATOR_VI_INSERT = " "
 $env.PROMPT_INDICATOR_VI_NORMAL = " "
 $env.PROMPT_MULTILINE_INDICATOR = "::: "
+
+# LS_COLORS configured for visibility in both Light and Dark modes
+# Directories: Bold Blue (1;34)
+# Symlinks: Bold Magenta (1;35)
+# Executables: Bold Green (1;32)
+# Archives: Bold Red (1;31)
+# Images/Docs: Bold Magenta (1;35)
+# Regular files: Default (0)
+$env.LS_COLORS = "di=1;34:ln=1;35:so=1;31:pi=33:ex=1;32:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43:fi=0:*.tar=1;31:*.zip=1;31:*.gz=1;31:*.bz2=1;31:*.xz=1;31:*.rpm=1;31:*.jar=1;31:*.png=1;35:*.jpg=1;35:*.gif=1;35:*.rs=1;35:*.py=1;35:*.js=1;35:*.ts=1;35:*.nu=1;35:*.md=1;35:*.json=1;35:*.yaml=1;35:*.toml=1;35"
