@@ -2,7 +2,7 @@
 /* Catppuccin Latte - Clean Style */
 /* Based on official Catppuccin Waybar theme */
 
-@import "catppuccin-themes/latte.css";
+@import "style/catppuccin-themes/latte.css";
 
 * {
 	font-family: "JetBrainsMono Nerd Font";

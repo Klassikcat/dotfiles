@@ -18,7 +18,7 @@
 @define-color button-hover          @color12;
 
 @import '../../.config/waybar/wallust/colors-waybar.css';
-@import "catppuccin-themes/latte.css";
+@import "style/catppuccin-themes/latte.css";
 
 * {
 	font-family: "JetBrainsMono Nerd Font";
@@ -310,5 +310,4 @@ tooltip {
 	min-height: 10px;
 	border-radius: 5px;
 }
-
 

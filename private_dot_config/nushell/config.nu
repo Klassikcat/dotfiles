@@ -160,5 +160,5 @@ alias catmocha = batcat --theme='Catppuccin Mocha' --paging=never
 alias catfrappe = batcat --theme='Catppuccin Frappe' --paging=never
 alias catmacchiato = batcat --theme='Catppuccin Macchiato' --paging=never
 alias toggle-bar = pkill -SIGUSR1 waybar
-alias toggle-theme = $env.HOME + "/.local/bin/toggle-theme"
+def toggle-theme [] { ^($env.HOME | path join ".local" "bin" "toggle-theme") }
 alias fastfetch = /home/linuxbrew/.linuxbrew/bin/fastfetch
