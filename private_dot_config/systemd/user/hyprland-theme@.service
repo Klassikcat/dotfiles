@@ -10,7 +10,7 @@ ExecStart=/bin/bash -c ' \
   source <(systemctl --user show-environment | sed "s/^/export /"); \
   EVENT=$(echo %i | cut -d- -f1); \
   THEME=$(echo %i | cut -d- -f2-); \
-  /home/shinjungtae/.local/bin/toggle-theme-wrapper $EVENT $THEME'
+  %h/.local/bin/toggle-theme-wrapper $EVENT $THEME'
 
 Restart=always
 RestartSec=10s

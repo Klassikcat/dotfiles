@@ -9,7 +9,7 @@ ExecStart=/bin/bash -c ' \
   source <(systemctl --user show-environment | sed "s/^/export /"); \
   EVENT=$(echo %i | cut -d- -f1); \
   BRIGHTNESS=$(echo %i | cut -d- -f2-); \
-  /home/shinjungtae/.local/bin/brightness-wrapper $EVENT $BRIGHTNESS'
+  %h/.local/bin/brightness-wrapper $EVENT $BRIGHTNESS'
 
 Restart=always
 RestartSec=10s

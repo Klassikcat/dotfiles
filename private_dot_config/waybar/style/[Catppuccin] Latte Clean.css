@@ -2,7 +2,7 @@
 /* Catppuccin Latte - Clean Style */
 /* Based on official Catppuccin Waybar theme */
 
-@import "/home/shinjungtae/.config/waybar/style/catppuccin-themes/latte.css";
+@import "catppuccin-themes/latte.css";
 
 * {
 	font-family: "JetBrainsMono Nerd Font";

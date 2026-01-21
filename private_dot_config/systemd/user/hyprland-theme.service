@@ -6,4 +6,4 @@ After=graphical-session.target
 Type=oneshot
 KillMode=process
 # Determine theme based on current hour
-ExecStart=/bin/bash -c 'HOUR=$(date +%%H); if [ "$HOUR" -eq 0 ]; then /home/shinjungtae/.local/bin/toggle-theme midnight system; fi'
+ExecStart=/bin/bash -c 'HOUR=$(date +%%H); if [ "$HOUR" -eq 0 ]; then %h/.local/bin/toggle-theme midnight system; fi'

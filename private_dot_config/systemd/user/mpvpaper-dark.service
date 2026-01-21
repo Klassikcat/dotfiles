@@ -3,7 +3,7 @@ Description=MPVPaper Dark Theme Wallpaper
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/mpvpaper '*' -o "no-audio --loop --keepaspect --panscan=1.0 --hwdec=auto --scale=bilinear" /home/shinjungtae/Videos/LiveWallpaper/yuuka-eating-blue-archive-moewalls-com.mp4
+ExecStart=/usr/local/bin/mpvpaper '*' -o "no-audio --loop --keepaspect --panscan=1.0 --hwdec=auto --scale=bilinear" %h/Videos/LiveWallpaper/yuuka-eating-blue-archive-moewalls-com.mp4
 Restart=on-failure
 Environment=DISPLAY=:1
 Environment=WAYLAND_DISPLAY=wayland-1

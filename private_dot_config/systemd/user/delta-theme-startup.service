@@ -4,7 +4,7 @@ After=graphical-session.target
 
 [Service]
 Type=oneshot
-ExecStart=/home/shinjungtae/.local/bin/delta-auto-theme.sh
+ExecStart=%h/.local/bin/delta-auto-theme.sh
 RemainAfterExit=no
 
 [Install]
