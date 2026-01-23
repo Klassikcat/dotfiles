@@ -27,7 +27,18 @@ $env.PATH = ($env.PATH | split row (char esep)
   | append $"($env.HOME)/.cargo/bin"
   | append $"($env.HOME)/go/bin"
   | append $"($env.HOME)/.local/share/JetBrains/Toolbox/scripts"
+  | append $"($env.HOME)/.nvm/versions/node/v24.12.0/bin"
 )
+
+# nvm default Node.js on startup (so new Nushell sessions use the default)
+let nvm_default_node = (bash -lc 'export NVM_DIR="$HOME/.nvm"; if [ -s "$NVM_DIR/nvm.sh" ]; then . "$NVM_DIR/nvm.sh"; nvm which default; fi' | str trim)
+if $nvm_default_node != "" and ($nvm_default_node | path exists) {
+  let nvm_default_bin = ($nvm_default_node | path dirname)
+  $env.NVM_DIR = ($env.HOME | path join ".nvm")
+  $env.NVM_BIN = $nvm_default_bin
+  $env.PATH = ($env.PATH | split row (char esep) | where {|p| ($p | str contains "/.nvm/versions/node/") == false } | prepend $nvm_default_bin | str join (char esep))
+}
+
 
 $env.EDITOR = "vim"
 $env.VISUAL = "vim"

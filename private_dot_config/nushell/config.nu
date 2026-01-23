@@ -162,3 +162,23 @@ alias catmacchiato = batcat --theme='Catppuccin Macchiato' --paging=never
 alias toggle-bar = pkill -SIGUSR1 waybar
 def toggle-theme [] { ^($env.HOME | path join ".local" "bin" "toggle-theme") }
 alias fastfetch = /home/linuxbrew/.linuxbrew/bin/fastfetch
+
+def --env nvm [...args] {
+  let nvm_dir = ($env.NVM_DIR? | default ($env.HOME | path join ".nvm"))
+  let nvm_cmd = ($args | str join " ")
+  let is_use_default = (
+    ($args | length) >= 3
+    and ($args | get 0) == "use"
+    and ($args | get 2) == "default"
+  )
+  let use_version = (if $is_use_default { $args | get 1 } else { "" })
+  let node_path = (bash -lc $'export NVM_DIR="($nvm_dir)"; if [ -s "$NVM_DIR/nvm.sh" ]; then . "$NVM_DIR/nvm.sh"; nvm ($nvm_cmd) >/dev/null; if [ "($is_use_default)" = "true" ]; then nvm alias default "($use_version)" >/dev/null; fi; nvm which current; fi' | str trim)
+  if $node_path != "" and ($node_path | path exists) {
+    let node_bin = ($node_path | path dirname)
+    $env.NVM_DIR = $nvm_dir
+    $env.NVM_BIN = $node_bin
+    let path_list = (if ($env.PATH | describe | str contains "list") { $env.PATH } else { $env.PATH | split row (char esep) })
+    let cleaned = ($path_list | where {|p| ($p | str contains "/.nvm/versions/node/") == false } | where {|p| $p != $node_bin })
+    $env.PATH = ($cleaned | prepend $node_bin | str join (char esep))
+  }
+}
