@@ -274,6 +274,7 @@ export PATH="$HOME/bin:$PATH"
 export SYSTEMD_EDITOR=vim
 
 # opencode
+export OPENCODE_DISABLE_CLAUDE_CODE=1
 export PATH="$HOME/.opencode/bin:$PATH"
 
 # bun

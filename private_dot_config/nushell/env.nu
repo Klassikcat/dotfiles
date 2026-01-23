@@ -17,6 +17,8 @@
 # You can remove these comments if you want or leave
 # them for future reference.
 
+$env.OPENCODE_DISABLE_CLAUDE_CODE = "1"
+
 $env.PATH = ($env.PATH | split row (char esep)
   | append $"($env.HOME)/.opencode/bin"
   | append $"($env.HOME)/.bun/bin"

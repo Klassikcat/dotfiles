@@ -12,7 +12,7 @@
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-github"],
       "env": {
-        "GITHUB_TOKEN": "{{ .github_token }}"
+        "GITHUB_TOKEN": "{{ env "GITHUB_TOKEN" }}"
       }
     }
   }
