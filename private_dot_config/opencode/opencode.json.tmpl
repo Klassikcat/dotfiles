@@ -14,21 +14,21 @@
     "kubernetes": {
       "type": "local",
       "command": [
-        "/home/shinjungtae/mcp-servers/kubernetes-mcp-server/k8s-mcp-server"
+        "{{ .chezmoi.homeDir }}/mcp-servers/kubernetes-mcp-server/k8s-mcp-server"
       ],
       "enabled": true
     },
     "terraform": {
       "type": "local",
       "command": [
-        "/home/shinjungtae/mcp-servers/terraform-mcp-server/terraform-mcp-server"
+        "{{ .chezmoi.homeDir }}/mcp-servers/terraform-mcp-server/terraform-mcp-server"
       ],
       "enabled": true
     },
     "aws-serverless": {
       "type": "local",
       "command": [
-        "/home/shinjungtae/mcp-servers/venv/bin/awslabs.aws-serverless-mcp-server"
+        "{{ .chezmoi.homeDir }}/mcp-servers/venv/bin/awslabs.aws-serverless-mcp-server"
       ],
       "enabled": true
     },

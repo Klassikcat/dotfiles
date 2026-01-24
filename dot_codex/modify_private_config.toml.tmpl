@@ -1,0 +1,176 @@
+#!/usr/bin/env python3
+# chezmoi:template:left-delimiter="{{" right-delimiter="}}"
+"""
+Modify script for codex config - only manages [mcp_servers] section.
+Other sections (projects, model settings, etc.) are preserved from the existing file.
+"""
+
+import sys
+
+try:
+    import tomllib  # Python 3.11+
+except ImportError:
+    import tomli as tomllib  # fallback
+
+try:
+    import tomli_w
+except ImportError:
+    # Simple TOML writer fallback
+    tomli_w = None
+
+def write_toml_simple(data, f):
+    """Simple TOML writer for basic structures."""
+    def write_value(v):
+        if isinstance(v, str):
+            return f'"{v}"'
+        elif isinstance(v, bool):
+            return "true" if v else "false"
+        elif isinstance(v, list):
+            return "[" + ", ".join(write_value(x) for x in v) + "]"
+        elif isinstance(v, dict):
+            return "{" + ", ".join(f'{k} = {write_value(val)}' for k, val in v.items()) + "}"
+        else:
+            return str(v)
+
+    lines = []
+
+    # Write top-level key-value pairs first
+    for key, value in data.items():
+        if not isinstance(value, dict):
+            lines.append(f'{key} = {write_value(value)}')
+
+    lines.append("")
+
+    # Write sections
+    for section, content in data.items():
+        if isinstance(content, dict):
+            for subkey, subval in content.items():
+                if isinstance(subval, dict):
+                    lines.append(f'[{section}."{subkey}"]' if " " in subkey or "/" in subkey else f'[{section}.{subkey}]')
+                    for k, v in subval.items():
+                        if isinstance(v, dict):
+                            lines.append(f'  [{section}."{subkey}".{k}]' if " " in subkey or "/" in subkey else f'  [{section}.{subkey}.{k}]')
+                            for kk, vv in v.items():
+                                lines.append(f'  {kk} = {write_value(vv)}')
+                        else:
+                            lines.append(f'{k} = {write_value(v)}')
+                    lines.append("")
+
+    f.write("\n".join(lines))
+
+# MCP servers configuration (managed by chezmoi)
+MANAGED_MCP_SERVERS = {
+    "playwright": {
+        "command": "npx",
+        "args": ["-y", "@playwright/mcp"]
+    },
+    "kubernetes": {
+        "command": "{{ .chezmoi.homeDir }}/mcp-servers/kubernetes-mcp-server/k8s-mcp-server"
+    },
+    "terraform": {
+        "command": "{{ .chezmoi.homeDir }}/mcp-servers/terraform-mcp-server/terraform-mcp-server"
+    },
+    "aws-serverless": {
+        "command": "{{ .chezmoi.homeDir }}/mcp-servers/venv/bin/awslabs.aws-serverless-mcp-server"
+    },
+    "iam-blackcircles-develop": {
+        "command": "uvx",
+        "args": ["awslabs.iam-mcp-server@latest"],
+        "env": {
+            "AWS_PROFILE": "blackcircles-develop",
+            "AWS_REGION": "ap-northeast-2"
+        }
+    },
+    "iam-blackcircles-prod-readonly": {
+        "command": "uvx",
+        "args": ["awslabs.iam-mcp-server@latest", "--readonly"],
+        "env": {
+            "AWS_PROFILE": "blackcircles-prod",
+            "AWS_REGION": "ap-northeast-2"
+        }
+    },
+    "iam-tirepick": {
+        "command": "uvx",
+        "args": ["awslabs.iam-mcp-server@latest"],
+        "env": {
+            "AWS_PROFILE": "tirepick",
+            "AWS_REGION": "ap-northeast-2"
+        }
+    },
+    "iam-control-plane": {
+        "command": "uvx",
+        "args": ["awslabs.iam-mcp-server@latest"],
+        "env": {
+            "AWS_PROFILE": "control-plane",
+            "AWS_REGION": "ap-northeast-2"
+        }
+    }
+}
+
+def main():
+    # Read existing config from stdin
+    existing_content = sys.stdin.read()
+
+    if existing_content.strip():
+        try:
+            config = tomllib.loads(existing_content)
+        except Exception:
+            config = {}
+    else:
+        config = {}
+
+    # Replace only mcp_servers section
+    config["mcp_servers"] = MANAGED_MCP_SERVERS
+
+    # Output merged config
+    if tomli_w:
+        print(tomli_w.dumps(config))
+    else:
+        # Manual TOML output
+        lines = []
+
+        # Top-level settings
+        for key in ["model", "model_reasoning_effort"]:
+            if key in config:
+                val = config[key]
+                lines.append(f'{key} = "{val}"' if isinstance(val, str) else f'{key} = {val}')
+
+        # Projects section
+        if "projects" in config:
+            for path, settings in config["projects"].items():
+                lines.append(f'[projects."{path}"]')
+                for k, v in settings.items():
+                    lines.append(f'trust_level = "{v}"' if k == "trust_level" else f'{k} = "{v}"')
+                lines.append("")
+
+        # Notice section
+        if "notice" in config:
+            for section, content in config["notice"].items():
+                lines.append(f"[notice.{section}]")
+                for k, v in content.items():
+                    lines.append(f'"{k}" = "{v}"')
+                lines.append("")
+
+        # MCP servers section (managed)
+        for name, settings in config["mcp_servers"].items():
+            lines.append(f"[mcp_servers.{name}]")
+            for k, v in settings.items():
+                if k == "env":
+                    continue  # Handle env after other keys
+                elif isinstance(v, list):
+                    quoted_items = ['"{}"'.format(x) for x in v]
+                    lines.append('args = [{}]'.format(", ".join(quoted_items)))
+                else:
+                    lines.append(f'{k} = "{v}"')
+            # Add env section if exists
+            if "env" in settings:
+                lines.append("")
+                lines.append(f"  [mcp_servers.{name}.env]")
+                for ek, ev in settings["env"].items():
+                    lines.append(f'  {ek} = "{ev}"')
+            lines.append("")
+
+        print("\n".join(lines))
+
+if __name__ == "__main__":
+    main()

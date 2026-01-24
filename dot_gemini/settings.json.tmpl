@@ -11,17 +11,17 @@
       "trust": false
     },
     "kubernetes": {
-      "command": "/home/shinjungtae/mcp-servers/kubernetes-mcp-server/k8s-mcp-server",
+      "command": "{{ .chezmoi.homeDir }}/mcp-servers/kubernetes-mcp-server/k8s-mcp-server",
       "args": [],
       "trust": false
     },
     "terraform": {
-      "command": "/home/shinjungtae/mcp-servers/terraform-mcp-server/terraform-mcp-server",
+      "command": "{{ .chezmoi.homeDir }}/mcp-servers/terraform-mcp-server/terraform-mcp-server",
       "args": [],
       "trust": false
     },
     "aws-serverless": {
-      "command": "/home/shinjungtae/mcp-servers/venv/bin/awslabs.aws-serverless-mcp-server",
+      "command": "{{ .chezmoi.homeDir }}/mcp-servers/venv/bin/awslabs.aws-serverless-mcp-server",
       "args": [],
       "trust": false
     },

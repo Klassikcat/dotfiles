@@ -24,8 +24,9 @@ $env.PATH = ($env.PATH | split row (char esep)
   | append $"($env.HOME)/.bun/bin"
   | append $"($env.HOME)/.local/bin"
   | append $"($env.HOME)/bin"
-  | append "/home/linuxbrew/.linuxbrew/bin"
-  | append "/home/linuxbrew/.linuxbrew/sbin"
+  | append (if ("/home/linuxbrew/.linuxbrew/bin" | path exists) { "/home/linuxbrew/.linuxbrew/bin" } else if ("/opt/homebrew/bin" | path exists) { "/opt/homebrew/bin" } else { "" })
+  | append (if ("/home/linuxbrew/.linuxbrew/sbin" | path exists) { "/home/linuxbrew/.linuxbrew/sbin" } else if ("/opt/homebrew/sbin" | path exists) { "/opt/homebrew/sbin" } else { "" })
+  | where $it != ""
   | append $"($env.HOME)/.cargo/bin"
   | append $"($env.HOME)/go/bin"
   | append $"($env.HOME)/.local/share/JetBrains/Toolbox/scripts"

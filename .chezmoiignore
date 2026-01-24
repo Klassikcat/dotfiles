@@ -1,5 +1,13 @@
 # Do not manage local credentials or session tokens with chezmoi
 /.claude/.credentials.json
+/.claude.json
 /.gemini/oauth_creds.json
 /.codex/auth.json
 /access.key.txt
+private_dot_claude
+
+# Chezmoi source directory local files
+Makefile
+.env
+.env.example
+README.md
