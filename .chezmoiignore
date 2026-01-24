@@ -6,6 +6,9 @@
 /access.key.txt
 private_dot_claude
 
+# Systemd auto-generated symlinks (created by systemctl enable)
+/.config/systemd/user/*.target.wants
+
 # Chezmoi source directory local files
 Makefile
 .env

@@ -1,10 +1,12 @@
 # Chezmoi Makefile
 # Usage:
-#   make diff    - Show differences between source and destination
-#   make sync    - Apply changes (with confirmation)
-#   make apply   - Apply changes without confirmation
-#   make status  - Show chezmoi status
-#   make update  - Pull and apply changes from remote
+#   make diff                    - Show differences between source and destination
+#   make diff FLAGS="--reverse"  - Show differences with reversed output
+#   make sync                    - Apply changes (with confirmation)
+#   make apply                   - Apply changes without confirmation
+#   make apply FLAGS="--dry-run" - Preview apply without making changes
+#   make status                  - Show chezmoi status
+#   make update                  - Pull and apply changes from remote
 
 SHELL := /bin/bash
 
@@ -16,7 +18,7 @@ endif
 
 # Default chezmoi flags (can be overridden in .env)
 CHEZMOI_FLAGS ?=
-CHEZMOI_DIFF_FLAGS ?= --reverse
+CHEZMOI_DIFF_FLAGS ?=
 CHEZMOI_APPLY_FLAGS ?=
 
 .PHONY: help diff sync apply status update init add edit
@@ -29,23 +31,23 @@ help: ## Show this help message
 	@echo "Configuration:"
 	@echo "  Copy .env.example to .env and customize as needed"
 
-diff: ## Show differences between source and destination
-	chezmoi diff $(CHEZMOI_FLAGS) $(CHEZMOI_DIFF_FLAGS)
+diff: ## Show differences (usage: make diff FLAGS="--reverse")
+	chezmoi diff $(CHEZMOI_FLAGS) $(CHEZMOI_DIFF_FLAGS) $(FLAGS)
 
 sync: ## Apply changes interactively (shows diff first, asks for confirmation)
 	@echo "=== Changes to be applied ==="
-	@chezmoi diff $(CHEZMOI_FLAGS) $(CHEZMOI_DIFF_FLAGS) || true
+	@chezmoi diff $(CHEZMOI_FLAGS) $(CHEZMOI_DIFF_FLAGS) $(FLAGS) || true
 	@echo ""
 	@read -p "Apply these changes? [y/N] " confirm; \
 	if [ "$$confirm" = "y" ] || [ "$$confirm" = "Y" ]; then \
-		chezmoi apply $(CHEZMOI_FLAGS) $(CHEZMOI_APPLY_FLAGS) -v; \
+		chezmoi apply $(CHEZMOI_FLAGS) $(CHEZMOI_APPLY_FLAGS) $(FLAGS) -v; \
 		echo "Changes applied successfully!"; \
 	else \
 		echo "Aborted."; \
 	fi
 
-apply: ## Apply changes without confirmation
-	chezmoi apply $(CHEZMOI_FLAGS) $(CHEZMOI_APPLY_FLAGS) -v
+apply: ## Apply changes without confirmation (usage: make apply FLAGS="--dry-run")
+	chezmoi apply $(CHEZMOI_FLAGS) $(CHEZMOI_APPLY_FLAGS) $(FLAGS) -v
 
 status: ## Show chezmoi status
 	chezmoi status $(CHEZMOI_FLAGS)
