@@ -19,6 +19,12 @@
     },
     "multimodal-looker": {
       "model": "google/gemini-3-flash-preview"
+    },
+    "Atlas": {
+      "model": "openai/gpt-5.2-codex"
+    },
+    "sisyphus-junior": {
+      "model": "openai/gpt-5.2-codex"
     }
   }
 }
