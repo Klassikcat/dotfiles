@@ -26,5 +26,13 @@
     "sisyphus-junior": {
       "model": "openai/gpt-5.2-codex"
     }
+  },
+  "categories": {
+    "visual-engineering": {
+      "model": "openrouter/google/gemini-3-pro-preview"
+    },
+    "artistry": {
+      "model": "google/gemini-3-pro-high"
+    }
   }
 }
