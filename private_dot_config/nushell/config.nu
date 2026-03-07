@@ -43,8 +43,31 @@ alias tg = eza --tree --level=2 --icons --git-ignore
 alias ts = eza --tree --level=2
 alias td = eza --tree --level=2 --icons --only-dirs
 
-def cdroot [] { cd ((git rev-parse --show-toplevel) | str trim) }
-def gr [] { cd ((git rev-parse --show-toplevel) | str trim) }
+def --env cdroot [] {
+  mut dir = (pwd)
+
+  loop {
+    let git_dir = ($dir | path join ".git")
+
+    if ($git_dir | path exists) {
+      cd $dir
+      break
+    }
+
+    let parent = ($dir | path dirname)
+
+    if $parent == $dir {
+      print "No git repo found in parent directories"
+      break
+    }
+
+    $dir = $parent
+  }
+}
+
+def --env gr [] {
+  cd ((git rev-parse --show-toplevel) | str trim)
+}
 
 # Catppuccin color palette
 # Latte (light)
