@@ -17,6 +17,8 @@ wallust_rofi="$HOME/.config/wallust/templates/colors-rofi.rasi"
 
 kitty_conf="$HOME/.config/kitty/kitty.conf"
 
+btop_config_dir="$HOME/.config/btop"
+
 wallust_config="$HOME/.config/wallust/wallust.toml"
 pallete_dark="dark16"
 pallete_light="light16"
@@ -24,6 +26,28 @@ pallete_light="light16"
 play_wallpaper() {
     local wallpaper_dir="$1"
     hyprctl dispatch exec "mpvpaper '*' -o 'no-audio --loop-file=inf --keepaspect --panscan=1.0 --hwdec=auto --scale=bilinear --cache=yes --no-resume-playback' '$wallpaper_dir'"
+}
+
+update_btop_theme() {
+    local theme_mode=$1
+    local btop_theme=
+
+    if [ "$theme_mode" = "Light" ]; then
+        btop_theme="$HOME/.config/btop/themes/catppuccin_latte.theme"
+    else
+        btop_theme="$HOME/.config/btop/themes/catppuccin_mocha.theme"
+    fi
+
+    if [ -d "$btop_config_dir" ]; then
+        local config_file="$btop_config_dir/btop.conf"
+        if [ -f "$config_file" ]; then
+            if grep -q "^color_theme" "$config_file"; then
+                sed -i "s|^color_theme[[:space:]]*=.*|color_theme = \"$btop_theme\"|" "$config_file"
+            else
+                printf '\ncolor_theme = "%s"\n' "$btop_theme" >> "$config_file"
+            fi
+        fi
+    fi
 }
 
 # Handle 'auto' argument to control the systemd timer
@@ -92,6 +116,8 @@ elif ([ "$next_mode" = "Dark" ] && [ "$current_theme" = "Midnight" ]) || ([ "$ne
 elif [ "$next_mode" = "Light" ] && [ "$current_theme" = "Light" ]; then
     skip_theme_change=true
 fi
+
+update_btop_theme "$next_mode"
 
 # intial kill process (skip if only changing wallpaper)
 if [ "$skip_theme_change" != "true" ]; then
@@ -332,4 +358,3 @@ if [ "$2" != "system" ]; then
 fi
 
 exit 0
-
