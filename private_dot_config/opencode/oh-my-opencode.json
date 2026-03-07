@@ -2,29 +2,45 @@
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json",
   "google_auth": false,
   "agents": {
-    "Sisyphus": {
-      "model": "openai/gpt-5.2-codex"
+    "sisyphus": {
+      "model": "anthropic/claude-opus-4-6",
+      "textVerbosity": "low"
     },
     "librarian": {
       "model": "openrouter/z-ai/glm-4.7"
+    },
+    "prometheus": {
+      "model": "anthropic/claude-opus-4-6",
+      "reasoningEffort": "xhigh",
+      "textVerbosity": "low"
+    },
+    "hephaestus": {
+      "model": "openai/gpt-5.4",
+      "reasoningEffort": "high",
+      "textVerbosity": "low"
     },
     "explore": {
       "model": "openrouter/google/gemini-3-flash-preview"
     },
     "frontend-ui-ux-engineer": {
-      "model": "openrouter/google/gemini-3-pro-preview"
+      "model": "openrouter/google/gemini-3-pro-preview",
+      "textVerbosity": "low"
     },
     "document-writer": {
-      "model": "google/gemini-3-flash-preview"
+      "model": "anthropic/claude-opus-4-6"
     },
     "multimodal-looker": {
       "model": "google/gemini-3-flash-preview"
     },
-    "Atlas": {
-      "model": "openai/gpt-5.2-codex"
+    "atlas": {
+      "model": "openai/gpt-5.4",
+      "textVerbosity": "low",
+      "reasoningEffort": "medium"
     },
     "sisyphus-junior": {
-      "model": "openai/gpt-5.2-codex"
+      "model": "openai/gpt-5.4",
+      "reasoningEffort": "low",
+      "textVerbosity": "low"
     }
   },
   "categories": {
@@ -33,6 +49,33 @@
     },
     "artistry": {
       "model": "google/gemini-3-pro-high"
+    }
+  },
+  "lsp": {
+    "python": {
+      "command": ["pyright-langserver", "--stdio"],
+      "extensions": [".py"],
+      "priority": 10
+    },
+    "go": {
+      "command": ["gopls"],
+      "extensions": [".go"],
+      "priority": 10
+    },
+    "typescript": {
+      "command": ["typescript-language-server", "--stdio"],
+      "extensions": [".ts", ".tsx"],
+      "priority": 10
+    },
+    "terraform": {
+      "command": ["terraform-ls", "serve"],
+      "extensions": [".tf", ".tfvars"],
+      "priority": 10
+    },
+    "clangd": {
+      "command": ["clangd"],
+      "extensions": [".c", ".h", ".cpp", ".cc", ".cxx", ".hpp"],
+      "priority": 10
     }
   }
 }
