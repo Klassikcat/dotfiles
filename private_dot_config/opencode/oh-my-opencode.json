@@ -3,14 +3,17 @@
   "google_auth": false,
   "agents": {
     "sisyphus": {
-      "model": "anthropic/claude-opus-4-6",
-      "textVerbosity": "low"
+      "model": "openrouter/z-ai/glm-5",
+      "textVerbosity": "low",
+      "provider": {
+        "sort": "latency"
+      }
     },
     "librarian": {
-      "model": "openrouter/z-ai/glm-4.7"
+      "model": "openrouter/z-ai/glm-5"
     },
     "prometheus": {
-      "model": "anthropic/claude-opus-4-6",
+      "model": "openai/gpt-5.4",
       "reasoningEffort": "xhigh",
       "textVerbosity": "low"
     },
@@ -27,7 +30,7 @@
       "textVerbosity": "low"
     },
     "document-writer": {
-      "model": "anthropic/claude-opus-4-6"
+      "model": "openai/gpt-5.4"
     },
     "multimodal-looker": {
       "model": "google/gemini-3-flash-preview"
