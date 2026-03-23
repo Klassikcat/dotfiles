@@ -138,36 +138,6 @@ return {
 
   "andweeb/presence.nvim",
 
-  -- GitHub Copilot (Lua version)
-  {
-    "github/copilot.vim",
-    event = "InsertEnter",
-    config = function()
-      -- Disable default tab mapping to avoid conflicts
-      vim.g.copilot_no_tab_map = true
-      -- Set up custom keybindings
-      vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
-      vim.api.nvim_set_keymap("i", "<C-K>", "<Plug>(copilot-next)", {})
-      vim.api.nvim_set_keymap("i", "<C-L>", "<Plug>(copilot-previous)", {})
-      vim.api.nvim_set_keymap("i", "<C-\\>", "<Plug>(copilot-suggest)", {})
-    end,
-  },
-
-  -- GitHub Copilot Chat (for chat functionality)
-  {
-    "CopilotC-Nvim/CopilotChat.nvim",
-    branch = "main",
-    dependencies = {
-      { "github/copilot.vim" },
-      { "nvim-lua/plenary.nvim" },
-    },
-    opts = {
-      debug = true, -- Enable debugging
-      -- See Configuration section for rest
-    },
-    -- See Commands section for default commands if you want to lazy load on them
-  },
-
   -- render-markdown.nvim for beautiful markdown rendering
   {
     "MeanderingProgrammer/render-markdown.nvim",
