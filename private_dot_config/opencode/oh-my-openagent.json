@@ -30,10 +30,10 @@
       "textVerbosity": "low"
     },
     "document-writer": {
-      "model": "openai/gpt-5.4"
+      "model": "openrouter/anthropic/claude-opus-4.6"
     },
     "multimodal-looker": {
-      "model": "google/gemini-3-flash-preview"
+      "model": "openrouter/google/gemini-3-flash-preview"
     },
     "atlas": {
       "model": "openai/gpt-5.4",
@@ -51,7 +51,7 @@
       "model": "openrouter/google/gemini-3-pro-preview"
     },
     "artistry": {
-      "model": "google/gemini-3-pro-high"
+      "model": "openrouter/google/gemini-3-pro-high"
     }
   },
   "lsp": {
