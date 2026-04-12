@@ -2,7 +2,7 @@
 	font-family: "JetBrainsMono Nerd Font", monospace;
 	font-weight: 600;
 	min-height: 0;
-	font-size: 100%;
+	font-size: 98%;
 	font-feature-settings: '"zero", "ss01", "ss02", "ss03", "ss04", "ss05", "cv31"';
 }
 
@@ -12,7 +12,7 @@
 	border: none;
 	border-radius: 0;
 	box-shadow: none;
-	padding: 0 7px;
+	padding: 3px 7px;
 	min-height: 25px;
 }
 
@@ -34,7 +34,7 @@
 }
 
 #workspaces button {
-	padding: 0.06rem 0.54rem;
+	padding: 0.18rem 0.54rem;
 	margin: 0 1px;
 	border-radius: 0;
 	background: transparent;
@@ -82,7 +82,7 @@
 #custom-nightlight,
 #mpris,
 #window {
-	padding: 0.04rem 0.42rem;
+	padding: 0.16rem 0.42rem;
 	margin: 0;
 	color: #20242b;
 	background: transparent;
@@ -149,7 +149,7 @@
 }
 
 #custom-light_dark {
-	padding: 0.04rem 0.34rem;
+	padding: 0.16rem 0.34rem;
 	margin-left: 0;
 	border-radius: 0;
 	background: transparent;

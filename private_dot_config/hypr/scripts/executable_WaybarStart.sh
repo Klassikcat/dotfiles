@@ -14,7 +14,5 @@ rm -f "${XDG_RUNTIME_DIR:-/tmp}/waybar-cava.pid" 2>/dev/null || true
 rm -f "${XDG_RUNTIME_DIR:-/tmp}/waybar-playerctl.pid" 2>/dev/null || true
 rm -f "${XDG_RUNTIME_DIR:-/tmp}"/waybar-cava.*.conf 2>/dev/null || true
 
-# Start waybar - 모니터별 설정
-waybar -c ~/.config/waybar/configs/"[TOP] Default - UltraFine" &
-waybar -c ~/.config/waybar/configs/"[TOP] Default - HDR" &
+waybar -c ~/.config/waybar/configs/"[TOP] Default - Shared" &
 wait
