@@ -289,6 +289,6 @@ export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
 eval "$(starship init bash)"
-
+export PATH="/usr/bin:/usr/sbin:$PATH"
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
