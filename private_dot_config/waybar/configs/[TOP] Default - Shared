@@ -36,6 +36,10 @@
 "modules-right": [
 	"pulseaudio",
 	"custom/separator#line",
+	"network",
+	"bluetooth",
+	"tray",
+	"custom/separator#line",
 	"memory",
 	"custom/separator#line",
 	"cpu",

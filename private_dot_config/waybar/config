@@ -4,7 +4,7 @@
     "margin": "5 5 0 5",
     "modules-left": ["hyprland/workspaces"],
     "modules-center": ["custom/music"],
-    "modules-right": ["tray", "clock", "custom/light_dark", "custom/lock", "custom/power"],
+    "modules-right": ["network", "bluetooth", "tray", "clock", "custom/light_dark", "custom/lock", "custom/power"],
     "hyprland/workspaces": {
          "disable-scroll": false,
          "all-outputs": true,
@@ -17,6 +17,24 @@
     "tray": {
         "icon-size": 21,
         "spacing": 10
+    },
+    "network": {
+        "format-wifi": "  {essid}",
+        "format-ethernet": "  Wired",
+        "format-disconnected": "⚠ Disconnected",
+        "tooltip-format": "{ifname}: {ipaddr}/{cidr}\n  {bandwidthUpBits}  {bandwidthDownBits}",
+        "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}/{cidr}\n  {bandwidthUpBits}  {bandwidthDownBits}",
+        "on-click": "nm-connection-editor"
+    },
+    "bluetooth": {
+        "format": " {status}",
+        "format-connected": " {device_alias}",
+        "format-connected-battery": " {device_alias} {device_battery_percentage}%",
+        "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+        "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+        "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%",
+        "on-click": "blueman-manager"
     },
     "custom/music": {
         "format": "  {}",
