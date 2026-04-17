@@ -12,7 +12,7 @@
 	border: none;
 	border-radius: 0;
 	box-shadow: none;
-	padding: 3px 7px;
+	padding: 5px 10px;
 	min-height: 25px;
 }
 
@@ -82,7 +82,7 @@
 #custom-nightlight,
 #mpris,
 #window {
-	padding: 0.16rem 0.42rem;
+	padding: 0.24rem 0.56rem;
 	margin: 0;
 	color: #e6ebf2;
 	background: transparent;
