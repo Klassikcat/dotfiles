@@ -13,7 +13,7 @@
       "model": "openrouter/z-ai/glm-5.1"
     },
     "prometheus": {
-      "model": "openrouter/anthropic/claude-opus-4.7",
+      "model": "openrouter/anthropic/claude-opus-4.6",
       "reasoningEffort": "high",
       "textVerbosity": "low"
     },
@@ -28,17 +28,17 @@
       "textVerbosity": "low"
     },
     "explore": {
-      "model": "openrouter/google/gemini-3-flash-preview"
+      "model": "openrouter/google/gemini-3.1-flash-lite-preview"
     },
     "frontend-ui-ux-engineer": {
-      "model": "openrouter/google/gemini-3-pro-preview",
+      "model": "openrouter/google/gemini-3.1-pro-preview",
       "textVerbosity": "low"
     },
     "document-writer": {
       "model": "openrouter/anthropic/claude-opus-4.6"
     },
     "multimodal-looker": {
-      "model": "openrouter/google/gemini-3-flash-preview"
+      "model": "openrouter/google/gemini-3.1-flash-lite-preview"
     },
     "atlas": {
       "model": "openai/gpt-5.4",
@@ -53,10 +53,10 @@
   },
   "categories": {
     "visual-engineering": {
-      "model": "openrouter/google/gemini-3-pro-preview"
+      "model": "openrouter/google/gemini-3.1-pro-preview"
     },
     "artistry": {
-      "model": "openrouter/google/gemini-3-pro-high"
+      "model": "openrouter/google/gemini-3.1-pro-preview"
     }
   },
   "lsp": {
