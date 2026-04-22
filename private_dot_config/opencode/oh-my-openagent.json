@@ -3,14 +3,14 @@
   "google_auth": false,
   "agents": {
     "sisyphus": {
-      "model": "openrouter/z-ai/glm-5.1",
+      "model": "openrouter/moonshotai/kimi-k2.6",
       "textVerbosity": "low",
       "provider": {
         "sort": "latency"
       }
     },
     "librarian": {
-      "model": "openrouter/z-ai/glm-5.1"
+      "model": "openrouter/minimax/minimax-m2.7"
     },
     "prometheus": {
       "model": "openrouter/anthropic/claude-opus-4.6",
@@ -35,7 +35,7 @@
       "textVerbosity": "low"
     },
     "document-writer": {
-      "model": "openrouter/anthropic/claude-opus-4.6"
+      "model": "openrouter/z-ai/glm-5.1"
     },
     "multimodal-looker": {
       "model": "openrouter/google/gemini-3.1-flash-lite-preview"
