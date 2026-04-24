@@ -18,12 +18,12 @@
       "textVerbosity": "low"
     },
     "hephaestus": {
-      "model": "openai/gpt-5.4",
+      "model": "openai/gpt-5.5",
       "reasoningEffort": "medium",
       "textVerbosity": "low"
     },
     "metis": {
-      "model": "openai/gpt-5.4",
+      "model": "openai/gpt-5.5",
       "reasoningEffort": "xhigh",
       "textVerbosity": "low"
     },
@@ -41,12 +41,12 @@
       "model": "openrouter/google/gemini-3.1-flash-lite-preview"
     },
     "atlas": {
-      "model": "openai/gpt-5.4",
+      "model": "openai/gpt-5.5",
       "textVerbosity": "low",
       "reasoningEffort": "medium"
     },
     "sisyphus-junior": {
-      "model": "openai/gpt-5.4",
+      "model": "openai/gpt-5.5",
       "reasoningEffort": "low",
       "textVerbosity": "low"
     }
