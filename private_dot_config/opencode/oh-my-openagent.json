@@ -13,7 +13,7 @@
       "model": "openrouter/minimax/minimax-m2.7"
     },
     "prometheus": {
-      "model": "openrouter/anthropic/claude-opus-4.6",
+      "model": "openrouter/z-ai/glm-5.1",
       "reasoningEffort": "high",
       "textVerbosity": "low"
     },
