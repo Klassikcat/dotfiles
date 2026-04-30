@@ -30,6 +30,16 @@
       "reasoningEffort": "medium",
       "textVerbosity": "low"
     },
+    "monus": {
+      "model": "openai/gpt-5.5",
+      "reasoningEffort": "high",
+      "textVerbosity": "low"
+    },
+    "oracle": {
+      "model": "openai/gpt-5.5-pro",
+      "reasoningEffort": "medium",
+      "textVerbosity": "low"
+    },
     "explore": {
       "model": "openrouter/deepseek/deepseek-v4-flash"
     },
