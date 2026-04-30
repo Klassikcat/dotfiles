@@ -41,7 +41,8 @@
       "textVerbosity": "low"
     },
     "explore": {
-      "model": "openrouter/deepseek/deepseek-v4-flash"
+      "model": "openrouter/deepseek/deepseek-v4-flash",
+      "fallback_models": ["openrouter/minimax/minimax-m2.7"]
     },
     "frontend-ui-ux-engineer": {
       "model": "openrouter/moonshotai/kimi-k2.6",
