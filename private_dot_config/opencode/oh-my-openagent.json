@@ -4,16 +4,19 @@
   "agents": {
     "sisyphus": {
       "model": "openrouter/moonshotai/kimi-k2.6",
+      "fallback_models": ["openrouter/z-ai/glm-5.1"],
       "textVerbosity": "low",
       "provider": {
         "sort": "latency"
       }
     },
     "librarian": {
-      "model": "openrouter/minimax/minimax-m2.7"
+      "model": "openrouter/deepseek/deepseek-v4-flash",
+      "fallback_models": ["openrouter/minimax/minimax-m2.7"]
     },
     "prometheus": {
       "model": "openrouter/z-ai/glm-5.1",
+      "fallback_models": ["anthropic/claude-opus-4-6"],
       "reasoningEffort": "high",
       "textVerbosity": "low"
     },
@@ -23,30 +26,34 @@
       "textVerbosity": "low"
     },
     "metis": {
-      "model": "openai/gpt-5.5",
-      "reasoningEffort": "xhigh",
+      "model": "openai/gpt-5.5-pro",
+      "reasoningEffort": "high",
       "textVerbosity": "low"
     },
     "explore": {
-      "model": "openrouter/google/gemini-3.1-flash-lite-preview"
+      "model": "openrouter/deepseek/deepseek-v4-flash"
     },
     "frontend-ui-ux-engineer": {
-      "model": "openrouter/google/gemini-3.1-pro-preview",
+      "model": "openrouter/moonshotai/kimi-k2.6",
+      "fallback_models": ["openrouter/google/gemini-3.1-pro-preview"],
       "textVerbosity": "low"
     },
     "document-writer": {
-      "model": "openrouter/z-ai/glm-5.1"
+      "model": "openrouter/z-ai/glm-5.1",
+      "fallback_models": ["openrouter/deepseek/deepseek-v4-flash"]
     },
     "multimodal-looker": {
       "model": "openrouter/google/gemini-3.1-flash-lite-preview"
     },
     "atlas": {
       "model": "openai/gpt-5.5",
+      "fallback_models": ["openrouter/moonshotai/kimi-k2.6"],
       "textVerbosity": "low",
       "reasoningEffort": "medium"
     },
     "sisyphus-junior": {
       "model": "openai/gpt-5.5",
+      "fallback_models": ["openrouter/openai/gpt-oss-120b"],
       "reasoningEffort": "low",
       "textVerbosity": "low"
     }
