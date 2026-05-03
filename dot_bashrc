@@ -284,6 +284,22 @@ export SYSTEMD_EDITOR=vim
 export OPENCODE_DISABLE_CLAUDE_CODE=1
 export PATH="$HOME/.opencode/bin:$PATH"
 
+# opencode-server alias
+opencode-server() {
+  case "${1:-local}" in
+    local)
+      opencode attach http://localhost:42800
+      ;;
+    remote)
+      opencode attach http://opencode-workstation.tailf20933.ts.net:42800
+      ;;
+    *)
+      echo "Usage: opencode-server {local|remote}"
+      return 1
+      ;;
+  esac
+}
+
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"

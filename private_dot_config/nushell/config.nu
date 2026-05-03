@@ -186,6 +186,17 @@ alias toggle-bar = pkill -SIGUSR1 waybar
 def toggle-theme [] { ^($env.HOME | path join ".local" "bin" "toggle-theme") }
 alias fastfetch = /home/linuxbrew/.linuxbrew/bin/fastfetch
 
+# opencode-server alias
+def --env opencode-server [
+    target: string = "local"
+] {
+    match $target {
+        "local" => { opencode attach http://localhost:42800 }
+        "remote" => { opencode attach http://opencode-workstation.tailf20933.ts.net:42800 }
+        _ => { print $"Usage: opencode-server {local|remote}" }
+    }
+}
+
 def --env nvm [...args] {
   let nvm_dir = ($env.NVM_DIR? | default ($env.HOME | path join ".nvm"))
   let nvm_cmd = ($args | str join " ")
