@@ -294,7 +294,7 @@ opencode-server() {
       opencode attach http://localhost:42800
       ;;
     remote)
-      opencode attach http://opencode-workstation.tailf20933.ts.net:42800
+      opencode attach {{ .opencode_remote_url }}
       ;;
     *)
       echo "Usage: opencode-server {local|remote}"

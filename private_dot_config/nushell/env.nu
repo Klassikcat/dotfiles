@@ -31,6 +31,7 @@ $env.PATH = ($env.PATH | split row (char esep)
   | append $"($env.HOME)/go/bin"
   | append $"($env.HOME)/.local/share/JetBrains/Toolbox/scripts"
   | append $"($env.HOME)/.nvm/versions/node/v24.12.0/bin"
+  | append $"($env.HOME)/.lmstudio/bin"
 )
 
 # nvm default Node.js on startup (so new Nushell sessions use the default)

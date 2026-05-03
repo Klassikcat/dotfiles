@@ -1,5 +1,6 @@
 # Local environment configuration
 .env
+.chezmoidata.json
 
 # OS files
 .DS_Store

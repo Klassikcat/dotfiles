@@ -192,7 +192,7 @@ def --env opencode-server [
 ] {
     match $target {
         "local" => { opencode attach http://localhost:42800 }
-        "remote" => { opencode attach http://opencode-workstation.tailf20933.ts.net:42800 }
+        "remote" => { opencode attach {{ .opencode_remote_url }} }
         _ => { print $"Usage: opencode-server {local|remote}" }
     }
 }
