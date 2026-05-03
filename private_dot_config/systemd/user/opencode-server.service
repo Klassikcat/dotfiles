@@ -1,0 +1,22 @@
+[Unit]
+Description=OpenCode Headless Server
+Documentation=https://opencode.ai
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=%h/.opencode/bin/opencode serve --hostname 127.0.0.1 --port 42800
+Restart=on-failure
+RestartSec=10
+
+# Environment
+Environment=PATH=%h/.opencode/bin:%h/.cargo/bin:%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=HOME=%h
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target
