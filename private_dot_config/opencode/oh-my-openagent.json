@@ -3,8 +3,11 @@
   "google_auth": false,
   "agents": {
     "sisyphus": {
-      "model": "openrouter/moonshotai/kimi-k2.6",
-      "fallback_models": ["openrouter/z-ai/glm-5.1"],
+      "model": "openrouter/deepseek/deepseek-v4-pro",
+      "fallback_models": [
+        "openrouter/moonshotai/kimi-k2.6",
+        "openrouter/z-ai/glm-5.1"
+      ],
       "textVerbosity": "low",
       "provider": {
         "sort": "latency"
