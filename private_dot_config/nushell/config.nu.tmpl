@@ -187,13 +187,24 @@ def toggle-theme [] { ^($env.HOME | path join ".local" "bin" "toggle-theme") }
 alias fastfetch = /home/linuxbrew/.linuxbrew/bin/fastfetch
 
 # opencode-server alias
-def --env opencode-server [
-    target: string = "local"
+def --env --wrapped opencode-server [
+    ...args
 ] {
+    let target = if (($args | length) > 0) and (($args | first) in ["local", "remote"]) {
+        $args | first
+    } else {
+        "local"
+    }
+
+    let attach_args = if (($args | length) > 0) and (($args | first) in ["local", "remote"]) {
+        $args | skip 1
+    } else {
+        $args
+    }
+
     match $target {
-        "local" => { opencode attach http://localhost:42800 }
-        "remote" => { opencode attach {{ .opencode_remote_url }} }
-        _ => { print $"Usage: opencode-server {local|remote}" }
+        "local" => { opencode attach http://localhost:42800 ...$attach_args }
+        "remote" => { opencode attach {{ .opencode_remote_url }} ...$attach_args }
     }
 }
 

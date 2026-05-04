@@ -289,16 +289,19 @@ export PATH="$HOME/.opencode/bin:$PATH"
 
 # opencode-server alias
 opencode-server() {
-  case "${1:-local}" in
+  local target="local"
+
+  if [[ "${1:-}" == "local" || "${1:-}" == "remote" ]]; then
+    target="$1"
+    shift
+  fi
+
+  case "$target" in
     local)
-      opencode attach http://localhost:42800
+      opencode attach http://localhost:42800 "$@"
       ;;
     remote)
-      opencode attach {{ .opencode_remote_url }}
-      ;;
-    *)
-      echo "Usage: opencode-server {local|remote}"
-      return 1
+      opencode attach {{ .opencode_remote_url }} "$@"
       ;;
   esac
 }
