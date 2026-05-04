@@ -18,8 +18,11 @@
       "fallback_models": ["openrouter/minimax/minimax-m2.7"]
     },
     "prometheus": {
-      "model": "openrouter/z-ai/glm-5.1",
-      "fallback_models": ["anthropic/claude-opus-4-6"],
+      "model": "openrouter/deepseek/deepseek-v4-pro",
+      "fallback_models": [
+        "openrouter/z-ai/glm-5.1",
+        "anthropic/claude-opus-4-6"
+      ],
       "reasoningEffort": "high",
       "textVerbosity": "low"
     },
