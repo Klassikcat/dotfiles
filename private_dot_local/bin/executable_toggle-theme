@@ -121,7 +121,7 @@ update_btop_theme "$next_mode"
 
 # intial kill process (skip if only changing wallpaper)
 if [ "$skip_theme_change" != "true" ]; then
-    for pid in waybar rofi swaync ags swaybg; do
+    for pid in rofi swaync ags swaybg; do
         killall -SIGUSR1 "$pid"
     done
 fi
@@ -333,7 +333,7 @@ if [ "$skip_theme_change" != "true" ]; then
     
     sleep 2
     # kill process
-    for pid1 in waybar rofi swaync ags swaybg; do
+    for pid1 in rofi swaync ags swaybg; do
         killall "$pid1"
     done
     

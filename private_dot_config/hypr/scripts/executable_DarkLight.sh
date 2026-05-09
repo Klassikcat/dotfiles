@@ -21,7 +21,7 @@ pallete_dark="dark16"
 pallete_light="light16"
 
 # intial kill process
-for pid in waybar rofi swaync ags swaybg; do
+for pid in rofi swaync ags swaybg; do
     killall -SIGUSR1 "$pid"
 done
 
@@ -294,7 +294,7 @@ fi
 
 sleep 2
 # kill process
-for pid1 in waybar rofi swaync ags swaybg; do
+for pid1 in rofi swaync ags swaybg; do
     killall "$pid1"
 done
 
