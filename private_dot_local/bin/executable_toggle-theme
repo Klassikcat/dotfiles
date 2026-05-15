@@ -156,7 +156,7 @@ set_theme_properties() {
         rofi_bg="rgba(0,0,0,0.7)"
         gtk_search_keywords="*Dark*"
         gsettings_color_scheme='prefer-dark'
-        live_wallpaper_file="$HOME/Videos/LiveWallpaper/seia-vaporwave-summer-blue-archive-moewalls-com.mp4"
+        live_wallpaper_file="$HOME/Videos/LiveWallpaper/yuuka-eating-blue-archive-moewalls-com.mp4"
         static_wallpaper_file="$HOME/Pictures/wallpapers/Dynamic-Wallpapers/Dark/yuuka_call.jpg"
     elif [ "$theme_mode" = "Midnight" ]; then
         # Midnight Mode Properties (Dark theme with noa_pajama wallpaper)
