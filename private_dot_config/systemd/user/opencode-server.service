@@ -13,7 +13,6 @@ RestartSec=10
 # Environment
 Environment=PATH=%h/.nvm/versions/node/v24.12.0/bin:%h/.opencode/bin:%h/.cargo/bin:%h/.local/bin:/usr/local/bin:/usr/bin:/bin
 Environment=HOME=%h
-Environment=OPENCODE_DISABLE_CLAUDE_CODE=1
 
 # Logging
 StandardOutput=journal

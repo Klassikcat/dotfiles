@@ -24,28 +24,28 @@
 
 "modules-left": [
 	"cpu",
-	"power-profiles-daemon", 
-	"temperature", 
+	"power-profiles-daemon",
+	"temperature",
 	"memory",
-	"disk", 
+	"disk",
 	],
-  
+
 "modules-center": [
 	"idle_inhibitor",
-	"clock",  
+	"clock",
 	"custom/light_dark",
-	], 
+	],
 
 "modules-right": [
-	"custom/weather",	  
-	"battery", 
+	"custom/weather",
+	"battery",
 	"backlight",
 	"bluetooth",
 	"network",
 	"custom/updater",
 	"custom/cycle_wall",
 	"custom/nightlight",
-	"custom/lock", 
+	"custom/lock",
 	],
 },
 
@@ -72,22 +72,22 @@
 //"margin-bottom": 0,
 
 "modules-left": [
-	"custom/menu",  
+	"custom/menu",
 	// "wlr/taskbar",
 	"hyprland/window",
 	"mpris",
 	 ],
 
 "modules-center": [
-	"hyprland/workspaces#rw", 
+	"hyprland/workspaces#rw",
 	],
 
 "modules-right": [
 	"tray",
 	"group/notify",
 	"pulseaudio",
-	//"wireplumber", 
-	"pulseaudio#microphone",	  
+	//"wireplumber",
+	"pulseaudio#microphone",
 	"custom/power",
-	],  
+	],
 }],

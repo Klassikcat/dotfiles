@@ -39,7 +39,7 @@
 	"temperature#forest",
 	"disk#forest",
 	"backlight",
-  	"battery#forest",
+	"battery#forest",
 	"group/audio",
 	"custom/nightlight",
 	],
@@ -140,4 +140,3 @@
 	"on-click-right": "kitty --title nvtop sh -c 'nvtop'"
 },
 }
-

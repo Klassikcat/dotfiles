@@ -184,7 +184,7 @@ alias catl="bat"  # with paging (for long files)
 smart_bat() {
     # Try to detect terminal background
     # This is a simple heuristic - you might need to adjust based on your terminal
-    
+
     # Check if COLORFGBG is set (some terminals set this)
     if [[ -n "$COLORFGBG" ]]; then
         # COLORFGBG format: foreground;background
@@ -218,7 +218,7 @@ alias catsolark="bat --theme='Solarized (dark)' --paging=never" # Solarized dark
 catppuccin_bat() {
     # Get GNOME color scheme
     local color_scheme=$(gsettings get org.gnome.desktop.interface color-scheme 2>/dev/null)
-    
+
     # Select theme based on system preference
     if [[ "$color_scheme" == "'prefer-light'" || "$color_scheme" == "'default'" ]]; then
         bat --theme="Catppuccin Latte" "$@"
@@ -230,7 +230,7 @@ catppuccin_bat() {
 # Enhanced aliases using Catppuccin themes
 alias cat="catppuccin_bat --paging=never"
 alias catn="catppuccin_bat --style=numbers --paging=never"
-alias catg="catppuccin_bat --style=changes --paging=never"  
+alias catg="catppuccin_bat --style=changes --paging=never"
 alias catl="catppuccin_bat"
 
 # Manual theme override aliases
@@ -244,9 +244,9 @@ cattime() {
     local hour=$(date +%H)
     local minute=$(date +%M)
     local minutes=$((10#$hour * 60 + 10#$minute))
-    
+
     echo "Current time: ${hour}:${minute} (${minutes} minutes since midnight)"
-    
+
     if [[ $minutes -ge 360 && $minutes -lt 1200 ]]; then
         echo "Using: Catppuccin Latte (Light theme)"
         echo "Active period: 06:00 - 20:00"
@@ -254,7 +254,7 @@ cattime() {
         echo "Using: Catppuccin Mocha (Dark theme)"
         echo "Active period: 20:00 - 06:00"
     fi
-    
+
     if [[ $# -gt 0 ]]; then
         catppuccin_bat "$@"
     fi
