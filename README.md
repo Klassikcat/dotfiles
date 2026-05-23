@@ -31,6 +31,17 @@ These dotfiles use `chezmoi` for management, `Hyprland` for window management, a
 - **Optional**: `mpvpaper` (live wallpapers), `playerctl` (Waybar music module), `swaync` or `ags` (notification styling).
 - **Editor**: Neovim (for the AstroNvim setup under `private_dot_config/nvim/`).
 
+## System dependencies
+A best-effort installer is included for the packages these dotfiles assume (Hyprland/Waybar/Rofi/Kitty, Korean `fcitx5`, screenshot/audio/clipboard tools, dev CLI tools, and Fedora migration support):
+
+```bash
+scripts/install-system-deps.sh --dry-run      # review
+scripts/install-system-deps.sh                # install required/base deps
+scripts/install-system-deps.sh --optional     # also try AGS/Quickshell/mpvpaper/wallust extras
+```
+
+Ubuntu users can keep using the JaKooLit Ubuntu-Hyprland 24.04 installer as the base; this script fills/checks dotfile-specific assumptions. Fedora is supported via `dnf` with RPM Fusion/COPR best-effort setup.
+
 ## Install/Apply (chezmoi)
 1. Initialize chezmoi (if not already done):
    ```bash
