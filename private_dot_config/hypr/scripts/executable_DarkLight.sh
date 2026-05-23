@@ -27,7 +27,7 @@ done
 
 
 # Set swww options (will only start daemon if needed for static wallpapers)
-swww="swww img"
+swww="swww img --resize crop"
 effect="--transition-bezier .43,1.19,1,.4 --transition-fps 60 --transition-type grow --transition-pos 0.925,0.977 --transition-duration 2"
 
 # Check if a theme was specified as argument
