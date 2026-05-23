@@ -1,0 +1,13 @@
+[Unit]
+Description=HyprDynamicMonitors - Dynamic monitor configuration for Hyprland
+Documentation=https://fiffeek.github.io/hyprdynamicmonitors/
+After=hyprdynamicmonitors-prepare.service
+
+[Service]
+Type=exec
+ExecStart=%h/.local/bin/hyprdynamicmonitors run --disable-power-events
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

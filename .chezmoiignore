@@ -14,3 +14,95 @@ Makefile
 .env
 .env.example
 README.md
+
+# Large binaries outside chezmoi scope (target paths)
+/.local/bin/uv
+/.local/bin/uvx
+/.local/bin/ruff
+/.local/bin/node
+/.local/bin/npm
+/.local/bin/npx
+/.local/bin/pnpm
+/.local/bin/yarn
+/.local/bin/bun
+/.local/bin/deno
+
+# Symlinked local tools outside chezmoi scope
+/.local/bin/*-wrapped
+/.local/bin/*-backup
+/.local/bin/*.orig
+/.local/bin/*.bak
+
+# pip and pipx shims outside chezmoi scope
+/.local/bin/pip
+/.local/bin/pip3
+/.local/bin/pipx
+/.local/bin/python
+/.local/bin/python3
+/.local/pipx
+/.local/pipx/**
+/.local/share/pipx
+/.local/share/pipx/**
+
+# Backup and temporary files
+*~
+*.bak
+*.backup
+*.orig
+*.tmp
+*.swp
+*.swo
+.DS_Store
+
+# Opencode local artifacts and secrets
+/.config/opencode/telegram-notifier.env
+/.config/opencode/node_modules
+/.config/opencode/node_modules/**
+/.config/opencode/.cache
+/.config/opencode/.cache/**
+/.config/opencode/cache
+/.config/opencode/cache/**
+/.config/opencode/tmp
+/.config/opencode/tmp/**
+/.config/opencode/*.log
+
+# Node dependency directories
+node_modules
+node_modules/**
+**/node_modules
+**/node_modules/**
+/.config/opencode/node_modules
+/.config/opencode/node_modules/**
+
+# Cache directories and generated cache files
+.cache
+**/.cache
+.cache/**
+**/.cache/**
+*.cache
+
+# Task 2 correction: exact generated tool target paths
+/.local/bin/heliocron
+/.local/bin/hyprdynamicmonitors
+/.local/bin/k3d
+/.local/bin/basedpyright
+/.local/bin/basedpyright-langserver
+/.local/bin/pyright
+/.local/bin/pyright-langserver
+/.local/bin/claude
+/.local/bin/zed
+/.local/bin/black
+/.local/bin/blackd
+/.local/bin/pylsp
+
+# Task 2 correction: exact generated application artifacts
+/.config/opencode/package-lock.json
+/.config/opencode/.gitignore
+/.config/fcitx5/conf/cached_layouts
+/.config/nushell/history.txt
+
+# Python generated cache files
+**/__pycache__
+**/__pycache__/**
+*.pyc
+**/*.pyc

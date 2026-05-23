@@ -18,14 +18,40 @@ wallust_rofi="$HOME/.config/wallust/templates/colors-rofi.rasi"
 kitty_conf="$HOME/.config/kitty/kitty.conf"
 
 btop_config_dir="$HOME/.config/btop"
+k9s_config="$HOME/.config/k9s/config.yaml"
 
 wallust_config="$HOME/.config/wallust/wallust.toml"
 pallete_dark="dark16"
 pallete_light="light16"
 
-play_wallpaper() {
-    local wallpaper_dir="$1"
-    hyprctl dispatch exec "mpvpaper '*' -o 'no-audio --loop-file=inf --keepaspect --panscan=1.0 --hwdec=auto --scale=bilinear --cache=yes --no-resume-playback' '$wallpaper_dir'"
+
+update_k9s_theme() {
+    local skin=$1
+
+    mkdir -p "$(dirname "$k9s_config")"
+
+    if [ ! -f "$k9s_config" ]; then
+        printf 'k9s:\n  ui:\n    skin: %s\n    reactive: true\n' "$skin" > "$k9s_config"
+        return
+    fi
+
+    if grep -q "^    skin:" "$k9s_config"; then
+        sed -i "s|^    skin:.*|    skin: $skin|" "$k9s_config"
+    elif grep -q "^  ui:" "$k9s_config"; then
+        awk -v skin="$skin" '
+            { print }
+            /^  ui:[[:space:]]*$/ && !inserted {
+                print "    skin: " skin
+                inserted=1
+            }
+        ' "$k9s_config" > "$k9s_config.tmp" && mv "$k9s_config.tmp" "$k9s_config"
+    else
+        printf '\n  ui:\n    skin: %s\n    reactive: true\n' "$skin" >> "$k9s_config"
+    fi
+
+    if grep -q "^    reactive:" "$k9s_config"; then
+        sed -i "s|^    reactive:.*|    reactive: true|" "$k9s_config"
+    fi
 }
 
 update_btop_theme() {
@@ -46,6 +72,29 @@ update_btop_theme() {
             else
                 printf '\ncolor_theme = "%s"\n' "$btop_theme" >> "$config_file"
             fi
+        fi
+    fi
+}
+
+update_hyprsunset_temperature() {
+    local theme_mode=$1
+    local target_temp="${HYPRSUNSET_TEMP:-${HYPERSUNSET_TEMP:-4500}}"
+
+    if ! command -v hyprsunset >/dev/null 2>&1; then
+        return
+    fi
+
+    if [ "$theme_mode" = "Midnight" ]; then
+        if pgrep -x hyprsunset >/dev/null 2>&1; then
+            hyprctl hyprsunset temperature "$target_temp" >/dev/null 2>&1
+        else
+            hyprsunset --temperature "$target_temp" >/dev/null 2>&1 &
+        fi
+    else
+        if pgrep -x hyprsunset >/dev/null 2>&1; then
+            hyprctl hyprsunset identity >/dev/null 2>&1
+        else
+            hyprsunset --identity >/dev/null 2>&1 &
         fi
     fi
 }
@@ -118,6 +167,7 @@ elif [ "$next_mode" = "Light" ] && [ "$current_theme" = "Light" ]; then
 fi
 
 update_btop_theme "$next_mode"
+update_hyprsunset_temperature "$next_mode"
 
 # intial kill process (skip if only changing wallpaper)
 if [ "$skip_theme_change" != "true" ]; then
@@ -127,8 +177,13 @@ if [ "$skip_theme_change" != "true" ]; then
 fi
 
 # Set swww options (will only start daemon if needed for static wallpapers)
-swww="swww img"
+swww="swww img --resize crop"
 effect="--transition-bezier .43,1.19,1,.4 --transition-fps 60 --transition-type grow --transition-pos 0.925,0.977 --transition-duration 2"
+first_image_effect="--transition-type none"
+
+swww_has_image() {
+    swww query 2>/dev/null | grep -q 'currently displaying: image:'
+}
 
 # Function to update theme mode for the next cycle
 update_theme_mode() {
@@ -147,47 +202,59 @@ set_theme_properties() {
         # Dark Mode Properties
         palette="$pallete_dark"
         waybar_style_file="$HOME/.config/waybar/style/[Catppuccin] Mocha Clean.css"
-        swaync_bg_color="rgba(0, 0, 0, 0.8)"
+        swaync_bg_color="rgba(18, 18, 20, 0.92)"
+        swaync_bg_alt_color="rgba(30, 31, 35, 0.92)"
+        swaync_bg_hover_color="rgba(48, 50, 56, 0.95)"
+        swaync_text_color="rgb(242, 242, 245)"
+        swaync_border_color="rgba(255, 255, 255, 0.25)"
         ags_bg_color="rgba(0, 0, 0, 0.4)"
         ags_text_color="rgba(255, 255, 255, 0.7)"
         ags_bg_alt_color="#111111"
         kitty_theme="OneDark.conf"
         kvantum_theme="catppuccin-mocha-blue"
+        k9s_skin="catppuccin-mocha"
         rofi_bg="rgba(0,0,0,0.7)"
         gtk_search_keywords="*Dark*"
         gsettings_color_scheme='prefer-dark'
-        live_wallpaper_file="$HOME/Videos/LiveWallpaper/yuuka-eating-blue-archive-moewalls-com.mp4"
-        static_wallpaper_file="$HOME/Pictures/wallpapers/Dynamic-Wallpapers/Dark/yuuka_call.jpg"
+        static_wallpaper_file="$HOME/Pictures/wallpapers/Dynamic-Wallpapers/Dark/just-two-of-us.png"
     elif [ "$theme_mode" = "Midnight" ]; then
         # Midnight Mode Properties (Dark theme with noa_pajama wallpaper)
         palette="$pallete_dark"
         waybar_style_file="$HOME/.config/waybar/style/[Catppuccin] Mocha Clean.css"
-        swaync_bg_color="rgba(0, 0, 0, 0.8)"
+        swaync_bg_color="rgba(18, 18, 20, 0.92)"
+        swaync_bg_alt_color="rgba(30, 31, 35, 0.92)"
+        swaync_bg_hover_color="rgba(48, 50, 56, 0.95)"
+        swaync_text_color="rgb(242, 242, 245)"
+        swaync_border_color="rgba(255, 255, 255, 0.25)"
         ags_bg_color="rgba(0, 0, 0, 0.4)"
         ags_text_color="rgba(255, 255, 255, 0.7)"
         ags_bg_alt_color="#111111"
         kitty_theme="OneDark.conf"
         kvantum_theme="catppuccin-mocha-blue"
+        k9s_skin="catppuccin-mocha"
         rofi_bg="rgba(0,0,0,0.7)"
         gtk_search_keywords="*Dark*"
         gsettings_color_scheme='prefer-dark'
-        live_wallpaper_file="$HOME/Videos/LiveWallpaper/noa_pajama_out.mp4"
-        static_wallpaper_file="$HOME/Pictures/wallpapers/Dynamic-Wallpapers/Dark/yuuka_call.jpg"
+        static_wallpaper_file="$HOME/Pictures/wallpapers/Dynamic-Wallpapers/Dark/just-two-of-us.png"
     else
         # Light and Intermediate Mode Properties
         palette="$pallete_light"
         waybar_style_file="$HOME/.config/waybar/style/[Catppuccin] Latte Clean.css"
-        swaync_bg_color="rgba(255, 255, 255, 0.9)"
+        swaync_bg_color="rgba(254, 255, 255, 0.92)"
+        swaync_bg_alt_color="rgba(245, 246, 248, 0.92)"
+        swaync_bg_hover_color="rgba(238, 240, 243, 0.95)"
+        swaync_text_color="rgb(32, 33, 37)"
+        swaync_border_color="rgba(72, 73, 82, 0.35)"
         ags_bg_color="rgba(255, 255, 255, 0.4)"
         ags_text_color="rgba(0, 0, 0, 0.7)"
         ags_bg_alt_color="#F0F0F0"
         kitty_theme="Github.conf"
         kvantum_theme="catppuccin-latte-blue"
+        k9s_skin="catppuccin-latte"
         rofi_bg="rgba(255,255,255,0.9)"
         gtk_search_keywords="*Light*"
         gsettings_color_scheme='prefer-light'
-        live_wallpaper_file="$HOME/Videos/LiveWallpaper/hayase-yuuka-sportswear-blue-archive-wallpaperwaifu-com-loop.mp4"
-        static_wallpaper_file="$HOME/Pictures/wallpapers/Dynamic-Wallpapers/Light/wallpaper48.png"
+        static_wallpaper_file="$HOME/Pictures/wallpapers/Dynamic-Wallpapers/Light/windows-11-gradient-background-bloom-light-backgrounds-5k-3840x2160-8411.png"
     fi
 }
 
@@ -207,8 +274,12 @@ if [ "$skip_theme_change" != "true" ]; then
     
     notify_user "$next_mode"
     
-    # swaync color change
-    sed -i "/@define-color noti-bg/s/rgba([0-9]*,\\s*[0-9]*,\\s*[0-9]*,\\s*[0-9.]*);/$swaync_bg_color;/" "${swaync_style}"
+    # swaync color change (apply full light/dark palette to avoid contrast mismatches)
+    sed -i "s|^@define-color noti-border-color .*;|@define-color noti-border-color $swaync_border_color;|" "${swaync_style}"
+    sed -i "s|^@define-color noti-bg .*;|@define-color noti-bg $swaync_bg_color;|" "${swaync_style}"
+    sed -i "s|^@define-color noti-bg-alt .*;|@define-color noti-bg-alt $swaync_bg_alt_color;|" "${swaync_style}"
+    sed -i "s|^@define-color noti-bg-hover .*;|@define-color noti-bg-hover $swaync_bg_hover_color;|" "${swaync_style}"
+    sed -i "s|^@define-color text-color .*;|@define-color text-color $swaync_text_color;|" "${swaync_style}"
     
     # ags color change
     if command -v ags >/dev/null 2>&1; then
@@ -228,26 +299,17 @@ else
     notify-send -u low -i "$notif" " Wallpaper updated" " $next_mode mode"
 fi
 
-# Set Dynamic Wallpaper for Dark, Light, or Intermediate Mode
+# Set static wallpaper for Dark, Light, or Intermediate Mode
 set_theme_properties "$next_mode"
-
-if [ -f "$live_wallpaper_file" ]; then
-    # Kill existing mpvpaper instances and swww to avoid conflicts
-    killall mpvpaper swww-daemon 2>/dev/null
-    sleep 0.5
-    # Start mpvpaper via hyprctl to ensure proper Wayland context
-    play_wallpaper "$live_wallpaper_file"
-    # Update lock screen wallpaper to static image
-    mkdir -p "$HOME/.config/hypr/wallpaper_effects"
-    cp -f "$static_wallpaper_file" "$HOME/.config/hypr/wallpaper_effects/.wallpaper_current"
-else
-    # Fallback to static wallpaper if video not found
-    killall mpvpaper 2>/dev/null
-    $swww "${static_wallpaper_file}" $effect
-    # Update lock screen wallpaper
-    mkdir -p "$HOME/.config/hypr/wallpaper_effects"
-    cp -f "$static_wallpaper_file" "$HOME/.config/hypr/wallpaper_effects/.wallpaper_current"
+update_k9s_theme "$k9s_skin"
+killall mpvpaper 2>/dev/null
+wallpaper_effect="$effect"
+if ! swww_has_image; then
+    wallpaper_effect="$first_image_effect"
 fi
+$swww "${static_wallpaper_file}" $wallpaper_effect
+mkdir -p "$HOME/.config/hypr/wallpaper_effects"
+cp -f "$static_wallpaper_file" "$HOME/.config/hypr/wallpaper_effects/.wallpaper_current"
 
 
 # Set Kvantum Manager theme & QT5/QT6 settings
@@ -325,11 +387,8 @@ if [ "$skip_theme_change" != "true" ]; then
     # Call the function to set GTK theme and icon theme based on mode
     set_custom_gtk_theme "$next_mode"
     
-    # Only run WallustSwww.sh if using static wallpaper
-    if [ ! -f "$live_wallpaper_file" ]; then
-        swww query || swww-daemon --format xrgb
-        ${SCRIPTSDIR}/WallustSwww.sh
-    fi
+    swww query || swww-daemon --format xrgb
+    ${SCRIPTSDIR}/WallustSwww.sh
     
     sleep 2
     # kill process

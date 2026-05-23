@@ -35,10 +35,18 @@ $env.PATH = ($env.PATH | split row (char esep)
 )
 
 # nvm default Node.js on startup (so new Nushell sessions use the default)
-let nvm_default_node = (bash -lc 'export NVM_DIR="$HOME/.nvm"; if [ -s "$NVM_DIR/nvm.sh" ]; then . "$NVM_DIR/nvm.sh"; nvm which default; fi' | str trim)
+let nvm_dir = ($env.HOME | path join ".nvm")
+let nvm_script = if ("/home/linuxbrew/.linuxbrew/opt/nvm/nvm.sh" | path exists) {
+  "/home/linuxbrew/.linuxbrew/opt/nvm/nvm.sh"
+} else if ("/opt/homebrew/opt/nvm/nvm.sh" | path exists) {
+  "/opt/homebrew/opt/nvm/nvm.sh"
+} else {
+  ($nvm_dir | path join "nvm.sh")
+}
+let nvm_default_node = (bash -lc $'export NVM_DIR="($nvm_dir)"; mkdir -p "$NVM_DIR"; if [ -s "($nvm_script)" ]; then . "($nvm_script)"; nvm which default 2>/dev/null || true; fi' | str trim)
 if $nvm_default_node != "" and ($nvm_default_node | path exists) {
   let nvm_default_bin = ($nvm_default_node | path dirname)
-  $env.NVM_DIR = ($env.HOME | path join ".nvm")
+  $env.NVM_DIR = $nvm_dir
   $env.NVM_BIN = $nvm_default_bin
   $env.PATH = ($env.PATH | split row (char esep) | where {|p| ($p | str contains "/.nvm/versions/node/") == false } | prepend $nvm_default_bin | str join (char esep))
 }

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+NCLOUD_HOME="${HOME}/.local/share/ncloud-cli/CLI_1.1.29_20260423/cli_linux"
+exec "${NCLOUD_HOME}/jre8/bin/java" -jar "${NCLOUD_HOME}/lib/ncloud-api-cli-1.1.29-SNAPSHOT-jar-with-dependencies.jar" "$@"

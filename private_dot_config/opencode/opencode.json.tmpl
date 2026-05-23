@@ -3,7 +3,9 @@
   "plugin": [
     "opencode-openai-codex-auth",
     "oh-my-openagent",
-    "opencode-wakatime"
+    "opencode-wakatime",
+    "{{ .chezmoi.homeDir }}/.config/opencode/node_modules/opencode-telegram-notifier/dist/index.js",
+    "{{ .chezmoi.homeDir }}/.config/opencode/plugins/trufflehog-guard.js"
   ],
   "mcp": {
     "playwright": {
@@ -21,7 +23,8 @@
     "terraform": {
       "type": "local",
       "command": [
-        "{{ .chezmoi.homeDir }}/mcp-servers/terraform-mcp-server/terraform-mcp-server"
+        "{{ .chezmoi.homeDir }}/mcp-servers/terraform-mcp-server/terraform-mcp-server",
+        "stdio"
       ],
       "enabled": true
     },
@@ -30,6 +33,11 @@
       "command": [
         "{{ .chezmoi.homeDir }}/mcp-servers/venv/bin/awslabs.aws-serverless-mcp-server"
       ],
+      "enabled": true
+    },
+    "serverless": {
+      "type": "local",
+      "command": ["npx", "-y", "serverless", "mcp"],
       "enabled": true
     },
     "code-review-graph": {

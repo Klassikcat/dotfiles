@@ -185,11 +185,25 @@ alias catmacchiato = batcat --theme='Catppuccin Macchiato' --paging=never
 alias toggle-bar = pkill -SIGUSR1 waybar
 def toggle-theme [] { ^($env.HOME | path join ".local" "bin" "toggle-theme") }
 alias fastfetch = /home/linuxbrew/.linuxbrew/bin/fastfetch
+alias claude-auto = claude --dangerously-skip-permissions
 
-# opencode-server alias
+# opencode-server helper
 def --env --wrapped opencode-server [
     ...args
 ] {
+    if (($args | length) > 0) and (($args | first) == "stop") {
+        let systemctl_args = ($args | skip 1)
+        systemctl --user --no-block stop opencode-server.service ...$systemctl_args
+        return
+    }
+
+    if (($args | length) > 0) and (($args | first) in ["start", "restart", "status"]) {
+        let action = ($args | first)
+        let systemctl_args = ($args | skip 1)
+        systemctl --user $action opencode-server.service ...$systemctl_args
+        return
+    }
+
     let target = if (($args | length) > 0) and (($args | first) in ["local", "remote"]) {
         $args | first
     } else {
@@ -210,6 +224,13 @@ def --env --wrapped opencode-server [
 
 def --env nvm [...args] {
   let nvm_dir = ($env.NVM_DIR? | default ($env.HOME | path join ".nvm"))
+  let nvm_script = if ("/home/linuxbrew/.linuxbrew/opt/nvm/nvm.sh" | path exists) {
+    "/home/linuxbrew/.linuxbrew/opt/nvm/nvm.sh"
+  } else if ("/opt/homebrew/opt/nvm/nvm.sh" | path exists) {
+    "/opt/homebrew/opt/nvm/nvm.sh"
+  } else {
+    ($nvm_dir | path join "nvm.sh")
+  }
   let nvm_cmd = ($args | str join " ")
   let is_use_default = (
     ($args | length) >= 3
@@ -217,7 +238,7 @@ def --env nvm [...args] {
     and ($args | get 2) == "default"
   )
   let use_version = (if $is_use_default { $args | get 1 } else { "" })
-  let node_path = (bash -lc $'export NVM_DIR="($nvm_dir)"; if [ -s "$NVM_DIR/nvm.sh" ]; then . "$NVM_DIR/nvm.sh"; nvm ($nvm_cmd) >/dev/null; if [ "($is_use_default)" = "true" ]; then nvm alias default "($use_version)" >/dev/null; fi; nvm which current; fi' | str trim)
+  let node_path = (bash -lc $'export NVM_DIR="($nvm_dir)"; mkdir -p "$NVM_DIR"; if [ -s "($nvm_script)" ]; then . "($nvm_script)"; nvm ($nvm_cmd) >/dev/null; if [ "($is_use_default)" = "true" ]; then nvm alias default "($use_version)" >/dev/null; fi; nvm which current; fi' | str trim)
   if $node_path != "" and ($node_path | path exists) {
     let node_bin = ($node_path | path dirname)
     $env.NVM_DIR = $nvm_dir

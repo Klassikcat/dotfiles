@@ -14,6 +14,10 @@
       "env": {
         "GITHUB_TOKEN": "{{ env "GITHUB_TOKEN" }}"
       }
+    },
+    "terraform": {
+      "command": "{{ .chezmoi.homeDir }}/mcp-servers/terraform-mcp-server/terraform-mcp-server",
+      "args": ["stdio"]
     }
   }
 }
