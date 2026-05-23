@@ -5,7 +5,7 @@
 
 EVENT="$1"
 THEME="$2"
-HELIOCRON="$HOME/.cargo/bin/heliocron"
+HELIOCRON="$HOME/.local/bin/heliocron"
 LAT="37.56"
 LON="126.97"
 

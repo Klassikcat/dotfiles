@@ -57,3 +57,4 @@ if [ "$SMALLEST" = "$REQUIRED_VER" ]; then
 else
   echo "Version $VERSION < $REQUIRED_VER. No update needed."
 fi
+

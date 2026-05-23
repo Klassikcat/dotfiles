@@ -106,3 +106,15 @@ node_modules/**
 **/__pycache__/**
 *.pyc
 **/*.pyc
+
+# Handoff continuation: self-regenerating targets (do NOT track in source)
+# Claude plugin marketplace metadata (lastUpdated timestamps mutate continuously)
+/.claude/plugins/known_marketplaces.json
+# Claude global instructions (managed dynamically by OMC plugin / session bootstrap)
+/.claude/CLAUDE.md
+# Wallpaper rotation script writes binary snapshot of current image
+/.config/hypr/wallpaper_effects/.wallpaper_current
+# hyprdynamicmonitors freeze regenerates monitor block with TUI AUTO markers
+/.config/hypr/monitors.conf
+# lazy.nvim rewrites commits/branches as plugins update
+/.config/nvim/lazy-lock.json

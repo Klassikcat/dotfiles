@@ -104,15 +104,15 @@ if [ "$1" = "auto" ]; then
     # Remove lock and last run files to allow immediate execution
     rm -f /tmp/.hyprland_theme.lock /tmp/.hyprland_theme_last_run
     rm -f "$PREFERED_THEME_FILE"
-
+    
     # Restore correct theme based on current time (using heliocron logic)
     $HOME/.local/bin/hyprland-theme-init.sh
-
+    
     # Start services to ensure automation continues
     systemctl --user start hyprland-theme@sunset-dark
     systemctl --user start hyprland-theme@sunrise-light
     systemctl --user start hyprland-theme.timer
-
+    
     notify-send -u low -i "$notif" "Theme Automation" "Enabled and synchronized."
     exit 0
 # If the second argument is not 'system', this is a manual call, so disable the timer.
@@ -197,7 +197,7 @@ notify_user() {
 
 set_theme_properties() {
     local theme_mode=$1
-
+    
     if [ "$theme_mode" = "Dark" ]; then
         # Dark Mode Properties
         palette="$pallete_dark"
@@ -261,36 +261,36 @@ set_theme_properties() {
 # Skip theme configuration if only updating wallpaper
 if [ "$skip_theme_change" != "true" ]; then
     set_theme_properties "$next_mode"
-
+    
     # Use sed to replace the palette setting in the wallust config file
     sed -i "s/^palette = .*/palette = \"$palette\"/" "$wallust_config"
-
+    
     # Set Waybar style
     if [ -f "$waybar_style_file" ]; then
         ln -sf "$waybar_style_file" "$HOME/.config/waybar/style.css"
     else
         echo "Style file not found: $waybar_style_file"
     fi
-
+    
     notify_user "$next_mode"
-
+    
     # swaync color change (apply full light/dark palette to avoid contrast mismatches)
     sed -i "s|^@define-color noti-border-color .*;|@define-color noti-border-color $swaync_border_color;|" "${swaync_style}"
     sed -i "s|^@define-color noti-bg .*;|@define-color noti-bg $swaync_bg_color;|" "${swaync_style}"
     sed -i "s|^@define-color noti-bg-alt .*;|@define-color noti-bg-alt $swaync_bg_alt_color;|" "${swaync_style}"
     sed -i "s|^@define-color noti-bg-hover .*;|@define-color noti-bg-hover $swaync_bg_hover_color;|" "${swaync_style}"
     sed -i "s|^@define-color text-color .*;|@define-color text-color $swaync_text_color;|" "${swaync_style}"
-
+    
     # ags color change
     if command -v ags >/dev/null 2>&1; then
         sed -i "/@define-color noti-bg/s/rgba([0-9]*,\\s*[0-9]*,\\s*[0-9]*,\\s*[0-9.]*);/$ags_bg_color;/" "${ags_style}"
         sed -i "/@define-color text-color/s/rgba([0-9]*,\\s*[0-9]*,\\s*[0-9]*,\\s*[0-9.]*);/$ags_text_color;/" "${ags_style}"
         sed -i "/@define-color noti-bg-alt/s/#.*;/$ags_bg_alt_color;/" "${ags_style}"
     fi
-
+    
     # kitty theme change
     sed -i "s|^include .*kitty-themes/.*\\.conf|include ./kitty-themes/$kitty_theme|" "${kitty_conf}"
-
+    
     for pid_kitty in $(pidof kitty); do
         kill -SIGUSR1 "$pid_kitty"
     done
@@ -322,10 +322,10 @@ QT_QPA_PLATFORM=offscreen kvantummanager --set "$kvantum_theme"
 # Only continue with full theme changes if not wallpaper-only update
 if [ "$skip_theme_change" != "true" ]; then
     set_theme_properties "$next_mode"
-
+    
     # set the rofi color for background
     sed -i "/^background:/s/.*/background: $rofi_bg;/" $wallust_rofi
-
+    
     # GTK themes and icons switching
     set_custom_gtk_theme() {
         mode=$1
@@ -334,26 +334,26 @@ if [ "$skip_theme_change" != "true" ]; then
         color_setting="org.gnome.desktop.interface color-scheme"
         theme_setting="org.gnome.desktop.interface gtk-theme"
         icon_setting="org.gnome.desktop.interface icon-theme"
-
+        
         set_theme_properties "$mode"
         gsettings set $color_setting "$gsettings_color_scheme"
-
+        
         themes=()
         icons=()
-
+        
         while IFS= read -r -d '' theme_search; do
             themes+=("$(basename "$theme_search")")
         done < <(find "$gtk_themes_directory" -maxdepth 1 -type d -iname "$gtk_search_keywords" -print0)
-
+        
         while IFS= read -r -d '' icon_search; do
             icons+=("$(basename "$icon_search")")
         done < <(find "$icon_directory" -maxdepth 1 -type d -iname "$gtk_search_keywords" -print0)
-
+        
         if [ ${#themes[@]} -gt 0 ]; then
             selected_theme=${themes[RANDOM % ${#themes[@]}]}
             echo "Selected GTK theme for $mode mode: $selected_theme"
             gsettings set $theme_setting "$selected_theme"
-
+            
             # Flatpak GTK apps (themes)
             if command -v flatpak &> /dev/null; then
                 flatpak --user override --filesystem=$HOME/.themes
@@ -363,16 +363,16 @@ if [ "$skip_theme_change" != "true" ]; then
         else
             echo "No $mode GTK theme found"
         fi
-
+        
         if [ ${#icons[@]} -gt 0 ]; then
             selected_icon=${icons[RANDOM % ${#icons[@]}]}
             echo "Selected icon theme for $mode mode: $selected_icon"
             gsettings set $icon_setting "$selected_icon"
-
+            
             ## QT5ct icon_theme
             sed -i "s|^icon_theme=.*$|icon_theme=$selected_icon|" "$HOME/.config/qt5ct/qt5ct.conf"
             sed -i "s|^icon_theme=.*$|icon_theme=$selected_icon|" "$HOME/.config/qt6ct/qt6ct.conf"
-
+            
             # Flatpak GTK apps (icons)
             if command -v flatpak &> /dev/null; then
                 flatpak --user override --filesystem=$HOME/.icons
@@ -383,19 +383,19 @@ if [ "$skip_theme_change" != "true" ]; then
             echo "No $mode icon theme found"
         fi
     }
-
+    
     # Call the function to set GTK theme and icon theme based on mode
     set_custom_gtk_theme "$next_mode"
-
+    
     swww query || swww-daemon --format xrgb
     ${SCRIPTSDIR}/WallustSwww.sh
-
+    
     sleep 2
     # kill process
     for pid1 in rofi swaync ags swaybg; do
         killall "$pid1"
     done
-
+    
     sleep 1
     ${SCRIPTSDIR}/Refresh.sh
 fi

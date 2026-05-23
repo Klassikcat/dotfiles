@@ -41,6 +41,35 @@ icon_on() {
   esac
 }
 
+start_hyprsunset() {
+  if command -v hyprsunset >/dev/null 2>&1; then
+    nohup hyprsunset -t "$TARGET_TEMP" >/dev/null 2>&1 &
+  fi
+  echo on > "$STATE_FILE"
+}
+
+stop_hyprsunset() {
+  if command -v hyprsunset >/dev/null 2>&1; then
+    nohup hyprsunset -i >/dev/null 2>&1 &
+    # if hyprsunset persists, stop it shortly after applying identity
+    sleep 0.3 && pkill -x hyprsunset || true
+  fi
+  echo off > "$STATE_FILE"
+}
+
+cmd_init() {
+  ensure_state
+
+  # Always stop any running hyprsunset first to avoid CTM manager conflicts
+  if pgrep -x hyprsunset >/dev/null 2>&1; then
+    pkill -x hyprsunset || true
+    # give it a moment to release the CTM manager
+    sleep 0.2
+  fi
+
+  start_hyprsunset
+}
+
 cmd_toggle() {
   ensure_state
   state="$(cat "$STATE_FILE" || echo off)"
@@ -52,21 +81,13 @@ cmd_toggle() {
     sleep 0.2
   fi
 
-if [[ "$state" == "on" ]]; then
+  if [[ "$state" == "on" ]]; then
     # Turning OFF: set identity and exit
-    if command -v hyprsunset >/dev/null 2>&1; then
-      nohup hyprsunset -i >/dev/null 2>&1 &
-      # if hyprsunset persists, stop it shortly after applying identity
-      sleep 0.3 && pkill -x hyprsunset || true
-    fi
-    echo off > "$STATE_FILE"
+    stop_hyprsunset
     notify-send -u low "Hyprsunset: Disabled" || true
   else
     # Turning ON: start hyprsunset at target temp in background
-    if command -v hyprsunset >/dev/null 2>&1; then
-      nohup hyprsunset -t "$TARGET_TEMP" >/dev/null 2>&1 &
-    fi
-    echo on > "$STATE_FILE"
+    start_hyprsunset
     notify-send -u low "Hyprsunset: Enabled" "${TARGET_TEMP}K" || true
   fi
 }
@@ -93,7 +114,8 @@ cmd_status() {
 }
 
 case "${1:-}" in
+  init) cmd_init ;;
   toggle) cmd_toggle ;;
   status) cmd_status ;;
-  *) echo "usage: $0 [toggle|status]" >&2; exit 2 ;;
- esac
+  *) echo "usage: $0 [init|toggle|status]" >&2; exit 2 ;;
+esac

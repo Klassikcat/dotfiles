@@ -4,7 +4,7 @@ After=graphical-session.target
 
 [Service]
 Type=simple
-KillMode=process
+KillMode=control-group
 Environment="QT_QPA_PLATFORM=wayland;xcb"
 ExecStart=/bin/bash -c ' \
   source <(systemctl --user show-environment | sed "s/^/export /"); \

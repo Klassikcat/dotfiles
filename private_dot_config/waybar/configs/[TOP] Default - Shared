@@ -20,10 +20,6 @@
 "margin-top": 0,
 "margin-left": 0,
 "margin-right": 0,
-"output": [
-	"LG Electronics LG ULTRAFINE 210NTGY5V831",
-	"LG Electronics LG HDR 4K 307NTGYFT599"
-	],
 
 "modules-left": [
 	"hyprland/workspaces#rw",
@@ -43,6 +39,8 @@
 	"memory",
 	"custom/separator#line",
 	"cpu",
+	"custom/separator#line",
+	"battery",
 	"custom/separator#line",
 	"clock#5",
 	"custom/separator#line",

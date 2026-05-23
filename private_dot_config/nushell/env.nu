@@ -63,8 +63,8 @@ $env.BUN_INSTALL = $"($env.HOME)/.bun"
 mkdir ~/.cache/starship
 starship init nu | save -f ~/.cache/starship/init.nu
 $env.STARSHIP_SHELL = "nu"
-$env.PROMPT_COMMAND = {||
-    "\n" + (if $env.LAST_EXIT_CODE? != null {
+$env.PROMPT_COMMAND = {|| 
+    "\n" + (if $env.LAST_EXIT_CODE? != null { 
         starship prompt --cmd-duration $env.CMD_DURATION_MS $'--status=($env.LAST_EXIT_CODE)' | str trim
     } else {
         starship prompt --cmd-duration $env.CMD_DURATION_MS $'--status=0' | str trim

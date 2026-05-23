@@ -4,7 +4,7 @@
     "margin": "5 5 0 5",
     "modules-left": ["hyprland/workspaces"],
     "modules-center": ["custom/music"],
-    "modules-right": ["network", "bluetooth", "tray", "clock", "custom/light_dark", "custom/lock", "custom/power"],
+    "modules-right": ["pulseaudio", "backlight", "network", "bluetooth", "tray", "clock", "custom/light_dark", "custom/lock", "custom/power"],
     "hyprland/workspaces": {
          "disable-scroll": false,
          "all-outputs": true,
@@ -52,7 +52,7 @@
         "format": " {:%H:%M}"
     },
     "backlight": {
-        "device": "intel_backlight",
+        "device": "amdgpu_bl1",
         "format": "{icon}",
         "format-icons": ["", "", "", "", "", "", "", "", ""]
     },

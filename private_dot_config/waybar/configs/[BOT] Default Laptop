@@ -20,7 +20,7 @@
 	"margin-top": 3,
 	"margin-left": 8,
 	"margin-right": 8,
-
+	
 	"modules-left": [
 		"custom/separator#blank",
 		"custom/cava_mviz",
@@ -29,7 +29,7 @@
 		"custom/separator#blank_2",
 		"hyprland/window",
 		],
-
+	
 	"modules-center": [
 		"group/app_drawer",
 		"custom/separator#blank",
@@ -40,10 +40,10 @@
 		"custom/separator#dot-line",
 		"custom/weather",
 		"custom/separator#dot-line",
-		"idle_inhibitor",
-		"custom/hint",
+		"idle_inhibitor",	
+		"custom/hint",	
 		],
-
+	
 	"modules-right": [
 		"tray",
 		"network#speed",
@@ -51,9 +51,9 @@
 		"group/laptop",
 		"custom/separator#dot-line",
 		"group/mobo_drawer",
-		"custom/separator#line",
+		"custom/separator#line",  
 		"group/audio",
-		"custom/separator#dot-line",
+		"custom/separator#dot-line", 
 		"group/status",
 		],
 	}

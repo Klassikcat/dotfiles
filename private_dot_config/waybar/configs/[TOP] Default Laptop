@@ -37,8 +37,8 @@
 	"hyprland/workspaces#rw",
 	"clock",
 	"custom/weather",
-	"idle_inhibitor",
-	"custom/hint",
+	"idle_inhibitor",	
+	"custom/hint",	
 	],
 
 "modules-right": [

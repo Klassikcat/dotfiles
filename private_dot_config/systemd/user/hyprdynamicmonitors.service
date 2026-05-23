@@ -5,7 +5,7 @@ After=hyprdynamicmonitors-prepare.service
 
 [Service]
 Type=exec
-ExecStart=%h/.local/bin/hyprdynamicmonitors run --disable-power-events
+ExecStart=%h/.local/bin/hyprdynamicmonitors run --disable-power-events --enable-lid-events
 Restart=on-failure
 RestartSec=5
 
