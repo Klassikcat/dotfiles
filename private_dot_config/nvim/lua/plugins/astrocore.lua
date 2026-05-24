@@ -6,6 +6,7 @@
 ---@type LazySpec
 return {
   "AstroNvim/astrocore",
+  version = "^2",
   ---@type AstroCoreOpts
   opts = {
     -- Configure core features of AstroNvim

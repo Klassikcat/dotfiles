@@ -12,7 +12,7 @@ ExecStart=/bin/bash -c ' \
   THEME=$(echo %i | cut -d- -f2-); \
   %h/.local/bin/toggle-theme-wrapper $EVENT $THEME'
 
-Restart=always
+Restart=on-success
 RestartSec=10s
 
 [Install]

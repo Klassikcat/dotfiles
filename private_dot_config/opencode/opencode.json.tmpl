@@ -14,24 +14,20 @@
     },
     "kubernetes": {
       "type": "local",
-      "command": [
-        "{{ .chezmoi.homeDir }}/mcp-servers/kubernetes-mcp-server/k8s-mcp-server"
-      ],
+      "command": ["npx", "-y", "kubernetes-mcp-server@latest"],
       "enabled": true
     },
     "terraform": {
       "type": "local",
       "command": [
-        "{{ .chezmoi.homeDir }}/mcp-servers/terraform-mcp-server/terraform-mcp-server",
+        "{{ .chezmoi.homeDir }}/.local/share/mcp-servers/terraform-mcp-server",
         "stdio"
       ],
       "enabled": true
     },
     "aws-serverless": {
       "type": "local",
-      "command": [
-        "{{ .chezmoi.homeDir }}/mcp-servers/venv/bin/awslabs.aws-serverless-mcp-server"
-      ],
+      "command": ["awslabs.aws-serverless-mcp-server"],
       "enabled": true
     },
     "serverless": {
@@ -41,7 +37,7 @@
     },
     "code-review-graph": {
       "type": "local",
-      "command": ["uvx", "code-review-graph", "serve"],
+      "command": ["code-review-graph", "serve"],
       "enabled": true
     }
   },

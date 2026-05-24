@@ -10,7 +10,7 @@ fi
 # 2. 현재 시각
 NOW_TS=$(date +%s)
 TODAY=$(date +%Y-%m-%d)
-HELIOCRON="$HOME/.local/bin/heliocron"
+HELIOCRON="$HOME/.cargo/bin/heliocron"
 LAT="37.56"
 LON="126.97"
 

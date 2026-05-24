@@ -6,6 +6,7 @@
 ---@type LazySpec
 return {
   "AstroNvim/astrolsp",
+  version = "^3",
   ---@type AstroLSPOpts
   opts = {
     -- Configuration table of features provided by AstroLSP
