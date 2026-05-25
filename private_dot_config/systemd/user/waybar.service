@@ -1,0 +1,22 @@
+[Unit]
+Description=Waybar for Hyprland
+Documentation=https://github.com/Alexays/Waybar/wiki/
+PartOf=hyprland-session.target
+After=hyprland-session.target
+Requisite=hyprland-session.target
+
+[Service]
+Type=simple
+ExecStartPre=-/usr/bin/pkill -x waybar
+ExecStartPre=-/usr/bin/pkill -x cava
+ExecStartPre=-/usr/bin/pkill -x playerctl
+ExecStartPre=-/usr/bin/rm -f %t/waybar-cava.pid %t/waybar-playerctl.pid
+ExecStartPre=-/bin/sh -c 'rm -f "$XDG_RUNTIME_DIR"/waybar-cava.*.conf'
+ExecStart=/usr/bin/waybar -c "%h/.config/waybar/configs/[TOP] Default - Shared"
+ExecReload=/usr/bin/kill -SIGUSR2 $MAINPID
+KillMode=mixed
+Restart=on-failure
+RestartSec=1s
+
+[Install]
+WantedBy=hyprland-session.target
