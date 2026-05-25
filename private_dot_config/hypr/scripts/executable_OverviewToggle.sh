@@ -20,8 +20,15 @@ if command -v qs >/dev/null 2>&1; then
   fi
 fi
 
+is_aylur_ags() {
+  command -v ags >/dev/null 2>&1 || return 1
+  ags --version 2>&1 | head -n1 | grep -qi 'Adventure Game Studio' && return 1
+  [ -d "$HOME/.config/ags" ] || return 1
+  return 0
+}
+
 # 2) Fall back to AGS template
-if command -v ags >/dev/null 2>&1; then
+if is_aylur_ags; then
   pkill rofi || true
   if ags -t 'overview' >/dev/null 2>&1; then
     exit 0

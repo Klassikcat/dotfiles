@@ -14,9 +14,19 @@ file_exists() {
     fi
 }
 
+is_aylur_ags() {
+    command -v ags >/dev/null 2>&1 || return 1
+    ags --version 2>&1 | head -n1 | grep -qi 'Adventure Game Studio' && return 1
+    [ -d "$HOME/.config/ags" ] || return 1
+    return 0
+}
+
 # Kill already running processes
 # Note: swaync is managed by systemd, don't kill it here
-_ps=(rofi ags playerctl)
+_ps=(rofi playerctl)
+if is_aylur_ags; then
+    _ps+=(ags)
+fi
 for _prs in "${_ps[@]}"; do
     if pidof "${_prs}" >/dev/null; then
         pkill "${_prs}"
@@ -24,13 +34,19 @@ for _prs in "${_ps[@]}"; do
 done
 
 # quit ags & relaunch ags
-ags -q && ags &
+if is_aylur_ags; then
+    ags -q && ags &
+fi
 
 # quit quickshell & relaunch quickshell
 #pkill qs && qs &
 
 # some process to kill
-for pid in $(pidof rofi swaync ags swaybg); do
+_signal_processes=(rofi swaync swaybg)
+if is_aylur_ags; then
+    _signal_processes+=(ags)
+fi
+for pid in $(pidof "${_signal_processes[@]}"); do
     kill -SIGUSR1 "$pid"
 done
 

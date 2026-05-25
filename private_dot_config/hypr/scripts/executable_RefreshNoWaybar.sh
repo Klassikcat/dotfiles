@@ -17,8 +17,18 @@ file_exists() {
     fi
 }
 
+is_aylur_ags() {
+    command -v ags >/dev/null 2>&1 || return 1
+    ags --version 2>&1 | head -n1 | grep -qi 'Adventure Game Studio' && return 1
+    [ -d "$HOME/.config/ags" ] || return 1
+    return 0
+}
+
 # Kill already running processes
 _ps=(rofi)
+if is_aylur_ags; then
+    _ps+=(ags)
+fi
 for _prs in "${_ps[@]}"; do
     if pidof "${_prs}" >/dev/null; then
         pkill "${_prs}"
@@ -26,7 +36,9 @@ for _prs in "${_ps[@]}"; do
 done
 
 # quit ags & relaunch ags
-ags -q && ags &
+if is_aylur_ags; then
+    ags -q && ags &
+fi
 
 # quit quickshell & relaunch quickshell
 #pkill qs && qs &

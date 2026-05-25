@@ -16,8 +16,27 @@
       }
     },
     "terraform": {
-      "command": "{{ .chezmoi.homeDir }}/mcp-servers/terraform-mcp-server/terraform-mcp-server",
+      "command": "{{ .chezmoi.homeDir }}/.local/share/mcp-servers/terraform-mcp-server",
       "args": ["stdio"]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp"]
+    },
+    "kubernetes": {
+      "command": "npx",
+      "args": ["-y", "kubernetes-mcp-server@latest"]
+    },
+    "aws-serverless": {
+      "command": "awslabs.aws-serverless-mcp-server"
+    },
+    "serverless": {
+      "command": "npx",
+      "args": ["-y", "serverless", "mcp"]
+    },
+    "code-review-graph": {
+      "command": "code-review-graph",
+      "args": ["serve"]
     }
   }
 }

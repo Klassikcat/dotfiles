@@ -173,15 +173,15 @@ $env.config.color_config = $catppuccin_theme
 $env.config.render_right_prompt_on_last_line = true
 
 alias mj-down = podman-compose down -v --remove-orphans -t 10
-alias bat = batcat
-alias cat = batcat --paging=never
-alias catn = batcat --style=numbers --paging=never
-alias catg = batcat --style=changes --paging=never
-alias catl = batcat
-alias catlatte = batcat --theme='Catppuccin Latte' --paging=never
-alias catmocha = batcat --theme='Catppuccin Mocha' --paging=never
-alias catfrappe = batcat --theme='Catppuccin Frappe' --paging=never
-alias catmacchiato = batcat --theme='Catppuccin Macchiato' --paging=never
+alias bat = bat
+alias cat = bat --paging=never
+alias catn = bat --style=numbers --paging=never
+alias catg = bat --style=changes --paging=never
+alias catl = bat
+alias catlatte = bat --theme='Catppuccin Latte' --paging=never
+alias catmocha = bat --theme='Catppuccin Mocha' --paging=never
+alias catfrappe = bat --theme='Catppuccin Frappe' --paging=never
+alias catmacchiato = bat --theme='Catppuccin Macchiato' --paging=never
 alias toggle-bar = pkill -SIGUSR1 waybar
 def toggle-theme [] { ^($env.HOME | path join ".local" "bin" "toggle-theme") }
 alias fastfetch = /home/linuxbrew/.linuxbrew/bin/fastfetch

@@ -126,159 +126,99 @@ return {
     },
   },
 
-  -- codewindow.nvim for minimap-style code overview
+  -- Minimap alternative without Tree-sitter dependency.
   {
-    "gorbit99/codewindow.nvim",
-    config = function()
-      local codewindow = require('codewindow')
-      codewindow.setup()
-      codewindow.apply_default_keybinds()
+    "echasnovski/mini.map",
+    version = false,
+    keys = {
+      { "<leader>mm", function() require("mini.map").toggle() end, desc = "Toggle minimap" },
+      { "<leader>mo", function() require("mini.map").open() end, desc = "Open minimap" },
+      { "<leader>mc", function() require("mini.map").close() end, desc = "Close minimap" },
+    },
+    opts = function()
+      local map = require "mini.map"
+      return {
+        integrations = {
+          map.gen_integration.builtin_search(),
+          map.gen_integration.diagnostic(),
+        },
+        symbols = {
+          encode = map.gen_encode_symbols.dot("4x2"),
+        },
+        window = {
+          show_integration_count = false,
+          width = 10,
+        },
+      }
     end,
   },
 
   "andweeb/presence.nvim",
 
-  -- render-markdown.nvim for beautiful markdown rendering
+  -- Symbol outline without Tree-sitter: prefer LSP, then markdown/man backends.
   {
-    "MeanderingProgrammer/render-markdown.nvim",
-    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
-    ---@module 'render-markdown'
-    ---@type render.md.UserConfig
-    opts = {
-      -- Whether markdown should be rendered by default when opening markdown files
-      enabled = true,
-      -- Modes that will show a rendered view of markdown
-      render_modes = { 'n', 'c', 't' },
-      -- Filetypes this plugin will run on
-      file_types = { "markdown", "codecompanion" },
-      -- Anti-conceal: show raw markdown on cursor line
-      anti_conceal = {
-        enabled = true,
-      },
-      -- Enable markdown injection for various contexts
-      injections = {
-        -- Built-in gitcommit injection
-        gitcommit = {
-          enabled = true,
-          query = [[
-            ((message) @injection.content
-                (#set! injection.combined)
-                (#set! injection.include-children)
-                (#set! injection.language "markdown"))
-          ]],
-        },
-        -- Custom injection for CodeCompanion or similar tools
-        codecompanion = {
-          enabled = true,
-          query = [[
-            ((content) @injection.content
-                (#set! injection.combined)
-                (#set! injection.include-children)
-                (#set! injection.language "markdown"))
-          ]],
-        },
-      },
-      -- Headings configuration
-      heading = {
-        enabled = true,
-        sign = true,
-        position = "overlay",
-        icons = { "󰲡 ", "󰲣 ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },
-        width = "full",
-        backgrounds = {
-          "RenderMarkdownH1Bg",
-          "RenderMarkdownH2Bg",
-          "RenderMarkdownH3Bg",
-          "RenderMarkdownH4Bg",
-          "RenderMarkdownH5Bg",
-          "RenderMarkdownH6Bg",
-        },
-      },
-      -- Code blocks
-      code = {
-        enabled = true,
-        sign = true,
-        style = "full",
-        language_icon = true,
-        language_name = true,
-        width = "full",
-      },
-      -- Bullet points
-      bullet = {
-        enabled = true,
-        icons = { "●", "○", "◆", "◇" },
-      },
-      -- Checkboxes
-      checkbox = {
-        enabled = true,
-        unchecked = {
-          icon = "󰄱 ",
-        },
-        checked = {
-          icon = "󰱒 ",
-        },
-      },
-      -- Block quotes
-      quote = {
-        enabled = true,
-        icon = "▋",
-      },
-      -- Tables
-      pipe_table = {
-        enabled = true,
-        style = "full",
-        cell = "padded",
-        border = {
-          "┌", "┬", "┐",
-          "├", "┼", "┤",
-          "└", "┴", "┘",
-          "│", "─",
-        },
-      },
-      -- Links
-      link = {
-        enabled = true,
-      },
-      -- Horizontal rules
-      dash = {
-        enabled = true,
-        icon = "─",
-        width = "full",
-      },
-      -- Window options for rendering
-      win_options = {
-        conceallevel = {
-          default = vim.o.conceallevel,
-          rendered = 3,
-        },
-        concealcursor = {
-          default = vim.o.concealcursor,
-          rendered = "",
-        },
-      },
-      -- Override settings for different buffer types
-      overrides = {
-        buftype = {
-          -- CodeCompanion and other special buffers
-          nofile = {
-            enabled = true,
-            render_modes = true,
-          },
-          -- For prompt buffers that might be used by CodeCompanion
-          prompt = {
-            enabled = true,
-            render_modes = true,
-          },
-        },
-        -- Override for different filetypes
-        filetype = {
-          codecompanion = {
-            enabled = true,
-            render_modes = true,
-          },
-        },
-      },
+    "stevearc/aerial.nvim",
+    opts = function(_, opts)
+      opts.backends = { "lsp", "markdown", "man" }
+      return opts
+    end,
+  },
+
+  -- Markdown alternatives that do not depend on Tree-sitter.
+  -- Browser preview replacement for render-markdown.nvim.
+  {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreview", "MarkdownPreviewStop", "MarkdownPreviewToggle" },
+    ft = { "markdown" },
+    build = "cd app && npm install",
+    init = function()
+      vim.g.mkdp_filetypes = { "markdown" }
+    end,
+  },
+  -- In-editor terminal Markdown rendering through the external `glow` CLI.
+  {
+    "ellisonleao/glow.nvim",
+    cmd = "Glow",
+    ft = { "markdown" },
+    keys = {
+      { "<leader>mp", "<cmd>Glow<cr>", desc = "Markdown preview with Glow" },
     },
+    opts = {
+      glow_path = "glow",
+      border = "rounded",
+      style = "dark",
+      pager = false,
+      width = 120,
+      height = 100,
+      width_ratio = 0.9,
+      height_ratio = 0.9,
+    },
+  },
+  -- Classic Vim syntax/conceal for Markdown buffers.
+  {
+    "preservim/vim-markdown",
+    ft = { "markdown" },
+    init = function()
+      vim.g.vim_markdown_folding_disabled = 1
+      vim.g.vim_markdown_conceal = 0
+      vim.g.vim_markdown_conceal_code_blocks = 0
+    end,
+  },
+
+  -- HTML/XML tag closing without nvim-ts-autotag/Tree-sitter.
+  {
+    "alvan/vim-closetag",
+    ft = { "html", "xml", "javascriptreact", "typescriptreact", "vue", "svelte" },
+    init = function()
+      vim.g.closetag_filenames = "*.html,*.xml,*.jsx,*.tsx,*.vue,*.svelte"
+    end,
+  },
+
+  -- Lightweight indent guides with Tree-sitter based scope disabled.
+  {
+    "lukas-reineke/indent-blankline.nvim",
+    main = "ibl",
+    opts = { scope = { enabled = false } },
   },
   {
     "ray-x/lsp_signature.nvim",
@@ -292,6 +232,8 @@ return {
   {
     "folke/snacks.nvim",
     opts = {
+      -- snacks.indent/scope uses Tree-sitter parsing; use indent-blankline instead.
+      indent = { enabled = false },
       dashboard = {
         preset = {
           header = table.concat({

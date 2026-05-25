@@ -24,6 +24,35 @@ wallust_config="$HOME/.config/wallust/wallust.toml"
 pallete_dark="dark16"
 pallete_light="light16"
 
+is_aylur_ags() {
+    command -v ags >/dev/null 2>&1 || return 1
+    ags --version 2>&1 | head -n1 | grep -qi 'Adventure Game Studio' && return 1
+    [ -d "$HOME/.config/ags" ] || return 1
+    return 0
+}
+
+signal_desktop_processes() {
+    local processes=(rofi swaync swaybg)
+    if is_aylur_ags; then
+        processes+=(ags)
+    fi
+
+    for pid in "${processes[@]}"; do
+        killall -SIGUSR1 "$pid"
+    done
+}
+
+kill_desktop_processes() {
+    local processes=(rofi swaync swaybg)
+    if is_aylur_ags; then
+        processes+=(ags)
+    fi
+
+    for pid in "${processes[@]}"; do
+        killall "$pid"
+    done
+}
+
 
 update_k9s_theme() {
     local skin=$1
@@ -171,9 +200,7 @@ update_hyprsunset_temperature "$next_mode"
 
 # intial kill process (skip if only changing wallpaper)
 if [ "$skip_theme_change" != "true" ]; then
-    for pid in rofi swaync ags swaybg; do
-        killall -SIGUSR1 "$pid"
-    done
+    signal_desktop_processes
 fi
 
 # Set swww options (will only start daemon if needed for static wallpapers)
@@ -216,7 +243,7 @@ set_theme_properties() {
         rofi_bg="rgba(0,0,0,0.7)"
         gtk_search_keywords="*Dark*"
         gsettings_color_scheme='prefer-dark'
-        static_wallpaper_file="$HOME/Pictures/wallpapers/Dynamic-Wallpapers/Dark/just-two-of-us.png"
+        static_wallpaper_file="$HOME/Pictures/wallpapers/Dynamic-Wallpapers/Dark/wallpapersden.com_windows-11-in-4k_3840x2400.jpg"
     elif [ "$theme_mode" = "Midnight" ]; then
         # Midnight Mode Properties (Dark theme with noa_pajama wallpaper)
         palette="$pallete_dark"
@@ -235,7 +262,7 @@ set_theme_properties() {
         rofi_bg="rgba(0,0,0,0.7)"
         gtk_search_keywords="*Dark*"
         gsettings_color_scheme='prefer-dark'
-        static_wallpaper_file="$HOME/Pictures/wallpapers/Dynamic-Wallpapers/Dark/just-two-of-us.png"
+        static_wallpaper_file="$HOME/Pictures/wallpapers/Dynamic-Wallpapers/Dark/wallpapersden.com_windows-11-in-4k_3840x2400.jpg"
     else
         # Light and Intermediate Mode Properties
         palette="$pallete_light"
@@ -282,7 +309,7 @@ if [ "$skip_theme_change" != "true" ]; then
     sed -i "s|^@define-color text-color .*;|@define-color text-color $swaync_text_color;|" "${swaync_style}"
     
     # ags color change
-    if command -v ags >/dev/null 2>&1; then
+    if is_aylur_ags && [ -f "$ags_style" ]; then
         sed -i "/@define-color noti-bg/s/rgba([0-9]*,\\s*[0-9]*,\\s*[0-9]*,\\s*[0-9.]*);/$ags_bg_color;/" "${ags_style}"
         sed -i "/@define-color text-color/s/rgba([0-9]*,\\s*[0-9]*,\\s*[0-9]*,\\s*[0-9.]*);/$ags_text_color;/" "${ags_style}"
         sed -i "/@define-color noti-bg-alt/s/#.*;/$ags_bg_alt_color;/" "${ags_style}"
@@ -392,9 +419,7 @@ if [ "$skip_theme_change" != "true" ]; then
     
     sleep 2
     # kill process
-    for pid1 in rofi swaync ags swaybg; do
-        killall "$pid1"
-    done
+    kill_desktop_processes
     
     sleep 1
     ${SCRIPTSDIR}/Refresh.sh

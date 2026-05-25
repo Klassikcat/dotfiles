@@ -20,10 +20,37 @@ wallust_config="$HOME/.config/wallust/wallust.toml"
 pallete_dark="dark16"
 pallete_light="light16"
 
+is_aylur_ags() {
+    command -v ags >/dev/null 2>&1 || return 1
+    ags --version 2>&1 | head -n1 | grep -qi 'Adventure Game Studio' && return 1
+    [ -d "$HOME/.config/ags" ] || return 1
+    return 0
+}
+
+signal_desktop_processes() {
+    local processes=(rofi swaync swaybg)
+    if is_aylur_ags; then
+        processes+=(ags)
+    fi
+
+    for pid in "${processes[@]}"; do
+        killall -SIGUSR1 "$pid"
+    done
+}
+
+kill_desktop_processes() {
+    local processes=(rofi swaync swaybg)
+    if is_aylur_ags; then
+        processes+=(ags)
+    fi
+
+    for pid in "${processes[@]}"; do
+        killall "$pid"
+    done
+}
+
 # intial kill process
-for pid in rofi swaync ags swaybg; do
-    killall -SIGUSR1 "$pid"
-done
+signal_desktop_processes
 
 
 # Set swww options (will only start daemon if needed for static wallpapers)
@@ -107,7 +134,7 @@ else
 fi
 
 # ags color change
-if command -v ags >/dev/null 2>&1; then    
+if is_aylur_ags && [ -f "$ags_style" ]; then    
     if [ "$next_mode" = "Dark" ]; then
         sed -i '/@define-color noti-bg/s/rgba([0-9]*,\s*[0-9]*,\s*[0-9]*,\s*[0-9.]*);/rgba(0, 0, 0, 0.4);/' "${ags_style}"
 	    sed -i '/@define-color text-color/s/rgba([0-9]*,\s*[0-9]*,\s*[0-9]*,\s*[0-9.]*);/rgba(255, 255, 255, 0.7);/' "${ags_style}" 
@@ -296,9 +323,7 @@ fi
 
 sleep 2
 # kill process
-for pid1 in rofi swaync ags swaybg; do
-    killall "$pid1"
-done
+kill_desktop_processes
 
 sleep 1
 ${SCRIPTSDIR}/Refresh.sh 
