@@ -172,7 +172,11 @@ alias l2="eza --all --icons --long --header --git --ignore-glob='$EZA_IGNORE'"
 
 [[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path bash)"
 alias mj-down="podman-compose down -v --remove-orphans -t 10"
-alias bat="batcat"
+if command -v bat >/dev/null 2>&1; then
+    alias bat="bat"
+elif command -v batcat >/dev/null 2>&1; then
+    alias bat="batcat"
+fi
 
 # Syntax highlighting aliases
 alias cat="bat --paging=never"
@@ -329,7 +333,7 @@ opencode-server() {
       opencode attach http://localhost:42800 "$@"
       ;;
     remote)
-      opencode attach {{ .opencode_remote_url }} "$@"
+      opencode attach http://localhost:42800 "$@"
       ;;
   esac
 }
