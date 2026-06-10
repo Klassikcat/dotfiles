@@ -3,6 +3,9 @@
 /.claude.json
 /.gemini/oauth_creds.json
 /.codex/auth.json
+/.pi/agent/auth.json
+/.pi/agent/sessions
+/.pi/agent/sessions/**
 /access.key.txt
 private_dot_claude
 
