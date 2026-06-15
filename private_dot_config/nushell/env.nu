@@ -84,3 +84,15 @@ $env.PROMPT_MULTILINE_INDICATOR = "::: "
 # Images/Docs: Bold Magenta (1;35)
 # Regular files: Default (0)
 $env.LS_COLORS = "di=1;34:ln=1;35:so=1;31:pi=33:ex=1;32:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43:fi=0:*.tar=1;31:*.zip=1;31:*.gz=1;31:*.bz2=1;31:*.xz=1;31:*.rpm=1;31:*.jar=1;31:*.png=1;35:*.jpg=1;35:*.gif=1;35:*.rs=1;35:*.py=1;35:*.js=1;35:*.ts=1;35:*.nu=1;35:*.md=1;35:*.json=1;35:*.yaml=1;35:*.toml=1;35"
+
+# direnv: cd 시 .envrc 자동 로드 (NCP 자격증명 주입 등)
+$env.config = ($env.config? | default {} | upsert hooks {
+    pre_prompt: [{ ||
+        if (which direnv | is-empty) { return }
+        direnv export json | from json | default {} | load-env
+    }]
+})
+
+# Podman rootless socket → k3d / docker 호환 CLI
+$env.DOCKER_HOST = $"unix:///run/user/(id -u | str trim)/podman/podman.sock"
+$env.DOCKER_SOCK = $"/run/user/(id -u | str trim)/podman/podman.sock"  # k3d: 노드 컨테이너에 마운트할 소켓 경로

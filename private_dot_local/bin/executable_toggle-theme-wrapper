@@ -48,11 +48,13 @@ fi
 
 # 3. Heliocron Wait 실행
 # 날짜(--date)를 명시적으로 지정하여 에러 방지 (글로벌 옵션 위치 수정)
-$HELIOCRON --latitude $LAT --longitude $LON --date "$TARGET_DATE" wait --event "$EVENT"
+WAIT_LOG=$(mktemp)
+$HELIOCRON --latitude $LAT --longitude $LON --date "$TARGET_DATE" wait --event "$EVENT" > >(tee "$WAIT_LOG") 2> >(tee -a "$WAIT_LOG" >&2)
 
 # 4. 테마 변경 실행 (Wait가 정상 종료되면 실행됨)
 EXIT_CODE=$?
 if [ $EXIT_CODE -eq 0 ]; then
+    rm -f "$WAIT_LOG"
     # prefered-theme 파일이 없을 때만 실행 (자동 모드)
     if [ ! -f "$HOME/.cache/prefered-theme" ]; then
         echo "Applying theme: $THEME"
@@ -61,6 +63,12 @@ if [ $EXIT_CODE -eq 0 ]; then
         echo "Manual override active (prefered-theme exists). Skipping automation."
     fi
 else
+    if grep -q "Event missed by" "$WAIT_LOG"; then
+        echo "Heliocron event '$EVENT' was missed, likely due to sleep/suspend. Skipping without failure."
+        rm -f "$WAIT_LOG"
+        exit 0
+    fi
+    rm -f "$WAIT_LOG"
     echo "Heliocron wait failed with exit code $EXIT_CODE"
     exit $EXIT_CODE
 fi

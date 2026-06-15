@@ -44,6 +44,8 @@
 	"custom/separator#line",
 	"clock#5",
 	"custom/separator#line",
+	"custom/swaync",
+	"custom/separator#line",
 	"custom/power",
 	],
 }

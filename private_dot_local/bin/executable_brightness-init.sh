@@ -3,7 +3,16 @@
 # 현재 시각
 NOW_TS=$(date +%s)
 TODAY=$(date +%Y-%m-%d)
-HELIOCRON="$HOME/.local/bin/heliocron"
+if HELIOCRON=$(command -v heliocron 2>/dev/null); then
+    :
+elif [ -x "$HOME/.local/bin/heliocron" ]; then
+    HELIOCRON="$HOME/.local/bin/heliocron"
+elif [ -x "$HOME/.cargo/bin/heliocron" ]; then
+    HELIOCRON="$HOME/.cargo/bin/heliocron"
+else
+    echo "Error: heliocron executable not found." >&2
+    exit 127
+fi
 LAT="37.56"
 LON="126.97"
 

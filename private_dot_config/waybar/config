@@ -4,7 +4,7 @@
     "margin": "5 5 0 5",
     "modules-left": ["hyprland/workspaces"],
     "modules-center": ["custom/music"],
-    "modules-right": ["pulseaudio", "backlight", "network", "bluetooth", "tray", "clock", "custom/light_dark", "custom/lock", "custom/power"],
+    "modules-right": ["pulseaudio", "backlight", "network", "bluetooth", "custom/swaync", "tray", "clock", "custom/light_dark", "custom/lock", "custom/power"],
     "hyprland/workspaces": {
          "disable-scroll": false,
          "all-outputs": true,
@@ -75,6 +75,13 @@
             "default": ["", "", " "]
         },
         "on-click": "pavucontrol"
+    },
+    "custom/swaync": {
+        "format": "",
+        "on-click": "sh -c 'command -v swaync-client >/dev/null && swaync-client -t -sw'",
+        "on-click-right": "sh -c 'command -v swaync-client >/dev/null && swaync-client -d -sw'",
+        "tooltip": true,
+        "tooltip-format": "Left Click: Notification Center\nRight Click: Do Not Disturb"
     },
     "custom/light_dark": {
         "format": "󰔎",

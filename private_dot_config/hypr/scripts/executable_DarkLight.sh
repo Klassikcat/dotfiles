@@ -128,7 +128,9 @@ if [ "$next_mode" = "Dark" ]; then
     sed -Ei '/@define-color text-color/s/rgba?\([[:space:]]*[0-9]+,[[:space:]]*[0-9]+,[[:space:]]*[0-9]+(,[[:space:]]*[0-9.]+)?[[:space:]]*\);/rgb(255, 255, 255);/' "${swaync_style}"
 	#sed -i '/@define-color noti-bg-alt/s/#.*;/#111111;/' "${swaync_style}"
 else
-    sed -i '/@define-color noti-bg/s/rgba([0-9]*,\s*[0-9]*,\s*[0-9]*,\s*[0-9.]*);/rgba(255, 255, 255, 0.9);/' "${swaync_style}"
+    sed -Ei '/@define-color[[:space:]]+noti-bg[[:space:]]/s/rgba\([^)]+\);/rgba(254, 255, 255, 0.92);/' "${swaync_style}"
+    sed -Ei '/@define-color[[:space:]]+noti-bg-alt[[:space:]]/s/rgba\([^)]+\);/rgba(245, 246, 248, 0.92);/' "${swaync_style}"
+    sed -Ei '/@define-color[[:space:]]+noti-bg-hover[[:space:]]/s/rgba\([^)]+\);/rgba(238, 240, 243, 0.95);/' "${swaync_style}"
     sed -Ei '/@define-color text-color/s/rgba?\([[:space:]]*[0-9]+,[[:space:]]*[0-9]+,[[:space:]]*[0-9]+(,[[:space:]]*[0-9.]+)?[[:space:]]*\);/rgb(0, 0, 0);/' "${swaync_style}"
 	#sed -i '/@define-color noti-bg-alt/s/#.*;/#F0F0F0;/' "${swaync_style}"
 fi
@@ -211,24 +213,34 @@ fi
 # Set Kvantum Manager theme & QT5/QT6 settings
 if [ "$next_mode" = "Dark" ]; then
     kvantum_theme="catppuccin-mocha-blue"
-    #qt5ct_color_scheme="$HOME/.config/qt5ct/colors/Catppuccin-Mocha.conf"
-    #qt6ct_color_scheme="$HOME/.config/qt6ct/colors/Catppuccin-Mocha.conf"
+    qt5ct_color_scheme="$HOME/.config/qt5ct/colors/Catppuccin-Mocha.conf"
+    qt6ct_color_scheme="$HOME/.config/qt6ct/colors/Catppuccin-Mocha.conf"
+    kde_color_scheme="BreezeDark"
 else
     kvantum_theme="catppuccin-latte-blue"
-    #qt5ct_color_scheme="$HOME/.config/qt5ct/colors/Catppuccin-Latte.conf"
-    #qt6ct_color_scheme="$HOME/.config/qt6ct/colors/Catppuccin-Latte.conf"
+    qt5ct_color_scheme="$HOME/.config/qt5ct/colors/Catppuccin-Latte.conf"
+    qt6ct_color_scheme="$HOME/.config/qt6ct/colors/Catppuccin-Latte.conf"
+    kde_color_scheme="BreezeLight"
 fi
 
 sed -i "s|^color_scheme_path=.*$|color_scheme_path=$qt5ct_color_scheme|" "$HOME/.config/qt5ct/qt5ct.conf"
 sed -i "s|^color_scheme_path=.*$|color_scheme_path=$qt6ct_color_scheme|" "$HOME/.config/qt6ct/qt6ct.conf"
-kvantummanager --set "$kvantum_theme"
+QT_QPA_PLATFORM=offscreen kvantummanager --set "$kvantum_theme"
+if command -v kwriteconfig6 >/dev/null 2>&1; then
+    kwriteconfig6 --file kdeglobals --group KDE --key widgetStyle kvantum >/dev/null 2>&1 || true
+fi
+if command -v plasma-apply-colorscheme >/dev/null 2>&1; then
+    plasma-apply-colorscheme "$kde_color_scheme" >/dev/null 2>&1 || true
+fi
 
 
 # set the rofi color for background
 if [ "$next_mode" = "Dark" ]; then
     sed -i '/^background:/s/.*/background: rgba(0,0,0,0.7);/' $wallust_rofi
+    ln -sfn colors-dark.rasi "$HOME/.config/rofi/themes/colors-current.rasi"
 else
     sed -i '/^background:/s/.*/background: rgba(255,255,255,0.9);/' $wallust_rofi
+    ln -sfn colors-light.rasi "$HOME/.config/rofi/themes/colors-current.rasi"
 fi
 
 

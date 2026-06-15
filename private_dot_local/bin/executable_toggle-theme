@@ -105,6 +105,27 @@ update_btop_theme() {
     fi
 }
 
+# Mirror the color scheme into GTK settings.ini directly.
+# On Hyprland there is no kded6/gtkconfig daemon to sync KDE -> GTK, so without
+# this, gtk-application-prefer-dark-theme goes stale and GTK + Electron apps
+# (e.g. 1Password) stay dark after a switch to Light. Mode: Light=false, Dark/Midnight=true.
+update_gtk_prefer_dark() {
+    local mode=$1
+    local prefer_dark="true"
+    [ "$mode" = "Light" ] && prefer_dark="false"
+
+    for ini in "$HOME/.config/gtk-3.0/settings.ini" "$HOME/.config/gtk-4.0/settings.ini"; do
+        if [ -f "$ini" ] && grep -q "^gtk-application-prefer-dark-theme=" "$ini"; then
+            sed -i "s|^gtk-application-prefer-dark-theme=.*|gtk-application-prefer-dark-theme=$prefer_dark|" "$ini"
+        elif [ -f "$ini" ] && grep -q "^\[Settings\]" "$ini"; then
+            sed -i "/^\[Settings\]/a gtk-application-prefer-dark-theme=$prefer_dark" "$ini"
+        else
+            mkdir -p "$(dirname "$ini")"
+            printf '[Settings]\ngtk-application-prefer-dark-theme=%s\n' "$prefer_dark" >> "$ini"
+        fi
+    done
+}
+
 update_hyprsunset_temperature() {
     local theme_mode=$1
     local target_temp="${HYPRSUNSET_TEMP:-${HYPERSUNSET_TEMP:-4500}}"
@@ -196,6 +217,7 @@ elif [ "$next_mode" = "Light" ] && [ "$current_theme" = "Light" ]; then
 fi
 
 update_btop_theme "$next_mode"
+update_gtk_prefer_dark "$next_mode"
 update_hyprsunset_temperature "$next_mode"
 
 # intial kill process (skip if only changing wallpaper)
@@ -239,8 +261,12 @@ set_theme_properties() {
         ags_bg_alt_color="#111111"
         kitty_theme="OneDark.conf"
         kvantum_theme="catppuccin-mocha-blue"
+        qt5ct_color_scheme="$HOME/.config/qt5ct/colors/Catppuccin-Mocha.conf"
+        qt6ct_color_scheme="$HOME/.config/qt6ct/colors/Catppuccin-Mocha.conf"
+        kde_color_scheme="BreezeDark"
         k9s_skin="catppuccin-mocha"
         rofi_bg="rgba(0,0,0,0.7)"
+        rofi_palette="colors-dark.rasi"
         gtk_search_keywords="*Dark*"
         gsettings_color_scheme='prefer-dark'
         static_wallpaper_file="$HOME/Pictures/wallpapers/Dynamic-Wallpapers/Dark/wallpapersden.com_windows-11-in-4k_3840x2400.jpg"
@@ -258,8 +284,12 @@ set_theme_properties() {
         ags_bg_alt_color="#111111"
         kitty_theme="OneDark.conf"
         kvantum_theme="catppuccin-mocha-blue"
+        qt5ct_color_scheme="$HOME/.config/qt5ct/colors/Catppuccin-Mocha.conf"
+        qt6ct_color_scheme="$HOME/.config/qt6ct/colors/Catppuccin-Mocha.conf"
+        kde_color_scheme="BreezeDark"
         k9s_skin="catppuccin-mocha"
         rofi_bg="rgba(0,0,0,0.7)"
+        rofi_palette="colors-dark.rasi"
         gtk_search_keywords="*Dark*"
         gsettings_color_scheme='prefer-dark'
         static_wallpaper_file="$HOME/Pictures/wallpapers/Dynamic-Wallpapers/Dark/wallpapersden.com_windows-11-in-4k_3840x2400.jpg"
@@ -270,15 +300,19 @@ set_theme_properties() {
         swaync_bg_color="rgba(254, 255, 255, 0.92)"
         swaync_bg_alt_color="rgba(245, 246, 248, 0.92)"
         swaync_bg_hover_color="rgba(238, 240, 243, 0.95)"
-        swaync_text_color="rgb(32, 33, 37)"
+        swaync_text_color="rgb(0, 0, 0)"
         swaync_border_color="rgba(72, 73, 82, 0.35)"
         ags_bg_color="rgba(255, 255, 255, 0.4)"
         ags_text_color="rgba(0, 0, 0, 0.7)"
         ags_bg_alt_color="#F0F0F0"
         kitty_theme="Github.conf"
         kvantum_theme="catppuccin-latte-blue"
+        qt5ct_color_scheme="$HOME/.config/qt5ct/colors/Catppuccin-Latte.conf"
+        qt6ct_color_scheme="$HOME/.config/qt6ct/colors/Catppuccin-Latte.conf"
+        kde_color_scheme="BreezeLight"
         k9s_skin="catppuccin-latte"
         rofi_bg="rgba(255,255,255,0.9)"
+        rofi_palette="colors-light.rasi"
         gtk_search_keywords="*Light*"
         gsettings_color_scheme='prefer-light'
         static_wallpaper_file="$HOME/Pictures/wallpapers/Dynamic-Wallpapers/Light/windows-11-gradient-background-bloom-light-backgrounds-5k-3840x2160-8411.png"
@@ -344,6 +378,12 @@ set_theme_properties "$next_mode"
 sed -i "s|^color_scheme_path=.*$|color_scheme_path=$qt5ct_color_scheme|" "$HOME/.config/qt5ct/qt5ct.conf"
 sed -i "s|^color_scheme_path=.*$|color_scheme_path=$qt6ct_color_scheme|" "$HOME/.config/qt6ct/qt6ct.conf"
 QT_QPA_PLATFORM=offscreen kvantummanager --set "$kvantum_theme"
+if command -v kwriteconfig6 >/dev/null 2>&1; then
+    kwriteconfig6 --file kdeglobals --group KDE --key widgetStyle kvantum >/dev/null 2>&1 || true
+fi
+if command -v plasma-apply-colorscheme >/dev/null 2>&1; then
+    plasma-apply-colorscheme "$kde_color_scheme" >/dev/null 2>&1 || true
+fi
 
 
 # Only continue with full theme changes if not wallpaper-only update
@@ -352,6 +392,9 @@ if [ "$skip_theme_change" != "true" ]; then
     
     # set the rofi color for background
     sed -i "/^background:/s/.*/background: $rofi_bg;/" $wallust_rofi
+
+    # swap the active rofi palette (dark/light) used by KooL_style-4.rasi
+    ln -sfn "$rofi_palette" "$HOME/.config/rofi/themes/colors-current.rasi"
     
     # GTK themes and icons switching
     set_custom_gtk_theme() {

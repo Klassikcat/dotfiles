@@ -63,8 +63,8 @@
       "model": "openrouter/google/gemini-3.1-flash-lite-preview"
     },
     "atlas": {
-      "model": "openrouter/deepseek/deepseek-v4-flash",
-      "fallback_models": ["openai/gpt-5.5", "openrouter/moonshotai/kimi-k2.6"],
+      "model": "openai/gpt-5.5",
+      "fallback_models": ["openrouter/moonshotai/kimi-k2.6"],
       "textVerbosity": "low",
       "reasoningEffort": "medium"
     },
@@ -81,33 +81,6 @@
     },
     "artistry": {
       "model": "openrouter/google/gemini-3.1-pro-preview"
-    }
-  },
-  "lsp": {
-    "python": {
-      "command": ["pyright-langserver", "--stdio"],
-      "extensions": [".py"],
-      "priority": 10
-    },
-    "go": {
-      "command": ["gopls"],
-      "extensions": [".go"],
-      "priority": 10
-    },
-    "typescript": {
-      "command": ["typescript-language-server", "--stdio"],
-      "extensions": [".ts", ".tsx"],
-      "priority": 10
-    },
-    "terraform": {
-      "command": ["terraform-ls", "serve"],
-      "extensions": [".tf", ".tfvars"],
-      "priority": 10
-    },
-    "clangd": {
-      "command": ["clangd"],
-      "extensions": [".c", ".h", ".cpp", ".cc", ".cxx", ".hpp"],
-      "priority": 10
     }
   }
 }

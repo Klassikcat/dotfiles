@@ -7,9 +7,10 @@ attempt=0
 
 while [ $attempt -lt $max_attempts ]; do
     if hyprctl dispatch dpms on 2>/dev/null; then
-        # Hyprland is ready, run theme and brightness update scripts
+        # Hyprland is ready, apply current theme/brightness, then reschedule heliocron waiters.
         $HOME/.local/bin/hyprland-theme-init.sh
         $HOME/.local/bin/brightness-init.sh
+        systemctl --user restart hyprland-theme@sunrise-light.service hyprland-theme@sunset-dark.service
         exit 0
     fi
     attempt=$((attempt + 1))

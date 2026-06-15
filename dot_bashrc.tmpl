@@ -24,6 +24,7 @@ esac
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
 export DOCKER_HOST=unix:///run/user/$UID/podman/podman.sock
+export DOCKER_SOCK=/run/user/$UID/podman/podman.sock  # k3d: 노드 컨테이너에 마운트할 소켓 경로
 # append to the history file, don't overwrite it
 shopt -s histappend
 
@@ -133,7 +134,9 @@ if ! shopt -oq posix; then
   fi
 fi
 
-. "$HOME/.local/bin/env"
+if [ -f "$HOME/.local/bin/env" ]; then
+  . "$HOME/.local/bin/env"
+fi
 
 if [ -s "/home/linuxbrew/.linuxbrew/opt/nvm/etc/bash_completion.d/nvm" ]; then
   \. "/home/linuxbrew/.linuxbrew/opt/nvm/etc/bash_completion.d/nvm"
@@ -142,7 +145,9 @@ elif [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ]; then
 elif [ -s "$NVM_DIR/bash_completion" ]; then
   \. "$NVM_DIR/bash_completion"
 fi
-. "$HOME/.cargo/env"
+if [ -f "$HOME/.cargo/env" ]; then
+  . "$HOME/.cargo/env"
+fi
 
 # Eza tree aliases with hidden files but excluding build/cache/env folders
 # Comprehensive exclusion list for multiple languages and tools
@@ -342,7 +347,9 @@ opencode-server() {
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-eval "$(starship init bash)"
+if command -v starship >/dev/null 2>&1; then
+  eval "$(starship init bash)"
+fi
 # Keep system sbin available without overriding nvm-managed Node/npm binaries.
 case ":$PATH:" in
   *:/usr/sbin:*) ;;
@@ -350,3 +357,4 @@ case ":$PATH:" in
 esac
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+export PATH="$HOME/.npm-global/bin:$PATH"
