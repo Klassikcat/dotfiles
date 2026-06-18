@@ -1,0 +1,13 @@
+{
+  "enabledMcpjsonServers": [
+    "context7",
+    "filesystem",
+    "github",
+    "terraform",
+    "playwright",
+    "kubernetes",
+    "aws-serverless",
+    "serverless",
+    "code-review-graph"
+  ]
+}

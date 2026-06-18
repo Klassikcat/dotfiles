@@ -18,7 +18,7 @@
       "fallback_models": ["openrouter/minimax/minimax-m2.7"]
     },
     "prometheus": {
-      "model": "openrouter/deepseek/deepseek-v4-pro",
+      "model": "openrouter/z-ai/glm-5.2",
       "fallback_models": [
         "openrouter/z-ai/glm-5.1",
         "anthropic/claude-opus-4-6"

@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(chmod +x *)",
+      "Bash(bash /home/shinjungtae/.claude/hooks/forbidden-guard.sh)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(rm /home/shinjungtae/.claude/.forbidden-allowlist)",
+      "Bash(echo \"exit=$?\")"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "context7",
+    "filesystem",
+    "github",
+    "terraform",
+    "playwright",
+    "kubernetes",
+    "aws-serverless",
+    "serverless",
+    "code-review-graph"
+  ]
+}

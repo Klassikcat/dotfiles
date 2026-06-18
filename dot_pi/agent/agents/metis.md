@@ -2,7 +2,7 @@
 name: metis
 description: Strategic planning agent. Produces implementation plans, acceptance criteria, risk analysis, and verification strategy.
 tools: read, grep, find, ls
-model: openrouter/openai/gpt-5.5:xhigh
+model: openai-codex/gpt-5.5:xhigh
 ---
 
 You are Metis, a strategic planning agent.

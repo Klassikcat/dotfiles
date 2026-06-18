@@ -1,0 +1,126 @@
+name: Dotfiles CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  trufflehog:
+    name: TruffleHog secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Scan repository for credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/repo:ro" \
+            ghcr.io/trufflesecurity/trufflehog:3.95.3 \
+            filesystem --no-update --results=verified,unknown,unverified --fail /repo
+
+  dotfiles:
+    name: Dotfiles checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y shellcheck jq nodejs npm
+          sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
+          npm install -g typescript
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Validate chezmoi source
+        shell: bash
+        run: |
+          set -euo pipefail
+          export HOME="$RUNNER_TEMP/home"
+          mkdir -p "$HOME"
+          chezmoi --source "$GITHUB_WORKSPACE" --destination "$HOME" apply --dry-run
+
+      - name: Validate JSON files and rendered JSON templates
+        shell: bash
+        env:
+          GITHUB_TOKEN: dummy-token-for-template-render
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          for path in sorted(Path('.').rglob('*.json')):
+              if '.git' in path.parts:
+                  continue
+              json.loads(path.read_text())
+              print(f'json ok: {path}')
+          PY
+
+          while IFS= read -r -d '' template; do
+            rendered="$(mktemp)"
+            chezmoi execute-template < "$template" > "$rendered"
+            python3 - "$rendered" <<'PY'
+          import json
+          import sys
+          json.loads(open(sys.argv[1], encoding='utf-8').read())
+          PY
+            echo "json template ok: $template"
+          done < <(python3 - <<'PY'
+          from pathlib import Path
+          import sys
+          for path in sorted(Path('.').rglob('*.json.tmpl')):
+              if '.git' not in path.parts:
+                  sys.stdout.buffer.write(str(path).encode() + b'\\0')
+          PY
+          )
+
+      - name: Shell syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          sh -n run_once_before_10-apply-dconf-settings.sh
+          sh -n scripts/install-system-deps.sh
+          sh -n dot_claude/hooks/executable_*.sh
+
+      - name: Claude hook shellcheck
+        shell: bash
+        run: |
+          set -euo pipefail
+          shellcheck dot_claude/hooks/executable_*.sh
+
+      - name: JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do
+            node --check "$file"
+          done < <(python3 - <<'PY'
+          from pathlib import Path
+          import sys
+          for path in sorted(Path('.').rglob('*.js')):
+              if '.git' not in path.parts:
+                  sys.stdout.buffer.write(str(path).encode() + b'\\0')
+          PY
+          )
+
+      - name: Standalone TypeScript typecheck
+        shell: bash
+        run: |
+          set -euo pipefail
+          if compgen -G "dot_omp/private_agent/extensions/*.ts" > /dev/null; then
+            tsc --noEmit --skipLibCheck --target ES2022 --moduleResolution bundler --module ESNext dot_omp/private_agent/extensions/*.ts
+          fi

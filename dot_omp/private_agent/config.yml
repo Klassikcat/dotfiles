@@ -1,0 +1,29 @@
+setupVersion: 1
+modelRoles: 
+  slow: openai-codex/gpt-5.5:xhigh
+  default: openai-codex/gpt-5.5:medium
+  smol: openrouter/deepseek/deepseek-v4-flash:medium
+  plan: anthropic/claude-opus-4-8:xhigh
+  vision: openrouter/google/gemini-3.5-flash:medium
+  task: openrouter/deepseek/deepseek-v4-flash
+  advisor: openai-codex/gpt-5.5:xhigh
+theme: 
+  light: light-catppuccin
+  dark: dark-catppuccin
+disabledProviders: 
+  []
+providers: 
+  openrouterVariant: nitro
+task: 
+  agentModelOverrides: 
+    code-reviewer: gpt-5.5
+    executor: gpt-5.5
+    explore: deepseek-v4-flash
+    qa-tester: glm-5.1
+    test-engineer: glm-5.2
+    tracer: gpt-5.5
+    verifier: gpt-5.5
+    plan: claude-opus-4-6
+lsp: 
+  formatOnWrite: true
+hideThinkingBlock: true

@@ -1,0 +1,108 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(terraform destroy:*)",
+      "Bash(terraform *destroy:*)"
+    ]
+  },
+  "model": "opus[1m]",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /home/shinjungtae/Projects/Personal/opencode-hooks/hooks-opencode/trufflehog-guard/trufflehog-guard.py check"
+          },
+          {
+            "type": "command",
+            "command": "bash /home/shinjungtae/.claude/hooks/forbidden-guard.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /home/shinjungtae/Projects/Personal/opencode-hooks/hooks-opencode/trufflehog-guard/trufflehog-guard.py check"
+          },
+          {
+            "type": "command",
+            "command": "bash /home/shinjungtae/.claude/hooks/forbidden-guard.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash /home/shinjungtae/.claude/hooks/destroy-guard.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /home/shinjungtae/.claude/hooks/forbidden-guard.sh"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /home/shinjungtae/.claude/hooks/lsp-diagnostics.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /home/shinjungtae/.claude/hooks/lsp-diagnostics.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "node ${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hud/omc-hud.mjs"
+  },
+  "enabledPlugins": {
+    "oh-my-claudecode@omc": true,
+    "chrome-devtools-mcp@claude-plugins-official": true,
+    "claude-code-wakatime@wakatime": true,
+    "notion@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "omc": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/Yeachan-Heo/oh-my-claudecode.git"
+      }
+    },
+    "claude-hud": {
+      "source": {
+        "source": "github",
+        "repo": "jarrodwatts/claude-hud"
+      }
+    },
+    "wakatime": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/wakatime/claude-code-wakatime.git"
+      }
+    }
+  },
+  "effortLevel": "high",
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "auto",
+  "awaySummaryEnabled": false
+}

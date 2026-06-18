@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(timeout 5 rofi -dump-theme)",
+      "Bash(echo \"=== rofi exit code: $? ===\")",
+      "Bash(aws s3api list-buckets *)",
+      "Bash(aws configure *)",
+      "Bash(aws cloudwatch *)",
+      "Read(//tmp/**)",
+      "mcp__claude_ai_Notion__notion-fetch",
+      "mcp__claude_ai_Notion__notion-update-page",
+      "Bash(hyprctl monitors *)",
+      "Read(//sys/class/backlight/**)",
+      "Bash(brightnessctl)",
+      "Bash(hyprctl version *)",
+      "Bash(hyprctl getoption *)",
+      "Bash(edid-decode /sys/class/drm/card*-eDP-1/edid)",
+      "Bash(edid-decode /sys/class/drm/card*-DP-8/edid)",
+      "Bash(edid-decode __TRACKED_VAR__/edid)",
+      "Bash(systemctl --user status hyprdynamicmonitors)",
+      "Bash(hyprctl clients *)",
+      "Bash(update-desktop-database ~/.local/share/applications)",
+      "Bash(pkill -f '/usr/lib/slack/slack')",
+      "Bash(pkill -9 -f '/usr/\\(bin|lib\\)/slack')",
+      "Bash(pkill -9 -f 'chrome_crashpad_handler.*Slack')",
+      "mcp__kubernetes__resources_list"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "context7",
+    "filesystem",
+    "github",
+    "terraform",
+    "playwright",
+    "kubernetes",
+    "aws-serverless",
+    "serverless",
+    "code-review-graph"
+  ]
+}

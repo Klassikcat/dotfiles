@@ -1,0 +1,32 @@
+{
+  "servers": {
+    "rust-analyzer": {
+      "command": "/home/shinjungtae/.local/bin/rust-analyzer",
+      "rootMarkers": ["."]
+    },
+    "gopls": {
+      "command": "/home/shinjungtae/go/bin/gopls",
+      "rootMarkers": ["."]
+    },
+    "typescript-language-server": {
+      "command": "/home/shinjungtae/.bun/bin/typescript-language-server",
+      "rootMarkers": ["."]
+    },
+    "ruff": {
+      "command": "/usr/bin/ruff",
+      "rootMarkers": ["."]
+    },
+    "kotlin-lsp": {
+      "command": "/home/shinjungtae/.local/bin/kotlin-language-server",
+      "args": [],
+      "fileTypes": [".kt", ".kts"],
+      "rootMarkers": ["."]
+    },
+    "terraformls": {
+      "command": "/home/shinjungtae/go/bin/terraform-ls",
+      "args": ["serve"],
+      "fileTypes": [".tf", ".tfvars"],
+      "rootMarkers": ["."]
+    }
+  }
+}

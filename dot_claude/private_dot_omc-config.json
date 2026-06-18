@@ -1,0 +1,9 @@
+{
+  "defaultExecutionMode": "ultrawork",
+  "configuredAt": "2026-05-24T04:24:00Z",
+  "taskTool": "builtin",
+  "taskToolConfig": {
+    "injectInstructions": true,
+    "useMcp": false
+  }
+}

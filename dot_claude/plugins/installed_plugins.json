@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "plugins": {
+    "oh-my-claudecode@omc": [
+      {
+        "scope": "user",
+        "installPath": "/home/shinjungtae/.claude/plugins/cache/omc/oh-my-claudecode/4.14.1",
+        "version": "4.14.1",
+        "installedAt": "2026-05-23T18:18:31.518Z",
+        "lastUpdated": "2026-05-23T18:18:31.518Z",
+        "gitCommitSha": "1fe17f0e19ec9e24c5964d4363a9f53aab45c73f"
+      }
+    ],
+    "chrome-devtools-mcp@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/home/shinjungtae/.claude/plugins/cache/claude-plugins-official/chrome-devtools-mcp/1.2.0",
+        "version": "1.2.0",
+        "installedAt": "2026-05-25T09:51:23.971Z",
+        "lastUpdated": "2026-06-09T00:56:11.971Z",
+        "gitCommitSha": "8e8e83e3f8d150689ffb58c3b977eb72016c7b3f"
+      }
+    ],
+    "claude-code-wakatime@wakatime": [
+      {
+        "scope": "user",
+        "installPath": "/home/shinjungtae/.claude/plugins/cache/wakatime/claude-code-wakatime/4.1.0",
+        "version": "4.1.0",
+        "installedAt": "2026-06-04T02:56:56.646Z",
+        "lastUpdated": "2026-06-04T02:56:56.646Z",
+        "gitCommitSha": "3915f4ec19d4fedf2a1a2a644f1138cd72e956da"
+      }
+    ],
+    "notion@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/home/shinjungtae/.claude/plugins/cache/claude-plugins-official/notion/0.1.0",
+        "version": "0.1.0",
+        "installedAt": "2026-06-08T04:57:14.176Z",
+        "lastUpdated": "2026-06-08T04:57:14.176Z",
+        "gitCommitSha": "9847f2aa1a15f25df35ed1fb7b4557dbb60cd651"
+      }
+    ],
+    "typescript-lsp@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/home/shinjungtae/.claude/plugins/cache/claude-plugins-official/typescript-lsp/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-06-12T01:15:33.399Z",
+        "lastUpdated": "2026-06-12T01:15:33.399Z"
+      }
+    ]
+  }
+}
