@@ -40,15 +40,34 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
+      - name: Restore tool cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.local/bin/chezmoi
+            ~/.npm
+            ~/.npm-global
+          key: dotfiles-tools-v2-${{ runner.os }}-chezmoi-2.70.0-typescript-latest
+
       - name: Install tools
         shell: bash
         run: |
           set -euo pipefail
           sudo apt-get update
           sudo apt-get install -y shellcheck jq nodejs npm
-          sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
-          npm install -g typescript
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          mkdir -p "$HOME/.local/bin" "$HOME/.npm-global"
+          npm config set prefix "$HOME/.npm-global"
+          export PATH="$HOME/.local/bin:$HOME/.npm-global/bin:$PATH"
+          if ! command -v chezmoi >/dev/null 2>&1; then
+            sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin" "v2.70.0"
+          fi
+          if ! command -v tsc >/dev/null 2>&1; then
+            npm install -g typescript
+          fi
+          {
+            echo "$HOME/.local/bin"
+            echo "$HOME/.npm-global/bin"
+          } >> "$GITHUB_PATH"
 
       - name: Validate chezmoi source
         shell: bash
@@ -97,15 +116,15 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          sh -n run_once_before_10-apply-dconf-settings.sh
-          sh -n scripts/install-system-deps.sh
-          sh -n dot_claude/hooks/executable_*.sh
+          bash -n run_once_before_10-apply-dconf-settings.sh
+          bash -n scripts/install-system-deps.sh
+          bash -n dot_claude/hooks/executable_*.sh
 
-      - name: Claude hook shellcheck
+      - name: Shellcheck maintained scripts
         shell: bash
         run: |
           set -euo pipefail
-          shellcheck dot_claude/hooks/executable_*.sh
+          shellcheck run_once_before_10-apply-dconf-settings.sh scripts/install-system-deps.sh dot_claude/hooks/executable_*.sh
 
       - name: JavaScript syntax
         shell: bash
