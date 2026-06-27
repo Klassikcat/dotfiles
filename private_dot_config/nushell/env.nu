@@ -20,6 +20,7 @@
 $env.OPENCODE_DISABLE_CLAUDE_CODE = "1"
 
 $env.PATH = ($env.PATH | split row (char esep)
+  | prepend ($env.HOME | path join ".npm-global" "bin")
   | append $"($env.HOME)/.opencode/bin"
   | append $"($env.HOME)/.bun/bin"
   | append $"($env.HOME)/.local/bin"

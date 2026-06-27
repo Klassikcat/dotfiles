@@ -1,9 +1,9 @@
 {
-  "lastChangelogVersion": "0.79.6",
+  "lastChangelogVersion": "0.79.9",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.5",
-  "defaultThinkingLevel": "high",
-  "theme": "light",
+  "defaultThinkingLevel": "xhigh",
+  "theme": "dark",
   "hideThinkingBlock": true,
   "packages": [
     "npm:pi-wakatime",

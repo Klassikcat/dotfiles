@@ -16,6 +16,7 @@ notif="$HOME/.config/swaync/images/bell.png"
 wallust_rofi="$HOME/.config/wallust/templates/colors-rofi.rasi"
 
 kitty_conf="$HOME/.config/kitty/kitty.conf"
+ghostty_theme_conf="$HOME/.config/ghostty/theme.conf"
 
 btop_config_dir="$HOME/.config/btop"
 k9s_config="$HOME/.config/k9s/config.yaml"
@@ -32,7 +33,9 @@ is_aylur_ags() {
 }
 
 signal_desktop_processes() {
-    local processes=(rofi swaync swaybg)
+    # Keep swaync alive; it is a systemd D-Bus service and should be reloaded,
+    # not signalled/killed. Restarting it right after resume can block on portals.
+    local processes=(rofi swaybg)
     if is_aylur_ags; then
         processes+=(ags)
     fi
@@ -43,7 +46,8 @@ signal_desktop_processes() {
 }
 
 kill_desktop_processes() {
-    local processes=(rofi swaync swaybg)
+    # Keep swaync alive; reload_swaync handles its CSS/config refresh.
+    local processes=(rofi swaybg)
     if is_aylur_ags; then
         processes+=(ags)
     fi
@@ -53,6 +57,20 @@ kill_desktop_processes() {
     done
 }
 
+reload_swaync() {
+    command -v swaync-client >/dev/null 2>&1 || return 0
+    swaync-client --reload-css >/dev/null 2>&1 || true
+    swaync-client --reload-config >/dev/null 2>&1 || true
+}
+
+
+update_sqlit_tui_theme() {
+    local theme=$1
+    local theme_dir="$HOME/.config/sqlit-tui"
+    local theme_file="$theme_dir/theme"
+    mkdir -p "$theme_dir"
+    echo "$theme" > "$theme_file"
+}
 
 update_k9s_theme() {
     local skin=$1
@@ -260,11 +278,13 @@ set_theme_properties() {
         ags_text_color="rgba(255, 255, 255, 0.7)"
         ags_bg_alt_color="#111111"
         kitty_theme="OneDark.conf"
+        ghostty_theme="Atom One Dark"
         kvantum_theme="catppuccin-mocha-blue"
         qt5ct_color_scheme="$HOME/.config/qt5ct/colors/Catppuccin-Mocha.conf"
         qt6ct_color_scheme="$HOME/.config/qt6ct/colors/Catppuccin-Mocha.conf"
         kde_color_scheme="BreezeDark"
         k9s_skin="catppuccin-mocha"
+        sqlit_tui_theme="catppuccin-mocha"
         rofi_bg="rgba(0,0,0,0.7)"
         rofi_palette="colors-dark.rasi"
         gtk_search_keywords="*Dark*"
@@ -283,11 +303,13 @@ set_theme_properties() {
         ags_text_color="rgba(255, 255, 255, 0.7)"
         ags_bg_alt_color="#111111"
         kitty_theme="OneDark.conf"
+        ghostty_theme="Atom One Dark"
         kvantum_theme="catppuccin-mocha-blue"
         qt5ct_color_scheme="$HOME/.config/qt5ct/colors/Catppuccin-Mocha.conf"
         qt6ct_color_scheme="$HOME/.config/qt6ct/colors/Catppuccin-Mocha.conf"
         kde_color_scheme="BreezeDark"
         k9s_skin="catppuccin-mocha"
+        sqlit_tui_theme="catppuccin-mocha"
         rofi_bg="rgba(0,0,0,0.7)"
         rofi_palette="colors-dark.rasi"
         gtk_search_keywords="*Dark*"
@@ -306,11 +328,13 @@ set_theme_properties() {
         ags_text_color="rgba(0, 0, 0, 0.7)"
         ags_bg_alt_color="#F0F0F0"
         kitty_theme="Github.conf"
+        ghostty_theme="GitHub"
         kvantum_theme="catppuccin-latte-blue"
         qt5ct_color_scheme="$HOME/.config/qt5ct/colors/Catppuccin-Latte.conf"
         qt6ct_color_scheme="$HOME/.config/qt6ct/colors/Catppuccin-Latte.conf"
         kde_color_scheme="BreezeLight"
         k9s_skin="catppuccin-latte"
+        sqlit_tui_theme="sqlit-light"
         rofi_bg="rgba(255,255,255,0.9)"
         rofi_palette="colors-light.rasi"
         gtk_search_keywords="*Light*"
@@ -333,14 +357,15 @@ if [ "$skip_theme_change" != "true" ]; then
         echo "Style file not found: $waybar_style_file"
     fi
     
-    notify_user "$next_mode"
-    
     # swaync color change (apply full light/dark palette to avoid contrast mismatches)
     sed -i "s|^@define-color noti-border-color .*;|@define-color noti-border-color $swaync_border_color;|" "${swaync_style}"
     sed -i "s|^@define-color noti-bg .*;|@define-color noti-bg $swaync_bg_color;|" "${swaync_style}"
     sed -i "s|^@define-color noti-bg-alt .*;|@define-color noti-bg-alt $swaync_bg_alt_color;|" "${swaync_style}"
     sed -i "s|^@define-color noti-bg-hover .*;|@define-color noti-bg-hover $swaync_bg_hover_color;|" "${swaync_style}"
     sed -i "s|^@define-color text-color .*;|@define-color text-color $swaync_text_color;|" "${swaync_style}"
+    reload_swaync
+    
+    notify_user "$next_mode"
     
     # ags color change
     if is_aylur_ags && [ -f "$ags_style" ]; then
@@ -351,10 +376,28 @@ if [ "$skip_theme_change" != "true" ]; then
     
     # kitty theme change
     sed -i "s|^include .*kitty-themes/.*\\.conf|include ./kitty-themes/$kitty_theme|" "${kitty_conf}"
-    
+
     for pid_kitty in $(pidof kitty); do
         kill -SIGUSR1 "$pid_kitty"
     done
+
+    # ghostty theme change (mirrors kitty: theme.conf is the single source of truth)
+    if [ -n "$ghostty_theme" ]; then
+        mkdir -p "$(dirname "$ghostty_theme_conf")"
+        printf 'theme = %s\n' "$ghostty_theme" > "$ghostty_theme_conf"
+
+        # Reload via SIGUSR2 (Ghostty >= 1.2.0), exactly like kitty's SIGUSR1.
+        # We must NOT inject the reload_config keybind (ctrl+shift+,) with
+        # `hyprctl dispatch sendshortcut`: that pushes synthetic CTRL/SHIFT
+        # through a virtual keyboard, and a Hyprland v0.55 regression leaves the
+        # modifier stuck in the XKB state machine. With fcitx5 running that
+        # desyncs IME state (AltTriggerKeys=Shift_L) and breaks 한/영 toggling
+        # and typing. A signal never touches the input pipeline.
+        # WARNING: send ONLY SIGUSR2 to ghostty; other signals can crash it.
+        for pid_ghostty in $(pidof ghostty); do
+            kill -SIGUSR2 "$pid_ghostty"
+        done
+    fi
 else
     # Wallpaper-only update, just show notification
     notify-send -u low -i "$notif" " Wallpaper updated" " $next_mode mode"
@@ -363,6 +406,7 @@ fi
 # Set static wallpaper for Dark, Light, or Intermediate Mode
 set_theme_properties "$next_mode"
 update_k9s_theme "$k9s_skin"
+update_sqlit_tui_theme "$sqlit_tui_theme"
 killall mpvpaper 2>/dev/null
 wallpaper_effect="$effect"
 if ! swww_has_image; then

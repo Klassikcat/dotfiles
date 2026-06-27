@@ -35,6 +35,10 @@
           {
             "type": "command",
             "command": "bash /home/shinjungtae/.claude/hooks/destroy-guard.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash /home/shinjungtae/.claude/hooks/kube-context-guard.sh"
           }
         ]
       },
@@ -54,6 +58,16 @@
           {
             "type": "command",
             "command": "bash /home/shinjungtae/.claude/hooks/lsp-diagnostics.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /home/shinjungtae/.claude/hooks/completion-gate.sh"
           }
         ]
       }
@@ -79,7 +93,8 @@
     "chrome-devtools-mcp@claude-plugins-official": true,
     "claude-code-wakatime@wakatime": true,
     "notion@claude-plugins-official": true,
-    "typescript-lsp@claude-plugins-official": true
+    "typescript-lsp@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "omc": {
@@ -102,7 +117,8 @@
     }
   },
   "effortLevel": "high",
+  "awaySummaryEnabled": false,
   "skipDangerousModePermissionPrompt": true,
   "theme": "auto",
-  "awaySummaryEnabled": false
+  "skipWorkflowUsageWarning": true
 }

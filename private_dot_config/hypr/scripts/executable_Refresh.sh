@@ -41,8 +41,9 @@ fi
 # quit quickshell & relaunch quickshell
 #pkill qs && qs &
 
-# some process to kill
-_signal_processes=(rofi swaync swaybg)
+# some process to signal
+# Note: swaync is managed by systemd and should be reloaded, not signalled.
+_signal_processes=(rofi swaybg)
 if is_aylur_ags; then
     _signal_processes+=(ags)
 fi
@@ -50,9 +51,10 @@ for pid in $(pidof "${_signal_processes[@]}"); do
     kill -SIGUSR1 "$pid"
 done
 
-#reload swaync
+# reload swaync without killing/restarting it
 sleep 0.5
-swaync-client --reload-config &
+swaync-client --reload-css >/dev/null 2>&1 || true
+swaync-client --reload-config >/dev/null 2>&1 || true
 
 # Relaunching rainbow borders if the script exists
 sleep 1

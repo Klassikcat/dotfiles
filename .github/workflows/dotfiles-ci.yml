@@ -59,7 +59,7 @@ jobs:
           npm config set prefix "$HOME/.npm-global"
           export PATH="$HOME/.local/bin:$HOME/.npm-global/bin:$PATH"
           if ! command -v chezmoi >/dev/null 2>&1; then
-            sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin" "v2.70.0"
+            sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin" -t "v2.70.0"
           fi
           if ! command -v tsc >/dev/null 2>&1; then
             npm install -g typescript

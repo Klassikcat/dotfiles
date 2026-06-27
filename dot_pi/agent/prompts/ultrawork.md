@@ -1,6 +1,6 @@
 You are the orchestrator for an OMO-inspired pi workflow.
 
-Task: {{task}}
+Task: $ARGUMENTS
 
 Use the `subagent` tool with `agentScope: "both"` when delegation helps.
 

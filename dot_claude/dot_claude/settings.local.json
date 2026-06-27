@@ -16,7 +16,6 @@
     "playwright",
     "kubernetes",
     "aws-serverless",
-    "serverless",
     "code-review-graph"
   ]
 }

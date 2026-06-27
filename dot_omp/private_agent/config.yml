@@ -6,24 +6,57 @@ modelRoles:
   plan: anthropic/claude-opus-4-8:xhigh
   vision: openrouter/google/gemini-3.5-flash:medium
   task: openrouter/deepseek/deepseek-v4-flash
-  advisor: openai-codex/gpt-5.5:xhigh
+  advisor: openrouter/openai/gpt-5.5-pro
+  designer: glm-5.2:high
 theme: 
   light: light-catppuccin
   dark: dark-catppuccin
 disabledProviders: 
   []
+disabledExtensions: 
+  []
 providers: 
   openrouterVariant: nitro
 task: 
   agentModelOverrides: 
-    code-reviewer: gpt-5.5
-    executor: gpt-5.5
+    architect: opus-4-6
+    code-simplifier: gpt-5.5
+    debugger: glm-5.2
+    designer: glm-5.2
+    executor: openai-codex/gpt-5.5:medium
     explore: deepseek-v4-flash
+    git-master: deepseek-v4-flash
     qa-tester: glm-5.1
     test-engineer: glm-5.2
     tracer: gpt-5.5
     verifier: gpt-5.5
     plan: claude-opus-4-6
+  eager: preferred
+  enableLsp: true
+  maxRecursionDepth: 3
+  maxRuntimeMs: 0
+  isolation: 
+    mode: auto
+    merge: branch
 lsp: 
   formatOnWrite: true
-hideThinkingBlock: true
+hideThinkingBlock: false
+dev: 
+  autoqa: 
+    consent: granted
+defaultThinkingLevel: auto
+memory: 
+  backend: mnemopi
+autolearn: 
+  enabled: true
+bash: 
+  enabled: true
+checkpoint: 
+  enabled: true
+inspect_image: 
+  enabled: true
+github: 
+  enabled: true
+commands: 
+  enableClaudeProject: false
+  enableClaudeUser: false

@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC2155,SC2034  # upstream JaKooLit style: pervasive `local x=$(...)` and a few config-only vars
 # /* ---- 💫 https://github.com/JaKooLit 💫 ---- */  ##
 #
 # Made and brought to by Kiran George
@@ -254,31 +255,32 @@ spawn_terminal() {
     
     # Get window count before spawning
     local windows_before=$(hyprctl clients -j)
-    local count_before=$(echo "$windows_before" | jq 'length')
     
     # Launch terminal directly in special workspace to avoid visible spawn
     hyprctl dispatch exec "[float; size $width $height; workspace special:scratchpad silent] $TERMINAL_CMD"
     
-    # Wait for window to appear
-    sleep 0.1
-    
-    # Get windows after spawning
-    local windows_after=$(hyprctl clients -j)
-    local count_after=$(echo "$windows_after" | jq 'length')
-    
+    # Wait for the new window to actually appear, then identify it. Poll instead of
+    # a single fixed sleep: ghostty (multi-instance) cold-starts much slower than
+    # kitty, so a 0.1s wait would miss it. Prefer the NEW window that landed in the
+    # special workspace (the spawn rule above puts it there) over a last-focused
+    # heuristic, which could otherwise grab an unrelated window the user touched
+    # while the terminal was starting.
+    local before_addrs=$(echo "$windows_before" | jq -r '.[].address' | sort)
     local new_addr=""
-    
-    if [ "$count_after" -gt "$count_before" ]; then
-        # Find the new window by comparing before/after lists
-        new_addr=$(comm -13 \
-            <(echo "$windows_before" | jq -r '.[].address' | sort) \
-            <(echo "$windows_after" | jq -r '.[].address' | sort) \
-            | head -1)
-    fi
-    
-    # Fallback: try to find by the most recently mapped window
+    local i
+    for i in $(seq 1 40); do
+        sleep 0.1
+        new_addr=$(hyprctl clients -j \
+            | jq -r '.[] | select(.workspace.name == "special:scratchpad") | .address' \
+            | sort | comm -13 <(printf '%s\n' "$before_addrs") - | head -1)
+        [ -n "$new_addr" ] && [ "$new_addr" != "null" ] && break
+    done
+
+    # Fallback: any genuinely new window (NOT last-focused), in case the window rule
+    # did not land it in the special workspace.
     if [ -z "$new_addr" ] || [ "$new_addr" = "null" ]; then
-        new_addr=$(hyprctl clients -j | jq -r 'sort_by(.focusHistoryID) | .[-1] | .address')
+        new_addr=$(hyprctl clients -j | jq -r '.[].address' | sort \
+            | comm -13 <(printf '%s\n' "$before_addrs") - | head -1)
     fi
     
     if [ -n "$new_addr" ] && [ "$new_addr" != "null" ]; then

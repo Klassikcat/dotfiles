@@ -13,5 +13,8 @@
         "PATH": "/home/shinjungtae/.npm-global/bin:${PATH}"
       }
     }
-  }
+  },
+  "disabledServers": [
+    "serverless"
+  ]
 }
