@@ -1,0 +1,51 @@
+# /* ---- 💫 https://github.com/JaKooLit 💫 ---- */  #
+# Tuned to mirror ~/.config/kitty/kitty.conf
+
+# Shell (kitty: shell /usr/bin/nu)
+command = /usr/bin/nu
+
+# Font (kitty: JetBrainsMono Nerd Font Mono, size 13, line height 120%)
+font-family = JetBrainsMono Nerd Font Mono
+font-size = 13
+adjust-cell-height = 25%
+bold-is-bright = false
+
+# Window (kitty: opacity 0.9, padding 0 15 0 15, confirm close 0)
+background-opacity = 0.85
+background-blur-radius = 60
+window-padding-x = 15
+window-padding-y = 0
+confirm-close-surface = false
+window-height = 32
+window-width = 110
+window-save-state = always
+# Follow the system light/dark chrome (toggle-theme manages prefer-dark)
+window-theme = auto
+
+# Cursor / input
+cursor-style = bar
+# blink off: stops 60Hz cursor-blink damage that forces blur recompute (blur look unchanged)
+cursor-style-blink = false
+mouse-hide-while-typing = true
+# kitty: map shift+enter send_text all \e\r
+keybind = shift+enter=text:\x1b\r
+
+# Misc
+gtk-single-instance = false
+quick-terminal-position = center
+shell-integration = detect
+shell-integration-features = cursor,sudo
+term = xterm-256color
+title = GhosTTY
+unfocused-split-opacity = 0.5
+wait-after-command = false
+
+# Theme switching: managed by toggle-theme, which writes `theme = <name>` here.
+# (Like kitty, this file is the single source of truth for colors.)
+config-file = ?~/.config/ghostty/theme.conf
+
+# Wallust is intentionally NOT included here, mirroring kitty.conf which does not
+# include its wallust output (kitty-themes/01-Wallust.conf). This keeps theme.conf
+# authoritative so light/dark switching is clean. To re-enable wallpaper-derived
+# colors instead, uncomment the line below (it would override theme.conf):
+# config-file = ?~/.config/ghostty/wallust.conf
