@@ -8,9 +8,9 @@
   "google_auth": false,
   "agents": {
     "sisyphus": {
-      "model": "openrouter/z-ai/glm-5.2",
+      "model": "opencode-go/kimi-k2.6",
       "fallback_models": [
-        "openrouter/moonshotai/kimi-k2.6",
+        "opencode-go/glm-5.2",
         "openrouter/deepseek/deepseek-v4-pro"
       ],
       "textVerbosity": "low",
@@ -19,11 +19,14 @@
       }
     },
     "librarian": {
-      "model": "openrouter/deepseek/deepseek-v4-flash",
-      "fallback_models": ["openrouter/minimax/minimax-m2.7"]
+      "model": "opencode-go/deepseek-v4-flash",
+      "fallback_models": [
+        "openrouter/minimax/minimax-m2.7",
+        "local/gemma4-26b"
+      ]
     },
     "prometheus": {
-      "model": "openrouter/z-ai/glm-5.2",
+      "model": "opencode-go/glm-5.2",
       "fallback_models": [
         "openrouter/z-ai/glm-5.1",
         "openrouter/moonshotai/kimi-k2.6"
@@ -52,20 +55,23 @@
       "textVerbosity": "low"
     },
     "explore": {
-      "model": "openrouter/deepseek/deepseek-v4-flash",
-      "fallback_models": ["openrouter/minimax/minimax-m2.7"]
+      "model": "opencode-go/deepseek-v4-flash",
+      "fallback_models": [
+        "openrouter/minimax/minimax-m2.7",
+        "local/gemma4-26b"
+      ]
     },
     "frontend-ui-ux-engineer": {
-      "model": "openrouter/moonshotai/kimi-k2.6",
-      "fallback_models": ["openrouter/google/gemini-3.1-pro-preview"],
+      "model": "opencode-go/kimi-k2.6",
+      "fallback_models": ["local/gemma4-26b"],
       "textVerbosity": "low"
     },
     "document-writer": {
-      "model": "openrouter/z-ai/glm-5.1",
+      "model": "opencode-go/glm-5.1",
       "fallback_models": ["openrouter/deepseek/deepseek-v4-flash"]
     },
     "multimodal-looker": {
-      "model": "openrouter/google/gemini-3.1-flash-lite-preview"
+      "model": "openrouter/google/gemini-3.5-flash"
     },
     "atlas": {
       "model": "openai/gpt-5.5",
@@ -75,14 +81,17 @@
     },
     "sisyphus-junior": {
       "model": "openai/gpt-5.5",
-      "fallback_models": ["openrouter/openai/gpt-oss-120b"],
+      "fallback_models": [
+        "openrouter/openai/gpt-oss-120b",
+        "local/gpt-oss-120b"
+      ],
       "reasoningEffort": "low",
       "textVerbosity": "low"
     }
   },
   "categories": {
     "visual-engineering": {
-      "model": "openrouter/google/gemini-3.1-pro-preview"
+      "model": "local/gemma4-26b"
     },
     "ultrabrain": {
       "model": "openai/gpt-5.5"
@@ -91,7 +100,7 @@
       "model": "openai/gpt-5.5"
     },
     "artistry": {
-      "model": "openrouter/google/gemini-3.1-pro-preview"
+      "model": "local/gemma4-26b"
     },
     "quick": {
       "model": "openai/gpt-5.4-mini"
@@ -103,7 +112,7 @@
       "model": "openai/gpt-5.5"
     },
     "writing": {
-      "model": "openrouter/z-ai/glm-5.1"
+      "model": "opencode-go/glm-5.1"
     }
   }
 }

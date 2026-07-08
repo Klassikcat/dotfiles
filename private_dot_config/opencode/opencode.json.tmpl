@@ -4,7 +4,7 @@
     "opencode-openai-codex-auth",
     "oh-my-openagent",
     "opencode-wakatime",
-    "{{ .chezmoi.homeDir }}/.config/opencode/node_modules/opencode-telegram-notifier/dist/index.js"
+    "{{ .chezmoi.homeDir }}/Projects/Personal/opencode-hooks/hooks-opencode/alarm/index.js"
   ],
   "mcp": {
     "playwright": {
@@ -15,7 +15,7 @@
     "kubernetes": {
       "type": "local",
       "command": ["npx", "-y", "kubernetes-mcp-server@latest"],
-      "enabled": true
+      "enabled": false
     },
     "terraform": {
       "type": "local",
@@ -25,16 +25,6 @@
       ],
       "enabled": true
     },
-    "aws-serverless": {
-      "type": "local",
-      "command": ["awslabs.aws-serverless-mcp-server"],
-      "enabled": true
-    },
-    "serverless": {
-      "type": "local",
-      "command": ["npx", "-y", "serverless", "mcp"],
-      "enabled": true
-    },
     "code-review-graph": {
       "type": "local",
       "command": ["code-review-graph", "serve"],
@@ -42,6 +32,55 @@
     }
   },
   "provider": {
+    "local": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Local (llama.cpp · Strix Halo)",
+      "options": {
+        "baseURL": "http://localhost:8080/v1",
+        "apiKey": "local"
+      },
+      "models": {
+        "gemma4-26b": {
+          "name": "Gemma 4 26B-A4B",
+          "tools": true,
+          "reasoning": false,
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          },
+          "limit": {
+            "context": 131072,
+            "output": 32768
+          }
+        },
+        "gpt-oss-20b": {
+          "name": "GPT OSS 20B",
+          "tool_call": true,
+          "reasoning": true,
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          },
+          "limit": {
+            "context": 65536,
+            "output": 32768
+          }
+        },
+        "gpt-oss-120b": {
+          "name": "GPT OSS 120B",
+          "tool_call": true,
+          "reasoning": true,
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          },
+          "limit": {
+            "context": 131072,
+            "output": 32768
+          }
+        }
+      }
+    },
     "openrouter": {
       "models": {
         "deepseek/deepseek-v4-pro": {
