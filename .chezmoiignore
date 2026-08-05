@@ -186,25 +186,9 @@ node_modules/**
 /.claude/skills
 /.claude/skills/**
 
-# OMP runtime databases, logs, sessions, and generated state
-/.omp/agent/*.db
-/.omp/agent/*.db-shm
-/.omp/agent/*.db-wal
-/.omp/agent/last-changelog-version
-/.omp/agent/sessions
-/.omp/agent/sessions/**
-/.omp/agent/terminal-sessions
-/.omp/agent/terminal-sessions/**
-/.omp/.omc
-/.omp/.omc/**
-/.omp/.omo
-/.omp/.omo/**
-/.omp/logs
-/.omp/logs/**
-/.omp/.serverless
-/.omp/.serverless/**
-/.omp/install-id
-/.omp/gpu_cache.json
+# oh-my-pi (omp) uninstalled — out of chezmoi scope entirely
+/.omp
+/.omp/**
 
 # Pi local auth, package cache, binaries, and sessions
 /.pi/agent/bin
