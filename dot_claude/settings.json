@@ -5,7 +5,7 @@
       "Bash(terraform *destroy:*)"
     ]
   },
-  "model": "opus[1m]",
+  "model": "opus",
   "hooks": {
     "PreToolUse": [
       {
@@ -50,6 +50,16 @@
             "command": "bash /home/shinjungtae/.claude/hooks/forbidden-guard.sh"
           }
         ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ] && [ -r '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ] && [ -x '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ]; then /bin/sh '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
       }
     ],
     "SubagentStop": [
@@ -58,6 +68,15 @@
           {
             "type": "command",
             "command": "bash /home/shinjungtae/.claude/hooks/lsp-diagnostics.sh"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ] && [ -r '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ] && [ -x '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ]; then /bin/sh '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
           }
         ]
       }
@@ -70,6 +89,15 @@
             "command": "bash /home/shinjungtae/.claude/hooks/completion-gate.sh"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ] && [ -r '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ] && [ -x '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ]; then /bin/sh '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -79,6 +107,84 @@
           {
             "type": "command",
             "command": "bash /home/shinjungtae/.claude/hooks/lsp-diagnostics.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ] && [ -r '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ] && [ -x '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ]; then /bin/sh '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ] && [ -r '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ] && [ -x '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ]; then /bin/sh '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "StopFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ] && [ -r '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ] && [ -x '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ]; then /bin/sh '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ] && [ -r '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ] && [ -x '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ]; then /bin/sh '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "TeammateIdle": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ] && [ -r '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ] && [ -x '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ]; then /bin/sh '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ] && [ -r '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ] && [ -x '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ]; then /bin/sh '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ] && [ -r '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ] && [ -x '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh' ]; then /bin/sh '/home/shinjungtae/.orca/agent-hooks/claude-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
           }
         ]
       }
@@ -94,7 +200,8 @@
     "claude-code-wakatime@wakatime": true,
     "notion@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
-    "pyright-lsp@claude-plugins-official": true
+    "pyright-lsp@claude-plugins-official": true,
+    "lua-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "omc": {
@@ -119,6 +226,6 @@
   "effortLevel": "high",
   "awaySummaryEnabled": false,
   "skipDangerousModePermissionPrompt": true,
-  "theme": "auto",
-  "skipWorkflowUsageWarning": true
+  "skipWorkflowUsageWarning": true,
+  "theme": "auto"
 }

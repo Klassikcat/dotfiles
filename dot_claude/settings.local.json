@@ -34,7 +34,7 @@
     "playwright",
     "kubernetes",
     "aws-serverless",
-    "serverless",
-    "code-review-graph"
+    "code-review-graph",
+    "chrome-devtools-attach"
   ]
 }

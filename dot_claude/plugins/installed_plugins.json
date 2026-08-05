@@ -14,10 +14,10 @@
     "chrome-devtools-mcp@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/home/shinjungtae/.claude/plugins/cache/claude-plugins-official/chrome-devtools-mcp/1.4.0",
-        "version": "1.4.0",
+        "installPath": "/home/shinjungtae/.claude/plugins/cache/claude-plugins-official/chrome-devtools-mcp/1.6.0",
+        "version": "1.6.0",
         "installedAt": "2026-05-25T09:51:23.971Z",
-        "lastUpdated": "2026-06-24T02:17:52.922Z",
+        "lastUpdated": "2026-07-15T07:10:56.870Z",
         "gitCommitSha": "8e8e83e3f8d150689ffb58c3b977eb72016c7b3f"
       }
     ],
@@ -57,6 +57,15 @@
         "version": "1.0.0",
         "installedAt": "2026-06-19T01:06:29.075Z",
         "lastUpdated": "2026-06-19T01:06:29.075Z"
+      }
+    ],
+    "lua-lsp@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/home/shinjungtae/.claude/plugins/cache/claude-plugins-official/lua-lsp/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-07-02T02:53:06.011Z",
+        "lastUpdated": "2026-07-02T02:53:06.011Z"
       }
     ]
   }

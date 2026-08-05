@@ -1,12 +1,20 @@
 {
-  "lastChangelogVersion": "0.79.9",
+  "lastChangelogVersion": "0.83.0",
   "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.5",
-  "defaultThinkingLevel": "xhigh",
-  "theme": "dark",
-  "hideThinkingBlock": true,
+  "defaultModel": "gpt-5.6-luna",
+  "defaultThinkingLevel": "max",
+  "theme": "atom-one-light/atom-one-dark",
+  "hideThinkingBlock": false,
   "packages": [
     "npm:pi-wakatime",
-    "npm:@spences10/pi-lsp"
-  ]
+    "npm:@spences10/pi-lsp",
+    "git:https://github.com/hasit/pi-community-themes"
+  ],
+  "terminal": {
+    "showTerminalProgress": true
+  },
+  "collapseChangelog": false,
+  "treeFilterMode": "all",
+  "showHardwareCursor": false,
+  "enableInstallTelemetry": true
 }

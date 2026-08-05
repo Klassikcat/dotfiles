@@ -28,7 +28,7 @@
     "code-review-graph": {
       "type": "local",
       "command": ["code-review-graph", "serve"],
-      "enabled": true
+      "enabled": false
     }
   },
   "provider": {
@@ -84,6 +84,13 @@
     "openrouter": {
       "models": {
         "deepseek/deepseek-v4-pro": {
+          "options": {
+            "provider": {
+              "sort": "latency"
+            }
+          }
+        },
+        "moonshotai/kimi-k3": {
           "options": {
             "provider": {
               "sort": "latency"

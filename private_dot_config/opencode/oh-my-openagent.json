@@ -8,9 +8,9 @@
   "google_auth": false,
   "agents": {
     "sisyphus": {
-      "model": "opencode-go/kimi-k2.6",
+      "model": "opencode-go/glm-5.2",
       "fallback_models": [
-        "opencode-go/glm-5.2",
+        "opencode-go/kimi-k2.7-code",
         "openrouter/deepseek/deepseek-v4-pro"
       ],
       "textVerbosity": "low",
@@ -20,46 +20,38 @@
     },
     "librarian": {
       "model": "opencode-go/deepseek-v4-flash",
-      "fallback_models": [
-        "openrouter/minimax/minimax-m2.7",
-        "local/gemma4-26b"
-      ]
+      "fallback_models": ["openrouter/minimax/minimax-m2.7", "local/gemma4-26b"]
     },
     "prometheus": {
-      "model": "opencode-go/glm-5.2",
-      "fallback_models": [
-        "openrouter/z-ai/glm-5.1",
-        "openrouter/moonshotai/kimi-k2.6"
-      ],
+      "model": "openrouter/moonshotai/kimi-k3",
+      "fallback_models": ["openrouter/z-ai/glm-5.2", "openai/gpt-5.6-sol"],
+      "variant": "high",
       "reasoningEffort": "high",
       "textVerbosity": "low"
     },
     "hephaestus": {
       "model": "openai/gpt-5.5",
-      "reasoningEffort": "medium",
+      "reasoningEffort": "high",
       "textVerbosity": "low"
     },
     "metis": {
-      "model": "openai/gpt-5.5",
+      "model": "openai/gpt-5.6-sol",
       "reasoningEffort": "xhigh",
       "textVerbosity": "low"
     },
     "momus": {
-      "model": "openai/gpt-5.5",
+      "model": "openai/gpt-5.6-sol",
       "reasoningEffort": "xhigh",
       "textVerbosity": "low"
     },
     "oracle": {
-      "model": "openai/gpt-5.5",
+      "model": "openai/gpt-5.6-terra",
       "reasoningEffort": "xhigh",
       "textVerbosity": "low"
     },
     "explore": {
-      "model": "opencode-go/deepseek-v4-flash",
-      "fallback_models": [
-        "openrouter/minimax/minimax-m2.7",
-        "local/gemma4-26b"
-      ]
+      "model": "openrouter/deepseek/deepseek-v4-flash",
+      "fallback_models": ["openrouter/minimax/minimax-m2.7", "local/gemma4-26b"]
     },
     "frontend-ui-ux-engineer": {
       "model": "opencode-go/kimi-k2.6",
@@ -74,18 +66,19 @@
       "model": "openrouter/google/gemini-3.5-flash"
     },
     "atlas": {
-      "model": "openai/gpt-5.5",
+      "model": "opencode-go/glm-5.2",
       "fallback_models": ["openrouter/moonshotai/kimi-k2.6"],
+      "variant": "medium",
       "textVerbosity": "low",
       "reasoningEffort": "medium"
     },
     "sisyphus-junior": {
-      "model": "openai/gpt-5.5",
+      "model": "openai/gpt-5.6-terra",
       "fallback_models": [
         "openrouter/openai/gpt-oss-120b",
         "local/gpt-oss-120b"
       ],
-      "reasoningEffort": "low",
+      "reasoningEffort": "medium",
       "textVerbosity": "low"
     }
   },
@@ -94,10 +87,10 @@
       "model": "local/gemma4-26b"
     },
     "ultrabrain": {
-      "model": "openai/gpt-5.5"
+      "model": "openai/gpt-5.6-terra"
     },
     "deep": {
-      "model": "openai/gpt-5.5"
+      "model": "openai/gpt-5.6-terra"
     },
     "artistry": {
       "model": "local/gemma4-26b"
