@@ -1,0 +1,217 @@
+* {
+	font-family: "Noto Sans", "JetBrainsMono Nerd Font", sans-serif;
+	font-weight: 500;
+	min-height: 0;
+	font-size: 98%;
+	font-feature-settings: '"zero", "ss01", "ss02", "ss03", "ss04", "ss05", "cv31"';
+}
+
+#waybar {
+	/* Win11 light acrylic: translucent tint + Hyprland blur + hairline top edge */
+	background-color: rgba(243, 243, 243, 0.6);
+	color: #1a1a1a;
+	border: none;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+	border-radius: 0;
+	box-shadow: none;
+	padding: 5px 10px;
+	min-height: 25px;
+}
+
+#waybar.hidden {
+	opacity: 0.15;
+}
+
+.modules-left,
+.modules-center,
+.modules-right {
+	margin: 0;
+	padding: 0;
+	background: transparent;
+}
+
+#workspaces {
+	padding: 0;
+	margin: 0;
+}
+
+#workspaces button {
+	padding: 0.18rem 0.7rem;
+	margin: 1px 2px;
+	border-radius: 4px;
+	background: transparent;
+	color: rgba(26, 26, 26, 0.7);
+	transition: all 0.2s ease;
+}
+
+#workspaces button.active {
+	background: rgba(0, 0, 0, 0.06);
+	color: #1a1a1a;
+	box-shadow: inset 0 -2px 0 0 #005fb8; /* Win11 accent underline */
+}
+
+#workspaces button:hover,
+#workspaces button.urgent {
+	background: rgba(0, 0, 0, 0.05);
+	color: #1a1a1a;
+}
+
+#tray,
+#clock,
+#cpu,
+#memory,
+#disk,
+#temperature,
+#network,
+#network.speed,
+#pulseaudio,
+#pulseaudio.microphone,
+#power-profiles-daemon,
+#battery,
+#bluetooth,
+#idle_inhibitor,
+#keyboard-state,
+#custom-weather,
+#custom-swaync,
+#custom-light_dark,
+#custom-lock,
+#custom-power,
+#custom-keyboard,
+#custom-gpu,
+#custom-menu,
+#custom-playerctl,
+#custom-cava_mviz,
+#custom-hypridle,
+#custom-nightlight,
+#mpris,
+#window {
+	padding: 0.24rem 0.6rem;
+	margin: 1px 1px;
+	border-radius: 4px;
+	color: #1a1a1a;
+	background: transparent;
+	opacity: 0.85;
+	transition: all 0.2s ease;
+}
+
+#tray:hover,
+#clock:hover,
+#cpu:hover,
+#memory:hover,
+#disk:hover,
+#temperature:hover,
+#network:hover,
+#pulseaudio:hover,
+#power-profiles-daemon:hover,
+#battery:hover,
+#bluetooth:hover,
+#idle_inhibitor:hover,
+#keyboard-state:hover,
+#custom-weather:hover,
+#custom-swaync:hover,
+#custom-light_dark:hover,
+#custom-lock:hover,
+#custom-power:hover,
+#custom-keyboard:hover,
+#custom-gpu:hover,
+#custom-menu:hover,
+#custom-playerctl:hover,
+#custom-cava_mviz:hover,
+#custom-hypridle:hover,
+#custom-nightlight:hover,
+#mpris:hover,
+#window:hover {
+	opacity: 1;
+	background: rgba(0, 0, 0, 0.05);
+}
+
+#custom-separator,
+#custom-separator#dot,
+#custom-separator#dot-line,
+#custom-separator#line,
+#custom-separator#blank,
+#custom-separator#blank_2,
+#custom-separator#blank_3 {
+	color: rgba(26, 26, 26, 0.25);
+	opacity: 1;
+	padding: 0 0.1rem;
+}
+
+#clock,
+#custom-weather,
+#mpris,
+#custom-playerctl {
+	opacity: 1;
+}
+
+#custom-lock,
+#custom-power {
+	color: #1a1a1a;
+}
+
+#custom-power {
+	padding-right: 0.24rem;
+}
+
+#custom-light_dark {
+	padding: 0.16rem 0.34rem;
+	margin-left: 0;
+	border-radius: 0;
+	background: transparent;
+	color: #1a1a1a;
+	opacity: 1;
+}
+
+#custom-light_dark.dark {
+	color: #1a1a1a;
+}
+
+#custom-light_dark.light {
+	color: #1a1a1a;
+}
+
+#group-audio,
+#group-status,
+#group-notify,
+#group-connections,
+#group-mobo_drawer,
+#group-laptop,
+#group-app_drawer {
+	margin: 0;
+	padding: 0;
+}
+
+#network.disconnected,
+#network.disabled,
+#pulseaudio.muted,
+#temperature.critical {
+	color: #9d5d00;
+	opacity: 1;
+}
+
+#battery.warning {
+	color: #9d5d00;
+	opacity: 1;
+}
+
+@keyframes battery-blink-dark {
+	to {
+		color: #c42b1c;
+	}
+}
+
+#battery.critical:not(.charging) {
+	color: #c42b1c;
+	animation-name: battery-blink-dark;
+	animation-duration: 0.6s;
+	animation-timing-function: steps(12);
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+	opacity: 1;
+}
+
+#idle_inhibitor.activated,
+#custom-hypridle.notactive {
+	color: #0f7b0f;
+	opacity: 1;
+}

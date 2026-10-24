@@ -103,11 +103,11 @@ set_waybar_style() {
     
     # Set fixed styles for each mode
     if [ "$theme" = "Dark" ]; then
-        # Dark mode: Catppuccin Mocha Clean
-        style_file="$waybar_styles/[Catppuccin] Mocha Clean.css"
+        # Dark mode: Win11 Acrylic
+        style_file="$waybar_styles/[Win11] Acrylic.css"
     else
-        # Light mode: Catppuccin Latte Clean
-        style_file="$waybar_styles/[Catppuccin] Latte Clean.css"
+        # Light mode: Win11 Acrylic Light
+        style_file="$waybar_styles/[Win11] Acrylic Light.css"
     fi
 
     if [ -f "$style_file" ]; then

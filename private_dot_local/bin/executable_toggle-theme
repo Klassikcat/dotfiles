@@ -268,7 +268,7 @@ set_theme_properties() {
     if [ "$theme_mode" = "Dark" ]; then
         # Dark Mode Properties
         palette="$pallete_dark"
-        waybar_style_file="$HOME/.config/waybar/style/[Catppuccin] Mocha Clean.css"
+        waybar_style_file="$HOME/.config/waybar/style/[Win11] Acrylic.css"
         swaync_bg_color="rgba(18, 18, 20, 0.92)"
         swaync_bg_alt_color="rgba(30, 31, 35, 0.92)"
         swaync_bg_hover_color="rgba(48, 50, 56, 0.95)"
@@ -293,7 +293,7 @@ set_theme_properties() {
     elif [ "$theme_mode" = "Midnight" ]; then
         # Midnight Mode Properties (Dark theme with noa_pajama wallpaper)
         palette="$pallete_dark"
-        waybar_style_file="$HOME/.config/waybar/style/[Catppuccin] Mocha Clean.css"
+        waybar_style_file="$HOME/.config/waybar/style/[Win11] Acrylic.css"
         swaync_bg_color="rgba(18, 18, 20, 0.92)"
         swaync_bg_alt_color="rgba(30, 31, 35, 0.92)"
         swaync_bg_hover_color="rgba(48, 50, 56, 0.95)"
@@ -318,7 +318,7 @@ set_theme_properties() {
     else
         # Light and Intermediate Mode Properties
         palette="$pallete_light"
-        waybar_style_file="$HOME/.config/waybar/style/[Catppuccin] Latte Clean.css"
+        waybar_style_file="$HOME/.config/waybar/style/[Win11] Acrylic Light.css"
         swaync_bg_color="rgba(254, 255, 255, 0.92)"
         swaync_bg_alt_color="rgba(245, 246, 248, 0.92)"
         swaync_bg_hover_color="rgba(238, 240, 243, 0.95)"
