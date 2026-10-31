@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Keep V2's global config and plugin discovery separate from V1.
+export OPENCODE_CONFIG_DIR="$HOME/.config/opencode2"
+exec "$HOME/.opencode/bin/opencode2" "$@"

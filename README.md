@@ -25,6 +25,28 @@ These dotfiles use `chezmoi` for management, `Hyprland` for window management, a
 - `private_dot_config/systemd/user/`: Services for theme automation and system monitoring.
 - `private_dot_local/bin/`: Utility scripts including the theme toggler.
 
+## Additional configuration snapshots
+- AI tools: Claude Code hooks/agents, OpenCode and OpenCode2 profiles/plugins, pi settings/extensions/prompts, shared `~/.agents/skills`, and Codex MCP servers.
+- Desktop: Hyprland Lua configuration, hyprdynamicmonitors profiles, GTK/Qt themes, SwayNC, Wlogout, font/input-method settings, and PipeWire/WirePlumber overrides.
+- Tools: Ghostty/WezTerm, Zed/VS Code preferences, Git, btop, fastfetch, k9s, and user utility scripts/services.
+
+These are configuration snapshots, not a complete software installer. Some hooks,
+symlinks, services, and extensions depend on local projects (notably
+`~/Projects/Personal/opencode-hooks`), installed packages, or machine-specific paths.
+Review `chezmoi diff` before applying on another machine. Codex's modify script
+updates MCP servers only; other Codex settings remain local.
+
+Credentials, service passwords (`opencode*/service.json`), sessions, caches,
+backup files, package installations, and pi's generated model catalog are not
+synced. Provision these separately. The OpenCode systemd service reads its password
+from the ignored `~/.config/opencode/server.env` (mode 0600), containing
+`OPENCODE_SERVER_PASSWORD=...`; create it before enabling the service on a new
+machine or applying the updated service file. The live service is not changed by
+syncing this repository. Generated monitor output remains unmanaged;
+its source profiles are included. Unusual directory modes such as 0750/0744 may
+still appear in `chezmoi status` because the default source attributes cannot
+represent them exactly.
+
 ## Requirements
 - **Core**: `chezmoi`, `hyprland`, `waybar`, `kitty`, `rofi`, `swww`, `wallust`.
 - **Theme automation**: `systemd` user services, `gsettings`, `dconf`, `kvantummanager`.

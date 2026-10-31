@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+exec /home/shinjungtae/.local/bin/kotlin-language-server "$@"

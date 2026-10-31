@@ -10,21 +10,12 @@ if pidof rofi > /dev/null; then
   pkill rofi
 fi
 
-# define the config files
-keybinds_conf="$HOME/.config/hypr/configs/Keybinds.conf"
-user_keybinds_conf="$HOME/.config/hypr/UserConfigs/UserKeybinds.conf"
-laptop_conf="$HOME/.config/hypr/UserConfigs/Laptops.conf"
+# keybinds live in hyprland.lua since Hyprland 0.57 (Lua config)
+hypr_lua="$HOME/.config/hypr/hyprland.lua"
 rofi_theme="$HOME/.config/rofi/config-keybinds.rasi"
 msg='☣️ NOTE ☣️: Clicking with Mouse or Pressing ENTER will have NO function'
 
-# combine the contents of the keybinds files and filter for keybinds
-keybinds=$(cat "$keybinds_conf" "$user_keybinds_conf" | grep -E '^bind')
-
-# check if laptop.conf exists and add its keybinds if present
-if [[ -f "$laptop_conf" ]]; then
-    laptop_binds=$(grep -E '^bind' "$laptop_conf")
-    keybinds+=$'\n'"$laptop_binds"
-fi
+keybinds=$(grep -E '^\s*(bind|exec)\(' "$hypr_lua")
 
 # check for any keybinds to display
 if [[ -z "$keybinds" ]]; then
@@ -33,7 +24,7 @@ if [[ -z "$keybinds" ]]; then
 fi
 
 # replace $mainmod with super in the displayed keybinds for rofi
-display_keybinds=$(echo "$keybinds" | sed 's/\$mainMod/SUPER/g')
+display_keybinds=$(echo "$keybinds" | sed 's/M \.\. "/"SUPER + /; s/^\s*//')
 
 # use rofi to display the keybinds with the modified content
 echo "$display_keybinds" | rofi -dmenu -i -config "$rofi_theme" -mesg "$msg"

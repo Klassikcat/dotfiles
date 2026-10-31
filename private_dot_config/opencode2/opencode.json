@@ -1,0 +1,380 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "providers": {
+    "openai": {
+      "models": {
+        "gpt-5.1-codex-max": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-5.2": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-5.2-codex": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-5.5": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-5.5-fast": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-5.6-luna": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-5.6-luna-fast": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-5.6-sol": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-5.6-sol-fast": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-5.6-terra": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-5.6-terra-fast": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-6-astra": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-6-astra-fast": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-6-luna": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-6-luna-fast": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-6-sol": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-6-sol-fast": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-6.1-sol": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-6.1-sol-fast": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } }
+      }
+    }
+  },
+  "plugins": [
+    "/home/shinjungtae/Projects/Personal/opencode-hooks/hooks-opencode/alarm"
+  ],
+  "mcp": {
+    "playwright": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@playwright/mcp"
+      ],
+      "enabled": true
+    },
+    "kubernetes": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "kubernetes-mcp-server@latest"
+      ],
+      "enabled": false
+    },
+    "terraform": {
+      "type": "local",
+      "command": [
+        "/home/shinjungtae/.local/share/mcp-servers/terraform-mcp-server",
+        "stdio"
+      ],
+      "enabled": true
+    },
+    "code-review-graph": {
+      "type": "local",
+      "command": [
+        "code-review-graph",
+        "serve"
+      ],
+      "enabled": false
+    },
+    "aws-mcp": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "mcp-proxy-for-aws@1.6.3",
+        "https://aws-mcp.us-east-1.api.aws/mcp",
+        "--metadata",
+        "AWS_REGION=ap-northeast-2",
+        "--profile",
+        "dev",
+        "--read-only"
+      ],
+      "env": {
+        "AWS_MCP_PROXY_PROFILES": "dev"
+      },
+      "enabled": true,
+      "timeout": 100000
+    }
+  },
+  "provider": {
+    "local": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Local (llama.cpp · Strix Halo)",
+      "options": {
+        "baseURL": "http://localhost:8080/v1",
+        "apiKey": "local"
+      },
+      "models": {
+        "gemma4-26b": {
+          "name": "Gemma 4 26B-A4B",
+          "tools": true,
+          "reasoning": false,
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 131072,
+            "output": 32768
+          }
+        },
+        "gpt-oss-20b": {
+          "name": "GPT OSS 20B",
+          "tool_call": true,
+          "reasoning": true,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 65536,
+            "output": 32768
+          }
+        },
+        "gpt-oss-120b": {
+          "name": "GPT OSS 120B",
+          "tool_call": true,
+          "reasoning": true,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 131072,
+            "output": 32768
+          }
+        }
+      }
+    },
+    "openrouter": {
+      "models": {
+        "deepseek/deepseek-v4-pro": {
+          "options": {
+            "provider": {
+              "sort": "latency"
+            }
+          }
+        },
+        "moonshotai/kimi-k3": {
+          "options": {
+            "provider": {
+              "sort": "latency"
+            }
+          }
+        },
+        "deepseek/deepseek-v4-flash": {
+          "options": {
+            "provider": {
+              "sort": "latency"
+            }
+          }
+        },
+        "z-ai/glm-5.1": {
+          "options": {
+            "provider": {
+              "sort": "latency"
+            }
+          }
+        },
+        "z-ai/glm-5.2": {
+          "options": {
+            "provider": {
+              "sort": "latency"
+            }
+          }
+        },
+        "openai/gpt-oss-120b": {
+          "options": {
+            "provider": {
+              "sort": "latency"
+            }
+          }
+        },
+        "moonshotai/kimi-k2.6": {
+          "options": {
+            "provider": {
+              "sort": "latency"
+            }
+          }
+        }
+      }
+    },
+    "openai": {
+      "name": "OpenAI",
+      "options": {
+        "reasoningEffort": "medium",
+        "reasoningSummary": "auto",
+        "textVerbosity": "medium",
+        "include": [
+          "reasoning.encrypted_content"
+        ],
+        "store": false
+      },
+      "models": {
+        "gpt-6.1-sol": {
+          "limit": {
+            "context": 1000000,
+            "input": 872000,
+            "output": 128000
+          }
+        },
+        "gpt-6-astra": {
+          "limit": {
+            "context": 1050000,
+            "input": 922000,
+            "output": 128000
+          }
+        },
+        "gpt-6-luna": {
+          "limit": {
+            "context": 1050000,
+            "input": 922000,
+            "output": 128000
+          }
+        },
+        "gpt-6-sol": {
+          "limit": {
+            "context": 1050000,
+            "input": 922000,
+            "output": 128000
+          }
+        },
+        "gpt-5.6-terra": {
+          "limit": {
+            "context": 1050000,
+            "input": 922000,
+            "output": 128000
+          }
+        },
+        "gpt-5.2": {
+          "name": "GPT 5.2 (OAuth)",
+          "limit": {
+            "context": 272000,
+            "output": 128000
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "variants": {
+            "none": {
+              "reasoningEffort": "none",
+              "reasoningSummary": "auto",
+              "textVerbosity": "medium"
+            },
+            "low": {
+              "reasoningEffort": "low",
+              "reasoningSummary": "auto",
+              "textVerbosity": "medium"
+            },
+            "medium": {
+              "reasoningEffort": "medium",
+              "reasoningSummary": "auto",
+              "textVerbosity": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high",
+              "reasoningSummary": "detailed",
+              "textVerbosity": "medium"
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh",
+              "reasoningSummary": "detailed",
+              "textVerbosity": "medium"
+            }
+          }
+        },
+        "gpt-5.2-codex": {
+          "name": "GPT 5.2 Codex (OAuth)",
+          "limit": {
+            "context": 272000,
+            "output": 128000
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low",
+              "reasoningSummary": "auto",
+              "textVerbosity": "medium"
+            },
+            "medium": {
+              "reasoningEffort": "medium",
+              "reasoningSummary": "auto",
+              "textVerbosity": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high",
+              "reasoningSummary": "detailed",
+              "textVerbosity": "medium"
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh",
+              "reasoningSummary": "detailed",
+              "textVerbosity": "medium"
+            }
+          }
+        },
+        "gpt-5.1-codex-max": {
+          "name": "GPT 5.1 Codex Max (OAuth)",
+          "limit": {
+            "context": 272000,
+            "output": 128000
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low",
+              "reasoningSummary": "detailed",
+              "textVerbosity": "medium"
+            },
+            "medium": {
+              "reasoningEffort": "medium",
+              "reasoningSummary": "detailed",
+              "textVerbosity": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high",
+              "reasoningSummary": "detailed",
+              "textVerbosity": "medium"
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh",
+              "reasoningSummary": "detailed",
+              "textVerbosity": "medium"
+            }
+          }
+        }
+      }
+    }
+  },
+  "agents": {
+    "iam-role-creator": {
+      "disabled": true
+    }
+  },
+  "agent": {
+    "general": {
+      "disable": true
+    }
+  }
+}

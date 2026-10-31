@@ -21,6 +21,7 @@ $env.OPENCODE_DISABLE_CLAUDE_CODE = "1"
 
 $env.PATH = ($env.PATH | split row (char esep)
   | prepend ($env.HOME | path join ".npm-global" "bin")
+  | prepend ($env.HOME | path join ".config" "opencode2" "bin")
   | append $"($env.HOME)/.opencode/bin"
   | append $"($env.HOME)/.bun/bin"
   | append $"($env.HOME)/.local/bin"
@@ -53,8 +54,8 @@ if $nvm_default_node != "" and ($nvm_default_node | path exists) {
 }
 
 
-$env.EDITOR = "vim"
-$env.VISUAL = "vim"
+$env.EDITOR = "nvim"
+$env.VISUAL = "nvim"
 $env.LIBVA_DRIVER_NAME = "nvidia"
 $env.NVD_BACKEND = "direct"
 $env.SYSTEMD_EDITOR = "vim"
@@ -97,3 +98,10 @@ $env.config = ($env.config? | default {} | upsert hooks {
 # Podman rootless socket → k3d / docker 호환 CLI
 $env.DOCKER_HOST = $"unix:///run/user/(id -u | str trim)/podman/podman.sock"
 $env.DOCKER_SOCK = $"/run/user/(id -u | str trim)/podman/podman.sock"  # k3d: 노드 컨테이너에 마운트할 소켓 경로
+
+# mise — asdf 호환 도구 버전 관리 (atmos, terraform, trivy 등)
+# 1) shims: 비인터랙티브(스크립트/-c)에서도 항상 동작하는 기본 경로
+#    (shims는 cwd의 mise.toml을 따라 버전 자동 선택)
+$env.PATH = ($env.PATH | prepend ($env.HOME | path join ".local" "share" "mise" "shims"))
+# 2) activate: 인터랙티브 세션에서 pre_prompt/PWD 훅으로 버전·env 자동 전환
+source ([$nu.default-config-dir "mise.nu"] | path join)

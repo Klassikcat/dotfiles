@@ -1,0 +1,102 @@
+# Catppuccin Latte inspired skin for K9s
+k9s:
+  body:
+    fgColor: "#4c4f69"
+    bgColor: "#eff1f5"
+    logoColor: "#1e66f5"
+  prompt:
+    fgColor: "#4c4f69"
+    bgColor: "#e6e9ef"
+    suggestColor: "#7287fd"
+  info:
+    fgColor: "#4c4f69"
+    sectionColor: "#1e66f5"
+    k9sRevColor: "#8839ef"
+    cpuColor: "#df8e1d"
+    memColor: "#40a02b"
+  help:
+    fgColor: "#4c4f69"
+    bgColor: "#eff1f5"
+    keyColor: "#1e66f5"
+    numKeyColor: "#8839ef"
+    sectionColor: "#209fb5"
+  dialog:
+    fgColor: "#4c4f69"
+    bgColor: "#e6e9ef"
+    buttonFgColor: "#eff1f5"
+    buttonBgColor: "#1e66f5"
+    buttonFocusFgColor: "#eff1f5"
+    buttonFocusBgColor: "#8839ef"
+    labelFgColor: "#1e66f5"
+    fieldFgColor: "#4c4f69"
+  frame:
+    border:
+      fgColor: "#bcc0cc"
+      bgColor: "#eff1f5"
+    menu:
+      fgColor: "#4c4f69"
+      keyColor: "#1e66f5"
+      numKeyColor: "#8839ef"
+    crumbs:
+      fgColor: "#eff1f5"
+      keyColor: "#1e66f5"
+      activeColor: "#1e66f5"
+    status:
+      newColor: "#1e66f5"
+      modifyColor: "#df8e1d"
+      addColor: "#40a02b"
+      errorColor: "#d20f39"
+      highlightColor: "#8839ef"
+      killColor: "#d20f39"
+      completedColor: "#40a02b"
+    title:
+      fgColor: "#4c4f69"
+      bgColor: "#eff1f5"
+      highlightColor: "#1e66f5"
+      counterColor: "#8839ef"
+      filterColor: "#df8e1d"
+  views:
+    charts:
+      bgColor: "#acb0be"
+      dialBgColor: "#acb0be"
+      chartBgColor: "#acb0be"
+      focusFgColor: "#eff1f5"
+      focusBgColor: "#1e66f5"
+      defaultDialColors:
+        - "#1e66f5"
+        - "#40a02b"
+      defaultChartColors:
+        - "#1e66f5"
+        - "#40a02b"
+        - "#df8e1d"
+        - "#8839ef"
+        - "#d20f39"
+    table:
+      fgColor: "#4c4f69"
+      bgColor: "#eff1f5"
+      cursorFgColor: "#eff1f5"
+      cursorBgColor: "#1e66f5"
+      markColor: "#fe640b"
+      header:
+        fgColor: "#1e66f5"
+        bgColor: "#eff1f5"
+        sorterColor: "#8839ef"
+    xray:
+      fgColor: "#4c4f69"
+      bgColor: "#eff1f5"
+      cursorColor: "#1e66f5"
+      cursorFgColor: "#eff1f5"
+      graphicColor: "#209fb5"
+      showIcons: true
+    yaml:
+      keyColor: "#1e66f5"
+      colonColor: "#7c7f93"
+      valueColor: "#4c4f69"
+    logs:
+      fgColor: "#4c4f69"
+      bgColor: "#eff1f5"
+      indicator:
+        fgColor: "#eff1f5"
+        bgColor: "#1e66f5"
+        toggleOnColor: "#40a02b"
+        toggleOffColor: "#d20f39"

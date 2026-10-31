@@ -7,18 +7,19 @@
 
 notif="$HOME/.config/swaync/images/ja.png"
 
+TOUCHPAD_DEVICE="asue1209:00-04f3:319f-touchpad" # also in hyprland.lua
 export STATUS_FILE="$XDG_RUNTIME_DIR/touchpad.status"
 
 enable_touchpad() {
     printf "true" >"$STATUS_FILE"
     notify-send -u low -i $notif  " Enabling" " touchpad"
-    hyprctl keyword '$TOUCHPAD_ENABLED' "true" -r
+    hyprctl eval "hl.device({ name = '$TOUCHPAD_DEVICE', enabled = true })"
 }
 
 disable_touchpad() {
     printf "false" >"$STATUS_FILE"
     notify-send -u low -i $notif " Disabling" " touchpad"
-    hyprctl keyword '$TOUCHPAD_ENABLED' "false" -r
+    hyprctl eval "hl.device({ name = '$TOUCHPAD_DEVICE', enabled = false })"
 }
 
 if ! [ -f "$STATUS_FILE" ]; then

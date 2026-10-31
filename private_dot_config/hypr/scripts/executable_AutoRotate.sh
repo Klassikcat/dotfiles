@@ -28,20 +28,18 @@ monitor_spec() {
   hyprctl monitors -j | jq -er --arg name "$monitor_name" '
     .[]
     | select(.name == $name)
-    | "\(.name),\(.width)x\(.height)@\(.refreshRate),\(.x)x\(.y),\(.scale)"
+    | "output = \"\(.name)\", mode = \"\(.width)x\(.height)@\(.refreshRate)\", position = \"\(.x)x\(.y)\", scale = \(.scale)"
   '
 }
 
 bind_input_to_monitor() {
-  hyprctl keyword input:touchdevice:output "$monitor_name" >/dev/null 2>&1 || true
-  hyprctl keyword input:tablet:output "$monitor_name" >/dev/null 2>&1 || true
+  hyprctl eval "hl.config({ input = { touchdevice = { output = '$monitor_name' }, tablet = { output = '$monitor_name' } } })" >/dev/null 2>&1 || true
 }
 
 apply_input_transform() {
   local transform="$1"
 
-  hyprctl keyword input:touchdevice:transform "$transform" >/dev/null 2>&1 || true
-  hyprctl keyword input:tablet:transform "$transform" >/dev/null 2>&1 || true
+  hyprctl eval "hl.config({ input = { touchdevice = { transform = $transform }, tablet = { transform = $transform } } })" >/dev/null 2>&1 || true
 }
 
 apply_transform() {
@@ -57,7 +55,7 @@ apply_transform() {
     return 1
   }
 
-  hyprctl keyword monitor "$spec,transform,$transform" >/dev/null || {
+  [ "$(hyprctl eval "hl.monitor({ $spec, transform = $transform })")" = ok ] || {
     log "failed monitor transform=$transform spec=$spec"
     return 1
   }

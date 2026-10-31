@@ -1,0 +1,102 @@
+{
+  "providers": {
+    "openai": {
+      "modelOverrides": {
+        "gpt-4": { "contextWindow": 1000000 },
+        "gpt-4-turbo": { "contextWindow": 1000000 },
+        "gpt-4.1": { "contextWindow": 1000000 },
+        "gpt-4.1-mini": { "contextWindow": 1000000 },
+        "gpt-4.1-nano": { "contextWindow": 1000000 },
+        "gpt-4o": { "contextWindow": 1000000 },
+        "gpt-4o-2024-05-13": { "contextWindow": 1000000 },
+        "gpt-4o-2024-08-06": { "contextWindow": 1000000 },
+        "gpt-4o-2024-11-20": { "contextWindow": 1000000 },
+        "gpt-4o-mini": { "contextWindow": 1000000 },
+        "gpt-5": { "contextWindow": 1000000 },
+        "gpt-5-chat-latest": { "contextWindow": 1000000 },
+        "gpt-5-mini": { "contextWindow": 1000000 },
+        "gpt-5-nano": { "contextWindow": 1000000 },
+        "gpt-5-pro": { "contextWindow": 1000000 },
+        "gpt-5.1": { "contextWindow": 1000000 },
+        "gpt-5.2": { "contextWindow": 1000000 },
+        "gpt-5.2-pro": { "contextWindow": 1000000 },
+        "gpt-5.3-codex": { "contextWindow": 1000000 },
+        "gpt-5.3-codex-spark": { "contextWindow": 1000000 },
+        "gpt-5.4": { "contextWindow": 1000000 },
+        "gpt-5.4-mini": { "contextWindow": 1000000 },
+        "gpt-5.4-nano": { "contextWindow": 1000000 },
+        "gpt-5.4-pro": { "contextWindow": 1000000 },
+        "gpt-5.5": { "contextWindow": 1000000 },
+        "gpt-5.5-pro": { "contextWindow": 1000000 },
+        "gpt-5.6-luna": { "contextWindow": 1000000 },
+        "gpt-5.6-sol": { "contextWindow": 1000000 },
+        "gpt-5.6-terra": { "contextWindow": 1000000 },
+        "gpt-6-astra": { "contextWindow": 1000000 },
+        "gpt-6-luna": { "contextWindow": 1000000 },
+        "gpt-6-sol": { "contextWindow": 1000000 },
+        "gpt-6.1-sol": { "contextWindow": 1000000 },
+        "gpt-daybreak-blue-latest": { "contextWindow": 1000000 },
+        "gpt-daybreak-red-latest": { "contextWindow": 1000000 },
+        "gpt-realtime-2.1": { "contextWindow": 1000000 }
+      }
+    },
+    "openai-codex": {
+      "modelOverrides": {
+        "gpt-5.6-luna": { "contextWindow": 1000000 },
+        "gpt-5.6-sol": { "contextWindow": 1000000 },
+        "gpt-5.6-terra": { "contextWindow": 1000000 },
+        "gpt-6-astra": { "contextWindow": 1000000 },
+        "gpt-6-luna": { "contextWindow": 1000000 },
+        "gpt-6-sol": { "contextWindow": 1000000 },
+        "gpt-6.1-sol": { "contextWindow": 1000000 }
+      }
+    },
+    "local": {
+      "baseUrl": "http://localhost:8080/v1",
+      "api": "openai-completions",
+      "apiKey": "local",
+      "compat": {
+        "supportsDeveloperRole": false,
+        "supportsReasoningEffort": false
+      },
+      "models": [
+        {
+          "id": "gemma4-26b",
+          "name": "Gemma 4 26B-A4B (local · Strix Halo)",
+          "reasoning": true,
+          "input": ["text", "image"],
+          "contextWindow": 131072,
+          "maxTokens": 32768,
+          "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }
+        },
+        {
+          "id": "gpt-oss-20b",
+          "name": "GPT OSS 20B (local · Strix Halo)",
+          "reasoning": true,
+          "input": ["text"],
+          "contextWindow": 65536,
+          "maxTokens": 32768,
+          "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }
+        },
+        {
+          "id": "qwen3-coder-30b",
+          "name": "Qwen3 Coder 30B-A3B Instruct (local · Strix Halo)",
+          "reasoning": false,
+          "input": ["text"],
+          "contextWindow": 131072,
+          "maxTokens": 32768,
+          "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }
+        },
+        {
+          "id": "gpt-oss-120b",
+          "name": "GPT OSS 120B (local · Strix Halo)",
+          "reasoning": true,
+          "input": ["text"],
+          "contextWindow": 131072,
+          "maxTokens": 32768,
+          "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }
+        }
+      ]
+    }
+  }
+}

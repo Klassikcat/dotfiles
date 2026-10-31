@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+agents=(pi opencode claude codex)
+units=(a2a-local@pi.service a2a-local@opencode.service a2a-local@claude.service a2a-local@codex.service)
+port() {
+  case "${1:-}" in
+    pi) echo 18081;; opencode) echo 18082;; claude) echo 18083;; codex) echo 18084;;
+    *) echo 'Expected agent: pi|opencode|claude|codex' >&2; return 2;;
+  esac
+}
+case "${1:-}" in
+  start|stop|restart) exec systemctl --user "$1" "${units[@]}";;
+  status) exec systemctl --user --no-pager status "${units[@]}";;
+  logs) port "${2:-}" >/dev/null; exec journalctl --user -u "a2a-local@$2.service" -n 40 --no-pager;;
+  card) p=$(port "${2:-}"); exec "$HOME/.local/bin/a2a" card get -a "http://127.0.0.1:$p" -o json;;
+  send) p=$(port "${2:-}"); shift 2; exec "$HOME/.local/bin/a2a" send -a "http://127.0.0.1:$p" --timeout 210s "$@";;
+  handoff|job|cancel) exec /usr/bin/python3 "$HOME/.local/share/a2a-local/handoff.py" "$@";;
+  serve)
+    agent=${2:-}; p=$(port "$agent")
+    exec "$HOME/.local/bin/a2a" server --host 127.0.0.1 --port "$p" \
+      --serve-transport jsonrpc --chunk $'\n' --name "local-$agent" \
+      --description "$agent: read-only review or authenticated independent-owner handoff; demo only" \
+      --exec "exec /usr/bin/python3 $HOME/.local/share/a2a-local/respond.py $agent";;
+  *) echo 'Usage: a2a-local start|stop|restart|status|logs AGENT|card AGENT|send AGENT MESSAGE|handoff AGENT --cwd REPO [--check] TASK|job ID|cancel ID' >&2; exit 2;;
+esac

@@ -48,6 +48,10 @@ README.md
 /.local/share/pipx/**
 
 # Backup and temporary files
+*.bak.*
+*.bak-*
+*.backup-*
+*.disabled
 *~
 *.bak
 *.backup
@@ -59,6 +63,7 @@ README.md
 
 # Opencode local artifacts and secrets
 /.config/opencode/telegram-notifier.env
+/.config/opencode/server.env
 /.config/opencode/node_modules
 /.config/opencode/node_modules/**
 /.config/opencode/.cache
@@ -189,6 +194,27 @@ node_modules/**
 # oh-my-pi (omp) uninstalled — out of chezmoi scope entirely
 /.omp
 /.omp/**
+
+# Local service credentials and generated AI runtime state
+/.config/opencode/service.json
+/.config/opencode2/service.json
+/.pi/agent/models-store.json
+/.pi/agent/install
+/.pi/agent/install/**
+/.pi/agent/git
+/.pi/agent/git/**
+/.pi/remote/identity.json
+/.pi/remote/peers.json
+/.pi/remote/sessions
+/.pi/remote/sessions/**
+/.pi/remote/locks
+/.pi/remote/locks/**
+/.pi/remote/*.sock
+**/.omc
+**/.omc/**
+**/.serverless
+**/.serverless/**
+/.config/rofi/.current_wallpaper
 
 # Pi local auth, package cache, binaries, and sessions
 /.pi/agent/bin

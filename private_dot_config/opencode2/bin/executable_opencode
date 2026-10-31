@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Pin V1 to its original profile, even when launched from a V2 child shell.
+export OPENCODE_CONFIG_DIR="$HOME/.config/opencode"
+exec "$HOME/.opencode/bin/opencode" "$@"

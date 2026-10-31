@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+# hypr-dpms-guard — DP-MST 싱크에는 DPMS off를 걸지 않는다.
+#
+# 왜:
+#   DP-MST 링크에 DPMS off를 걸면 amdgpu DCN3.1이
+#     link_set_dpms_off -> dcn31_reset_back_end_for_pipe
+#   에서 물려 화면이 검은 채 복구 불가가 된다 (강제 전원 차단만 답).
+#   2026-08-24 11:36:51 프리즈 사례. 같은 부팅 10:08:48에 전조로
+#   fill_dc_mst_payload_table_from_drm WARNING + "enabling link 2 failed: 15".
+#   MST는 Dell U2723QE(허브 모니터=도크)와 착탈 시점이 1:1로 일치.
+#   과거 LG 2대(DP-1/DP-2, 물리 커넥터=SST)에서는 문제가 없었으므로
+#   기준을 "Dell"이 아니라 "MST 싱크"로 둔다.
+#
+# 판별: MST 동적 포트는 sysfs에 ddc 심볼릭링크가 없다 (AUX가 MST 토폴로지를 탐).
+#
+# ⚠ Hyprland 함정 (v0.55.4 src/config/legacy/DispatcherTranslator.cpp:638):
+#   `dpms off <name>` 의 name이 해석되지 않으면 mon이 nullopt로 남아
+#   **전체 모니터**에 적용된다. 따라서 이름은 반드시 방금 읽은 목록에서만
+#   쓰고, 끝나고 제외 대상이 실제로 켜져 있는지 검증한다.
+#
+# 사용법: hypr-dpms-guard off | on | plan
+# 추가 제외: ~/.config/hypr/dpms-skip (모니터 이름 또는 description 일부, 한 줄씩)
+
+set -uo pipefail
+
+action=${1:-}
+case "$action" in
+  on)       exec hyprctl dispatch 'hl.dsp.dpms({ action = "on" })' ;;
+  off|plan) ;;
+  *) echo "usage: ${0##*/} off|on|plan" >&2; exit 2 ;;
+esac
+
+skip_file=$HOME/.config/hypr/dpms-skip
+
+is_mst() {
+  local d found=1
+  for d in /sys/class/drm/card*-"$1"; do
+    [ -d "$d" ] || continue
+    found=0
+    [ -e "$d/ddc" ] && return 1
+  done
+  return $found          # 커넥터를 못 찾으면 MST로 단정하지 않음
+}
+
+matches_skip() {
+  local name=$1 desc=$2 line
+  [ -r "$skip_file" ] || return 1
+  while IFS= read -r line; do
+    line=${line%%#*}
+    line=$(printf '%s' "$line" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')
+    [ -n "$line" ] || continue
+    [ "$name" = "$line" ] && return 0
+    case "$desc" in *"$line"*) return 0 ;; esac
+  done < "$skip_file"
+  return 1
+}
+
+snapshot() { hyprctl monitors -j 2>/dev/null | jq -r '.[] | "\(.name)\t\(.description)"'; }
+
+mapfile -t rows < <(snapshot)
+if [ ${#rows[@]} -eq 0 ]; then
+  echo "hypr-dpms-guard: 모니터 목록을 못 읽음 — 아무것도 하지 않음" >&2
+  exit 1
+fi
+
+safe=() held=() why=()
+for row in "${rows[@]}"; do
+  name=${row%%$'\t'*}
+  desc=${row#*$'\t'}
+  [ -n "$name" ] || continue                       # 빈 이름은 절대 넘기지 않음
+  if is_mst "$name"; then
+    held+=("$name"); why+=("$name(MST)")
+  elif matches_skip "$name" "$desc"; then
+    held+=("$name"); why+=("$name(skip-list)")
+  else
+    safe+=("$name")
+  fi
+done
+
+if [ "$action" = plan ]; then
+  printf 'dpms off 대상 : %s\n' "${safe[*]:-(없음)}"
+  printf '켠 채로 유지  : %s\n' "${why[*]:-(없음)}"
+  exit 0
+fi
+
+if [ ${#held[@]} -eq 0 ]; then
+  exec hyprctl dispatch 'hl.dsp.dpms({ action = "off" })'                 # 위험 대상 없음 → 평소대로 전체
+fi
+
+if [ ${#safe[@]} -eq 0 ]; then
+  logger -t hypr-dpms-guard "all outputs are MST/skip (${why[*]}) — dpms off 생략"
+  exit 0
+fi
+
+logger -t hypr-dpms-guard "held on: ${why[*]} | off: ${safe[*]}"
+for name in "${safe[@]}"; do
+  hyprctl dispatch "hl.dsp.dpms({ action = \"off\", monitor = \"$name\" })" >/dev/null
+done
+
+# 함정 검증: 제외 대상이 같이 꺼졌으면 즉시 되살린다
+while IFS=$'\t' read -r n st; do
+  for h in "${held[@]}"; do
+    if [ "$n" = "$h" ] && [ "$st" != true ]; then
+      logger -p user.err -t hypr-dpms-guard "per-monitor dpms 실패: $n 이 함께 꺼짐 — 복구"
+      hyprctl dispatch 'hl.dsp.dpms({ action = "on" })' >/dev/null
+      exit 1
+    fi
+  done
+done < <(hyprctl monitors -j 2>/dev/null | jq -r '.[] | "\(.name)\t\(.dpmsStatus)"')

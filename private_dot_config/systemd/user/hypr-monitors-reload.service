@@ -1,0 +1,6 @@
+[Unit]
+Description=hyprctl reload after monitors.conf change
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/hyprctl reload

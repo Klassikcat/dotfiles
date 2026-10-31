@@ -1,0 +1,130 @@
+#!/usr/bin/env bash
+set -u
+
+LOG=${XDG_RUNTIME_DIR:-/tmp}/restore-amd-soundwire.log
+LOCK=${XDG_RUNTIME_DIR:-/tmp}/restore-amd-soundwire.lock
+SAVED_SINK_FILE=${XDG_RUNTIME_DIR:-/tmp}/amd-soundwire-default-sink.before-sleep
+# Internal speaker sink name depends on the active card profile:
+#   HiFi profile (UCM, px13-audio-fix): ...HiFi__Speaker__sink
+#   pro-audio fallback:                 ...pro-output-2
+SPEAKER_SINK_CANDIDATES=(
+  alsa_output.pci-0000_c4_00.5-platform-amd_sdw.HiFi__Speaker__sink
+  alsa_output.pci-0000_c4_00.5-platform-amd_sdw.pro-output-2
+)
+
+present_speaker_sink() {
+  local s
+  for s in "${SPEAKER_SINK_CANDIDATES[@]}"; do
+    if sink_exists "$s"; then printf '%s\n' "$s"; return 0; fi
+  done
+  return 1
+}
+
+run() {
+  echo "+ $*"
+  timeout --kill-after=2s 8s "$@" 2>&1 || echo "! rc=$? cmd=$*"
+}
+
+sink_exists() {
+  local sink=$1
+  timeout --kill-after=1s 4s pactl list short sinks 2>/dev/null | awk '{print $2}' | grep -Fxq -- "$sink"
+}
+
+is_dummy_sink() {
+  local sink=$1
+  [[ -z "$sink" || "$sink" == auto_null || "$sink" == @DEFAULT_SINK@ || "$sink" == *dummy* || "$sink" == *Dummy* ]]
+}
+
+restore_default_sink() {
+  local saved="" current=""
+
+  [[ -r "$SAVED_SINK_FILE" ]] && read -r saved < "$SAVED_SINK_FILE" || true
+  current=$(timeout --kill-after=1s 4s pactl get-default-sink 2>/dev/null || true)
+
+  echo "saved default sink: ${saved:-<none>}"
+  echo "current default sink: ${current:-<none>}"
+
+  if [[ -n "$saved" ]] && ! is_dummy_sink "$saved" && sink_exists "$saved"; then
+    echo "restoring saved default sink: $saved"
+    run pactl set-default-sink "$saved"
+  elif ! is_dummy_sink "$current" && sink_exists "$current"; then
+    echo "keeping current non-dummy default sink: $current"
+  elif speaker=$(present_speaker_sink); then
+    echo "default sink is missing/dummy; falling back to speaker: $speaker"
+    run pactl set-default-sink "$speaker"
+  else
+    echo "speaker sink not present; leaving default unchanged"
+  fi
+}
+
+pipewire_graph_needs_restart() {
+  local saved="" current=""
+
+  [[ -r "$SAVED_SINK_FILE" ]] && read -r saved < "$SAVED_SINK_FILE" || true
+  current=$(timeout --kill-after=1s 4s pactl get-default-sink 2>/dev/null || true)
+
+  # Never restart PipeWire/WirePlumber just to repair internal speakers while
+  # a Bluetooth headset was the pre-suspend target; that tears down A2DP
+  # endpoints and can race BlueZ reconnection.
+  if [[ "$saved" == bluez_output.* ]]; then
+    return 1
+  fi
+
+  # Restart only if the user audio graph is clearly bad after kernel/ALSA
+  # restore: Dummy Output, no resolvable default, or the internal speaker sink
+  # still did not appear.
+  if is_dummy_sink "$current" || ! sink_exists "$current" || ! present_speaker_sink >/dev/null; then
+    return 0
+  fi
+
+  return 1
+}
+
+settle_and_restore_default_sink() {
+  local saved="" i
+
+  [[ -r "$SAVED_SINK_FILE" ]] && read -r saved < "$SAVED_SINK_FILE" || true
+
+  # ALSA/WirePlumber can expose the speaker sink a moment after the first
+  # routing attempt. Retry briefly so a delayed restore still routes back to the
+  # pre-suspend sink once it appears.
+  for i in 1 2 3 4 5; do
+    restore_default_sink
+    if [[ -n "$saved" ]] && ! is_dummy_sink "$saved" && sink_exists "$saved"; then
+      return 0
+    fi
+    sleep 1
+  done
+}
+
+{
+  flock -n 9 || { echo "=== $(date --iso-8601=seconds) restore skipped: already running ===" >> "$LOG"; exit 0; }
+
+  {
+    echo "=== $(date --iso-8601=seconds) restore start ==="
+
+    # First repair only the kernel/ALSA side. Do not restart PipeWire by
+    # default; doing so tears down Bluetooth A2DP endpoints and can race resume.
+    run sudo -n /usr/local/sbin/tas2783-sdw restore
+
+    # Try routing with the graph as-is.
+    restore_default_sink
+
+    # Only if the graph is still clearly broken for internal audio, restart
+    # user PipeWire/WirePlumber once to force ALSA device rediscovery.
+    if pipewire_graph_needs_restart; then
+      echo "PipeWire graph still bad after TAS restore; restarting user audio services once"
+      run systemctl --user stop pipewire-pulse.service pipewire-pulse.socket wireplumber.service pipewire.service pipewire.socket
+      run systemctl --user start pipewire.socket pipewire.service wireplumber.service pipewire-pulse.socket pipewire-pulse.service
+    else
+      echo "PipeWire graph restart not needed"
+    fi
+
+    echo "Final default sink settle check"
+    settle_and_restore_default_sink
+
+    run pactl list short sinks
+
+    echo "=== $(date --iso-8601=seconds) restore end ==="
+  } >> "$LOG" 2>&1
+} 9>"$LOCK"

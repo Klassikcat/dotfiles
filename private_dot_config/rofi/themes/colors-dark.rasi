@@ -1,0 +1,36 @@
+/* Dark palette for KooL rofi theme */
+* {
+    background:                  rgba(16, 17, 22, 0.92);
+    foreground:                  #E6EAF2;
+    background-alt:              #1A1D26;
+    selected:                    #5B7CFA;
+    active:                      #2A3358;
+    urgent:                      #E879F9;
+    selected-fg:                 #FFFFFF;
+
+    border-color:                #2A2F3D;
+    handle-color:                @selected;
+    background-color:            @background;
+    foreground-color:            @foreground;
+    alternate-background:        @background-alt;
+    normal-background:           transparent;
+    normal-foreground:           @foreground;
+    urgent-background:           @urgent;
+    urgent-foreground:           @selected-fg;
+    active-background:           @active;
+    active-foreground:           @foreground;
+    selected-normal-background:  @selected;
+    selected-normal-foreground:  @selected-fg;
+    selected-urgent-background:  @selected;
+    selected-urgent-foreground:  @selected-fg;
+    selected-active-background:  @selected;
+    selected-active-foreground:  @selected-fg;
+    alternate-normal-background: transparent;
+    alternate-normal-foreground: @foreground;
+    alternate-urgent-background: @urgent;
+    alternate-urgent-foreground: @selected-fg;
+    alternate-active-background: @active;
+    alternate-active-foreground: @foreground;
+
+    color0: #1A1D26;
+}

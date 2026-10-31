@@ -1,0 +1,21 @@
+{
+	"version": 1,
+	"extensions": {
+		"enabled": {}
+	},
+	"trust": {
+		"lspBinaries": {
+			"/home/shinjungtae/Projects/IHFB/ihfb-devops.worktree/create/wikiwiki/agent/iam-provisioning/agents/iam-role-creator/launcher/node_modules/.bin/tsc": {
+				"id": "/home/shinjungtae/Projects/IHFB/ihfb-devops.worktree/create/wikiwiki/agent/iam-provisioning/agents/iam-role-creator/launcher/node_modules/.bin/tsc",
+				"kind": "lsp-binary",
+				"trusted_at": "2026-09-11T09:16:39.563Z"
+			},
+			"/home/shinjungtae/Projects/Personal/t3code-local/node_modules/.bin/tsc": {
+				"id": "/home/shinjungtae/Projects/Personal/t3code-local/node_modules/.bin/tsc",
+				"kind": "lsp-binary",
+				"trusted_at": "2026-10-08T07:20:39.835Z"
+			}
+		}
+	},
+	"packages": {}
+}

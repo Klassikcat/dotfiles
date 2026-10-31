@@ -54,15 +54,15 @@ main() {
     # Map choices to corresponding files
     case "$choice" in
     	"view/edit User Defaults") file="$UserConfigs/01-UserDefaults.conf" ;;
-        "view/edit ENV variables") file="$UserConfigs/ENVariables.conf" ;;
-        "view/edit Window Rules") file="$UserConfigs/WindowRules.conf" ;;
-        "view/edit User Keybinds") file="$UserConfigs/UserKeybinds.conf" ;;
-        "view/edit User Settings") file="$UserConfigs/UserSettings.conf" ;;
-        "view/edit Startup Apps") file="$UserConfigs/Startup_Apps.conf" ;;
-        "view/edit Decorations") file="$UserConfigs/UserDecorations.conf" ;;
+        "view/edit ENV variables") file="$HOME/.config/hypr/hyprland.lua" ;;
+        "view/edit Window Rules") file="$HOME/.config/hypr/hyprland.lua" ;;
+        "view/edit User Keybinds") file="$HOME/.config/hypr/hyprland.lua" ;;
+        "view/edit User Settings") file="$HOME/.config/hypr/hyprland.lua" ;;
+        "view/edit Startup Apps") file="$HOME/.config/hypr/hyprland.lua" ;;
+        "view/edit Decorations") file="$HOME/.config/hypr/hyprland.lua" ;;
         "view/edit Animations") file="$UserConfigs/UserAnimations.conf" ;;
-        "view/edit Laptop Keybinds") file="$UserConfigs/Laptops.conf" ;;
-        "view/edit Default Keybinds") file="$configs/Keybinds.conf" ;;
+        "view/edit Laptop Keybinds") file="$HOME/.config/hypr/hyprland.lua" ;;
+        "view/edit Default Keybinds") file="$HOME/.config/hypr/hyprland.lua" ;;
         "Choose Kitty Terminal Theme") $scriptsDir/Kitty_themes.sh ;;
         "Configure Monitors (nwg-displays)") 
             if ! command -v nwg-displays &>/dev/null; then

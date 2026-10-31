@@ -184,7 +184,7 @@ alias catfrappe = bat --theme='Catppuccin Frappe' --paging=never
 alias catmacchiato = bat --theme='Catppuccin Macchiato' --paging=never
 alias toggle-bar = pkill -SIGUSR1 waybar
 def toggle-theme [] { ^($env.HOME | path join ".local" "bin" "toggle-theme") }
-alias fastfetch = /home/linuxbrew/.linuxbrew/bin/fastfetch
+alias fastfetch = /usr/bin/fastfetch
 alias claude-auto = claude --dangerously-skip-permissions
 
 # opencode-server helper
@@ -218,7 +218,7 @@ def --env --wrapped opencode-server [
 
     match $target {
         "local" => { opencode attach http://localhost:42800 ...$attach_args }
-        "remote" => { opencode attach {{ .opencode_remote_url }} ...$attach_args }
+        "remote" => { opencode attach http://localhost:42800 ...$attach_args }
     }
 }
 
@@ -246,5 +246,36 @@ def --env nvm [...args] {
     let path_list = (if ($env.PATH | describe | str contains "list") { $env.PATH } else { $env.PATH | split row (char esep) })
     let cleaned = ($path_list | where {|p| ($p | str contains "/.nvm/versions/node/") == false } | where {|p| $p != $node_bin })
     $env.PATH = ($cleaned | prepend $node_bin | str join (char esep))
+  }
+}
+
+# git worktree → ../<repo>.worktree/<branch>  (added by Claude)
+def gwt [branch: string, start?: string] {
+  let main_wt = (
+    git worktree list --porcelain | lines | first | str replace -r '^worktree ' ''
+  )
+  if ($main_wt | is-empty) {
+    error make { msg: "gwt: not inside a git repository" }
+  }
+
+  let wt_root = (
+    ($main_wt | path dirname) | path join $"(($main_wt | path basename)).worktree"
+  )
+
+  let rel = ($branch | str trim --left --char '/')
+  if ($rel | is-empty) { error make { msg: "gwt: empty branch name" } }
+  if ($rel | str contains '..') { error make { msg: "gwt: refusing '..' in branch name" } }
+
+  let dest = ($wt_root | path join $rel)
+
+  let exists = (
+    (do { git show-ref --verify --quiet $"refs/heads/($rel)" } | complete | get exit_code) == 0
+  )
+  if $exists {
+    git worktree add $dest $rel
+  } else if ($start | is-empty) {
+    git worktree add -b $rel $dest
+  } else {
+    git worktree add -b $rel $dest $start
   }
 }

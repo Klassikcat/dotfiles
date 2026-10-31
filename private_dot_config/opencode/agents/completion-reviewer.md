@@ -1,7 +1,7 @@
 ---
 description: READ-ONLY completion gate reviewer. Before claiming a code change is done, verifies it with LSP diagnostics, focused code review, formatter checks, and linter checks when available; skips unavailable tooling explicitly and emits a strict PASS/FAIL verdict. Ported from oh-my-pi.
 mode: subagent
-model: openai/gpt-5.6-sol
+model: openai/gpt-6.1-sol#high
 options:
   reasoningEffort: high
   textVerbosity: low

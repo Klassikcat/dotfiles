@@ -1,0 +1,3 @@
+{
+    "aws.cloudformation.telemetry.enabled": false
+}

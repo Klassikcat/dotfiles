@@ -1,0 +1,19 @@
+[Unit]
+Description=Remote Pi daemon supervisor (plan/26)
+Documentation=https://remote-pi.jacobmoura.work
+After=default.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/node-22 /home/shinjungtae/.omo/agent/npm/node_modules/remote-pi/dist/bin/supervisord.js
+Restart=on-failure
+RestartSec=5s
+StandardOutput=journal
+StandardError=journal
+# Inherit the user's shell PATH so `pi --mode rpc` resolves to the same
+# binary it would in an interactive shell (npm-global / Homebrew / etc.).
+Environment="PATH=/home/shinjungtae/.local/share/mise/shims:/home/shinjungtae/.config/opencode2/bin:/home/shinjungtae/.npm-global/bin:/home/shinjungtae/.local/bin:/home/shinjungtae/.bun/bin:/home/shinjungtae/.npm-global/bin:/usr/local/bin:/usr/bin:/bin:/home/shinjungtae/.opencode/bin:/home/shinjungtae/.bun/bin:/home/shinjungtae/.local/bin:/home/shinjungtae/bin:/home/shinjungtae/.cargo/bin:/home/shinjungtae/go/bin:/home/shinjungtae/.local/share/JetBrains/Toolbox/scripts:/home/shinjungtae/.nvm/versions/node/v24.12.0/bin:/home/shinjungtae/.lmstudio/bin"
+Environment="HOME=/home/shinjungtae"
+
+[Install]
+WantedBy=default.target

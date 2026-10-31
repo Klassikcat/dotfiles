@@ -14,11 +14,11 @@
     "chrome-devtools-mcp@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/home/shinjungtae/.claude/plugins/cache/claude-plugins-official/chrome-devtools-mcp/1.6.0",
-        "version": "1.6.0",
+        "installPath": "/home/shinjungtae/.claude/plugins/cache/claude-plugins-official/chrome-devtools-mcp/1.11.0",
+        "version": "1.11.0",
         "installedAt": "2026-05-25T09:51:23.971Z",
-        "lastUpdated": "2026-07-15T07:10:56.870Z",
-        "gitCommitSha": "8e8e83e3f8d150689ffb58c3b977eb72016c7b3f"
+        "lastUpdated": "2026-10-16T03:30:49.663Z",
+        "gitCommitSha": "a878bcad39584337e055778353246820deafa7c0"
       }
     ],
     "claude-code-wakatime@wakatime": [
@@ -66,6 +66,77 @@
         "version": "1.0.0",
         "installedAt": "2026-07-02T02:53:06.011Z",
         "lastUpdated": "2026-07-02T02:53:06.011Z"
+      }
+    ],
+    "datadog@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/home/shinjungtae/.claude/plugins/cache/claude-plugins-official/datadog/0.7.17",
+        "version": "0.7.17",
+        "installedAt": "2026-08-12T02:50:38.050Z",
+        "lastUpdated": "2026-08-19T02:13:23.457Z",
+        "gitCommitSha": "c5c062abba0df33f6bfc2c0fd0f8d17857e3fa2c"
+      }
+    ],
+    "fluent-korean@fluent-korean": [
+      {
+        "scope": "user",
+        "installPath": "/home/shinjungtae/.claude/plugins/cache/fluent-korean/fluent-korean/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-08-20T10:29:47.722Z",
+        "lastUpdated": "2026-08-20T10:29:47.722Z",
+        "gitCommitSha": "59965eb8b81bee4b6aefdafc38812dd0b6a03317"
+      }
+    ],
+    "gopls-lsp@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/home/shinjungtae/.claude/plugins/cache/claude-plugins-official/gopls-lsp/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-08-21T08:18:09.665Z",
+        "lastUpdated": "2026-08-21T08:18:09.665Z"
+      }
+    ],
+    "ponytail@ponytail": [
+      {
+        "scope": "user",
+        "installPath": "/home/shinjungtae/.claude/plugins/cache/ponytail/ponytail/5.0.0",
+        "version": "5.0.0",
+        "installedAt": "2026-10-08T08:16:49.942Z",
+        "lastUpdated": "2026-10-08T08:16:49.942Z",
+        "gitCommitSha": "b088b2df6e08d4306c6a3c3d575fe38c2d2d2989"
+      }
+    ],
+    "atlassian-mcp@anthropic-plugin-directory": [
+      {
+        "scope": "user",
+        "installPath": "/home/shinjungtae/.claude/plugins/cache/anthropic-plugin-directory/atlassian-mcp/eb9a5956a7ac",
+        "version": "eb9a5956a7ac",
+        "installedAt": "2026-10-16T11:05:23.792Z",
+        "lastUpdated": "2026-10-16T11:05:23.792Z",
+        "gitCommitSha": "eb9a5956a7ac6380c731c725a8382da53ad6d980",
+        "directoryRepositoryKey": "github.com/atlassian/atlassian-mcp-server#"
+      }
+    ],
+    "vercel@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/home/shinjungtae/.claude/plugins/cache/claude-plugins-official/vercel/0.50.0",
+        "version": "0.50.0",
+        "installedAt": "2026-10-28T02:04:01.121Z",
+        "lastUpdated": "2026-10-28T02:04:01.121Z",
+        "gitCommitSha": "882e66c2698689324c341b7bb8fd8beb92c27bf6"
+      }
+    ],
+    "code-graph@anthropic-plugin-directory": [
+      {
+        "scope": "user",
+        "installPath": "/home/shinjungtae/.claude/plugins/cache/anthropic-plugin-directory/code-graph/7f7f07663c41",
+        "version": "7f7f07663c41",
+        "installedAt": "2026-10-29T11:48:32.423Z",
+        "lastUpdated": "2026-10-29T11:48:32.423Z",
+        "gitCommitSha": "7f7f07663c41ba77768efb3c6850d080fa9dbbbc",
+        "directoryRepositoryKey": "github.com/jsnavarroc/code-graph#"
       }
     ]
   }

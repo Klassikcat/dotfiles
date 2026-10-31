@@ -1,20 +1,51 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": [
-    "opencode-openai-codex-auth",
-    "oh-my-openagent",
-    "opencode-wakatime",
-    "{{ .chezmoi.homeDir }}/Projects/Personal/opencode-hooks/hooks-opencode/alarm/index.js"
+  "providers": {
+    "openai": {
+      "models": {
+        "gpt-5.1-codex-max": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-5.2": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-5.2-codex": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-5.5": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-5.5-fast": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-5.6-luna": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-5.6-luna-fast": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-5.6-sol": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-5.6-sol-fast": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-5.6-terra": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-5.6-terra-fast": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-6-astra": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-6-astra-fast": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-6-luna": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-6-luna-fast": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-6-sol": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-6-sol-fast": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-6.1-sol": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } },
+        "gpt-6.1-sol-fast": { "limit": { "context": 1000000, "input": 872000, "output": 128000 } }
+      }
+    }
+  },
+  "plugins": [
+    "{{ .chezmoi.homeDir }}/Projects/Personal/opencode-hooks/hooks-opencode/alarm",
+    "{{ .chezmoi.homeDir }}/Projects/Personal/opencode-hooks/agents-opencode/native-v2/plugin"
   ],
   "mcp": {
     "playwright": {
       "type": "local",
-      "command": ["npx", "-y", "@playwright/mcp"],
+      "command": [
+        "npx",
+        "-y",
+        "@playwright/mcp"
+      ],
       "enabled": true
     },
     "kubernetes": {
       "type": "local",
-      "command": ["npx", "-y", "kubernetes-mcp-server@latest"],
+      "command": [
+        "npx",
+        "-y",
+        "kubernetes-mcp-server@latest"
+      ],
       "enabled": false
     },
     "terraform": {
@@ -27,8 +58,29 @@
     },
     "code-review-graph": {
       "type": "local",
-      "command": ["code-review-graph", "serve"],
+      "command": [
+        "code-review-graph",
+        "serve"
+      ],
       "enabled": false
+    },
+    "aws-mcp": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "mcp-proxy-for-aws@1.6.3",
+        "https://aws-mcp.us-east-1.api.aws/mcp",
+        "--metadata",
+        "AWS_REGION=ap-northeast-2",
+        "--profile",
+        "dev",
+        "--read-only"
+      ],
+      "env": {
+        "AWS_MCP_PROXY_PROFILES": "dev"
+      },
+      "enabled": true,
+      "timeout": 100000
     }
   },
   "provider": {
@@ -45,8 +97,13 @@
           "tools": true,
           "reasoning": false,
           "modalities": {
-            "input": ["text", "image"],
-            "output": ["text"]
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
           },
           "limit": {
             "context": 131072,
@@ -58,8 +115,12 @@
           "tool_call": true,
           "reasoning": true,
           "modalities": {
-            "input": ["text"],
-            "output": ["text"]
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
           },
           "limit": {
             "context": 65536,
@@ -71,8 +132,12 @@
           "tool_call": true,
           "reasoning": true,
           "modalities": {
-            "input": ["text"],
-            "output": ["text"]
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
           },
           "limit": {
             "context": 131072,
@@ -140,10 +205,19 @@
         "reasoningEffort": "medium",
         "reasoningSummary": "auto",
         "textVerbosity": "medium",
-        "include": ["reasoning.encrypted_content"],
+        "include": [
+          "reasoning.encrypted_content"
+        ],
         "store": false
       },
       "models": {
+        "gpt-6.1-sol": {
+          "limit": {
+            "context": 1000000,
+            "input": 872000,
+            "output": 128000
+          }
+        },
         "gpt-5.2": {
           "name": "GPT 5.2 (OAuth)",
           "limit": {
@@ -151,8 +225,13 @@
             "output": 128000
           },
           "modalities": {
-            "input": ["text", "image"],
-            "output": ["text"]
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
           },
           "variants": {
             "none": {
@@ -189,8 +268,13 @@
             "output": 128000
           },
           "modalities": {
-            "input": ["text", "image"],
-            "output": ["text"]
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
           },
           "variants": {
             "low": {
@@ -222,8 +306,13 @@
             "output": 128000
           },
           "modalities": {
-            "input": ["text", "image"],
-            "output": ["text"]
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
           },
           "variants": {
             "low": {
@@ -249,6 +338,35 @@
           }
         }
       }
+    }
+  },
+  "agents": {
+    "prometheus": {
+      "model": "zai-coding-plan/glm-5.3"
+    },
+    "explore": {
+      "model": "opencode-go/deepseek-v4.1-flash"
+    },
+    "librarian": {
+      "model": "opencode-go/deepseek-v4.1-flash"
+    },
+    "metis": {
+      "model": "openai/gpt-5.6-terra"
+    },
+    "momus": {
+      "model": "openai/gpt-6-astra#high"
+    },
+    "oracle": {
+      "model": "openai/gpt-5.6-terra#xhigh"
+    },
+    "multimodal-looker": {
+      "model": "openrouter/google/gemini-3.5-flash"
+    },
+    "builder": {
+      "model": "openai/gpt-6.1-sol#medium"
+    },
+    "completion-reviewer": {
+      "model": "openai/gpt-6.1-sol#high"
     }
   }
 }

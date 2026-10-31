@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+export JAVA_HOME="${JAVA_HOME:-/home/shinjungtae/.local/share/mise/installs/java/21.0.2}"
+export PATH="$JAVA_HOME/bin:$PATH"
+exec /home/shinjungtae/.local/share/kotlin-language-server/1.3.13/server/bin/kotlin-language-server "$@"

@@ -1,0 +1,11 @@
+[Unit]
+Description=Load internal AMD ACP/PDM microphone source
+After=pipewire.service pipewire-pulse.service wireplumber.service graphical-session.target
+Wants=pipewire.service pipewire-pulse.service wireplumber.service
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/load-internal-mic.sh
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,26 @@
+[Unit]
+Description=whisper.cpp server (Vulkan / AMD Strix Halo gfx1151) on 127.0.0.1:8081
+Documentation=https://github.com/ggml-org/whisper.cpp
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Native binaries + shared libs extracted from the fedora:44 build image.
+Environment=LD_LIBRARY_PATH=%h/whisper-server/lib
+ExecStart=%h/whisper-server/bin/whisper-server \
+    --host 127.0.0.1 \
+    --port 8081 \
+    --model %h/whisper-server/models/ggml-large-v3-turbo.bin \
+    --threads 8
+Restart=on-failure
+RestartSec=3
+# Light hardening (keeps GPU/render node access intact).
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=%h/whisper-server
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target

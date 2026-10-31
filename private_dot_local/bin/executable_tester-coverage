@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+exec node /home/shinjungtae/.local/share/agents-tester/bin/coverage-gate.mjs "$@"

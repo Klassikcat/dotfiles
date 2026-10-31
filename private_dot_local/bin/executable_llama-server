@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# llama.cpp llama-server launcher (Vulkan/RADV build) — managed wrapper
+LLAMA_DIR="$HOME/.local/share/llama.cpp/current"
+export LD_LIBRARY_PATH="$LLAMA_DIR${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+exec "$LLAMA_DIR/llama-server" "$@"

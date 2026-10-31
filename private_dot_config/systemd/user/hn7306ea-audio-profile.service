@@ -1,0 +1,10 @@
+[Unit]
+Description=Set HN7306EA audio profile
+After=pipewire.service pipewire-pulse.service wireplumber.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'for i in $(seq 1 40); do pactl list cards short | grep -q alsa_card.pci-0000_c4_00.5-platform-amd_sdw && break; sleep 1; done; pactl set-card-profile alsa_card.pci-0000_c4_00.5-platform-amd_sdw pro-audio || true; sleep 1; pactl set-default-sink alsa_output.pci-0000_c4_00.5-platform-amd_sdw.pro-output-2 || true'
+
+[Install]
+WantedBy=default.target

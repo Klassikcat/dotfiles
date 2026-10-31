@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+export KIMI_WORK_HOME="/home/shinjungtae/.local/lib/kimi-work"
+exec "/home/shinjungtae/.local/lib/kimi-work/scripts/kimi-work" "$@"

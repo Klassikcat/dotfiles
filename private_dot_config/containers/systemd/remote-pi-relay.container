@@ -1,0 +1,23 @@
+[Unit]
+Description=Remote Pi relay (Tailscale-only HTTPS ingress)
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+Image=docker.io/jacobmoura7/remote-pi-relay@sha256:7255159041fe32b02a30ba2e09a671fa00783f24c217750cbdf74c5f8b77a7b6
+ContainerName=remote-pi-relay
+PublishPort=127.0.0.1:33000:3000
+Volume=remote-pi-relay-data:/data
+Environment=REMOTEPI_RELAY_PORT=3000
+Environment=REMOTEPI_MESH_DB_PATH=/data/mesh.db
+Environment=RUST_LOG=info
+NoNewPrivileges=true
+DropCapability=all
+
+[Service]
+Restart=always
+RestartSec=5
+TimeoutStartSec=120
+
+[Install]
+WantedBy=default.target

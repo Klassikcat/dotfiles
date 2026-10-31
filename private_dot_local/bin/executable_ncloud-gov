@@ -1,0 +1,4 @@
+#!/bin/bash
+# Global launcher for NCP Gov CLI (installed under ~/.local/share/ncloud-gov-cli)
+NCLOUD_HOME="$HOME/.local/share/ncloud-gov-cli"
+exec "$NCLOUD_HOME/jre8/bin/java" -jar "$NCLOUD_HOME/lib/ncloud-api-cli-1.1.29-SNAPSHOT-jar-with-dependencies.jar" "$@"

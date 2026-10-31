@@ -7,7 +7,10 @@ command = /usr/bin/nu
 # Font (kitty: JetBrainsMono Nerd Font Mono, size 13, line height 120%)
 font-family = JetBrainsMono Nerd Font Mono
 font-size = 13
-adjust-cell-height = 25%
+adjust-cell-height = 15%
+# braille 점 크기가 셀폭/4에 묶여 있어 폭을 살짝 넓히면 점이 굵어져
+# 늘어난 셀 높이에서도 braille 아트(arisusay 등)의 줄무늬가 덜 보임
+adjust-cell-width = 2%
 bold-is-bright = false
 
 # Window (kitty: opacity 0.9, padding 0 15 0 15, confirm close 0)
@@ -31,7 +34,7 @@ mouse-hide-while-typing = true
 keybind = shift+enter=text:\x1b\r
 
 # Misc
-gtk-single-instance = false
+gtk-single-instance = true
 quick-terminal-position = center
 shell-integration = detect
 shell-integration-features = cursor,sudo

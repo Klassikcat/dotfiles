@@ -1,0 +1,148 @@
+#!/usr/bin/env bash
+#
+# local-cluster — k3s start/stop wrapper
+#
+# Usage:
+#   local-cluster start      서비스 시작 후 노드가 Ready 될 때까지 대기
+#   local-cluster stop       k3s.service 중지 (빠른 재개용)
+#   local-cluster restart    서비스 재시작
+#   local-cluster kill       k3s-killall.sh — 모든 컨테이너/네트워크까지 완전 정리
+#   local-cluster status     서비스 상태 + 노드/파드 요약
+#   local-cluster logs [-f]  서비스 로그 (journalctl)
+#
+set -euo pipefail
+
+SERVICE="k3s"
+KILLALL="/usr/local/bin/k3s-killall.sh"
+
+# 색상 (tty 일 때만)
+if [[ -t 1 ]]; then
+  R='\033[0;31m'; G='\033[0;32m'; Y='\033[0;33m'; B='\033[0;34m'; N='\033[0m'
+else
+  R=''; G=''; Y=''; B=''; N=''
+fi
+info() { printf "${B}==>${N} %s\n" "$*"; }
+ok()   { printf "${G}✓${N} %s\n" "$*"; }
+warn() { printf "${Y}!${N} %s\n" "$*"; }
+err()  { printf "${R}✗${N} %s\n" "$*" >&2; }
+
+# systemctl 은 root 권한 필요 → 필요 시 sudo 자동 prefix
+SUDO=""
+if [[ $EUID -ne 0 ]]; then
+  SUDO="sudo"
+fi
+
+# 가드레일: kubectl context 가 default 또는 k3s 일 때만 실행 허용
+check_context() {
+  local ctx
+  ctx="$(kubectl config current-context 2>/dev/null || true)"
+  case "$ctx" in
+    default|k3s) return 0 ;;
+    "")
+      err "kubectl context 를 확인할 수 없습니다 (kubeconfig 없음?). 실행을 차단합니다."
+      exit 1
+      ;;
+    *)
+      err "현재 kubectl context '${ctx}' — 허용된 context(default, k3s)가 아니므로 실행을 차단합니다."
+      err "context 전환: kubectl config use-context k3s"
+      exit 1
+      ;;
+  esac
+}
+
+is_active() { systemctl is-active --quiet "$SERVICE"; }
+
+wait_ready() {
+  local timeout="${1:-90}" elapsed=0
+  info "노드가 Ready 될 때까지 대기 중 (최대 ${timeout}s)..."
+  while (( elapsed < timeout )); do
+    if kubectl get nodes 2>/dev/null | grep -qw " Ready"; then
+      ok "노드 Ready"
+      kubectl get nodes
+      return 0
+    fi
+    sleep 3
+    (( elapsed += 3 )) || true
+  done
+  warn "${timeout}s 안에 Ready 상태가 되지 않았습니다. 'local-cluster status' 로 확인하세요."
+  return 1
+}
+
+cmd_start() {
+  if is_active; then
+    ok "${SERVICE} 이미 실행 중"
+  else
+    info "${SERVICE} 시작..."
+    $SUDO systemctl start "$SERVICE"
+    ok "서비스 시작됨"
+  fi
+  wait_ready "${1:-90}"
+}
+
+cmd_stop() {
+  if ! is_active; then
+    warn "${SERVICE} 이미 중지 상태"
+    return 0
+  fi
+  info "${SERVICE} 중지..."
+  $SUDO systemctl stop "$SERVICE"
+  ok "서비스 중지됨 (컨테이너는 남아있을 수 있음 — 완전 정리는 'local-cluster kill')"
+}
+
+cmd_restart() {
+  info "${SERVICE} 재시작..."
+  $SUDO systemctl restart "$SERVICE"
+  ok "서비스 재시작됨"
+  wait_ready "${1:-90}"
+}
+
+cmd_kill() {
+  if [[ ! -x "$KILLALL" ]]; then
+    err "$KILLALL 를 찾을 수 없습니다."
+    exit 1
+  fi
+  info "k3s-killall.sh 실행 — 모든 파드/컨테이너/네트워크 정리..."
+  $SUDO "$KILLALL"
+  ok "완전 정리 완료. 다시 띄우려면 'local-cluster start'"
+}
+
+cmd_status() {
+  systemctl --no-pager --full status "$SERVICE" 2>/dev/null | head -n 12 || true
+  echo
+  if is_active; then
+    info "노드:"
+    kubectl get nodes 2>/dev/null || warn "kubectl 조회 실패"
+    echo
+    info "파드 (전체 네임스페이스):"
+    kubectl get pods -A 2>/dev/null || warn "kubectl 조회 실패"
+  fi
+}
+
+cmd_logs() {
+  $SUDO journalctl -u "$SERVICE" "$@"
+}
+
+usage() {
+  cat <<'EOF'
+local-cluster — k3s start/stop wrapper
+
+Usage:
+  local-cluster start      서비스 시작 후 노드가 Ready 될 때까지 대기
+  local-cluster stop       k3s.service 중지 (빠른 재개용)
+  local-cluster restart    서비스 재시작
+  local-cluster kill       k3s-killall.sh — 모든 컨테이너/네트워크까지 완전 정리
+  local-cluster status     서비스 상태 + 노드/파드 요약
+  local-cluster logs [-f]  서비스 로그 (journalctl)
+EOF
+}
+
+case "${1:-}" in
+  start)   shift; check_context; cmd_start "$@" ;;
+  stop)    shift; check_context; cmd_stop "$@" ;;
+  restart) shift; check_context; cmd_restart "$@" ;;
+  kill)    shift; check_context; cmd_kill "$@" ;;
+  status)  shift; check_context; cmd_status "$@" ;;
+  logs)    shift; check_context; cmd_logs "$@" ;;
+  ""|-h|--help|help) usage ;;
+  *) err "알 수 없는 명령: $1"; echo; usage; exit 1 ;;
+esac

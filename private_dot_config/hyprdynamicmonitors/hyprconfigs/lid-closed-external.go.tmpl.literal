@@ -1,0 +1,6 @@
+# Managed by hyprdynamicmonitors: external monitor only while laptop lid is closed.
+# <<<<< TUI AUTO START
+monitor=desc:Samsung Display Corp. ATNA33AA08-0,disable
+monitor=desc:LG Electronics LG ULTRAFINE 210NTGY5V831,3840x2160@60.00000,0x0,1.33333333,transform,0,vrr,0,bitdepth,10,cm,edid
+# <<<<< TUI AUTO END
+exec = swww img --resize crop /home/shinjungtae/.config/hypr/wallpaper_effects/.wallpaper_current --transition-type none

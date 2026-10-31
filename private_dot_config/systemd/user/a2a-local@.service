@@ -1,0 +1,17 @@
+[Unit]
+Description=Local standard A2A demo endpoint for %i
+After=network.target
+
+[Service]
+Type=simple
+Environment=PATH=/home/shinjungtae/.config/opencode2/bin:/home/shinjungtae/.local/bin:/home/shinjungtae/.npm-global/bin:/home/shinjungtae/.local/share/mise/shims:/home/shinjungtae/.nvm/versions/node/v24.12.0/bin:/usr/local/bin:/usr/bin:/bin
+WorkingDirectory=/home/shinjungtae/.local/share/a2a-local
+ExecStart=/home/shinjungtae/.local/bin/a2a-local serve %i
+Restart=on-failure
+RestartSec=3
+KillMode=control-group
+TimeoutStopSec=10
+UMask=0077
+
+[Install]
+WantedBy=default.target

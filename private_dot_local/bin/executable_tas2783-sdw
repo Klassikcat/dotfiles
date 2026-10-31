@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+set -u
+
+PCI_DEV=0000:c4:00.5
+DRV=/sys/bus/soundwire/drivers/slave-tas2783
+DEVS=(
+  "sdw:0:1:0102:0000:01:8"
+  "sdw:0:1:0102:0000:01:b"
+)
+
+ensure_driver_for_attach() {
+  if [ ! -e "$DRV/bind" ]; then
+    modprobe snd_soc_tas2783_sdw 2>/dev/null || true
+  fi
+}
+
+do_detach() {
+  for d in "${DEVS[@]}"; do
+    [ -e "/sys/bus/soundwire/devices/$d" ] || continue
+    [ -e "/sys/bus/soundwire/devices/$d/driver" ] || continue
+    [ -e "$DRV/unbind" ] || continue
+    echo "$d" > "$DRV/unbind" 2>/dev/null || true
+  done
+}
+
+do_attach() {
+  ensure_driver_for_attach
+  for d in "${DEVS[@]}"; do
+    [ -e "/sys/bus/soundwire/devices/$d" ] || continue
+    [ ! -e "/sys/bus/soundwire/devices/$d/driver" ] || continue
+    [ -e "$DRV/bind" ] || continue
+    echo "$d" > "$DRV/bind" 2>/dev/null || true
+  done
+}
+
+do_status() {
+  echo "driver: $([ -e "$DRV/bind" ] && echo present || echo missing)"
+  for d in "${DEVS[@]}"; do
+    if [ -e "/sys/bus/soundwire/devices/$d/driver" ]; then
+      echo "$d bound -> $(basename "$(readlink -f "/sys/bus/soundwire/devices/$d/driver")")"
+    else
+      echo "$d unbound"
+    fi
+  done
+  if [ -e /proc/asound/cards ]; then
+    if grep -q '\[amdsoundwire[[:space:]]*\]' /proc/asound/cards; then
+      echo "card: amdsoundwire present"
+    else
+      echo "card: amdsoundwire missing"
+    fi
+  fi
+}
+
+do_restore() {
+  # Reattach TAS devices if they are still visible.
+  do_attach
+
+  # If the ASoC card did not instantiate, reprobe the AMD ACP/SoundWire PCI function.
+  if ! grep -q '\[amdsoundwire[[:space:]]*\]' /proc/asound/cards 2>/dev/null; then
+    if [ -e "/sys/bus/pci/devices/$PCI_DEV/remove" ]; then
+      echo 1 > "/sys/bus/pci/devices/$PCI_DEV/remove"
+      # no sleep: rescan is synchronous enough here; avoid resume-blocking delay hacks
+      echo 1 > /sys/bus/pci/rescan
+    fi
+  fi
+
+  alsactl init amdsoundwire >/dev/null 2>&1 || alsactl init 1 >/dev/null 2>&1 || true
+  do_status
+}
+
+case "${1:-}" in
+  detach|unbind) do_detach ;;
+  attach|bind) do_attach ;;
+  restore) do_restore ;;
+  status) do_status ;;
+  *)
+    echo "usage: $0 detach|attach|restore|status" >&2
+    exit 2
+    ;;
+esac

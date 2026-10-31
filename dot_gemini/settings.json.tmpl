@@ -24,42 +24,6 @@
       "command": "{{ .chezmoi.homeDir }}/mcp-servers/venv/bin/awslabs.aws-serverless-mcp-server",
       "args": [],
       "trust": false
-    },
-    "iam-blackcircles-develop": {
-      "command": "uvx",
-      "args": ["awslabs.iam-mcp-server@latest"],
-      "env": {
-        "AWS_PROFILE": "blackcircles-develop",
-        "AWS_REGION": "ap-northeast-2"
-      },
-      "trust": false
-    },
-    "iam-blackcircles-prod-readonly": {
-      "command": "uvx",
-      "args": ["awslabs.iam-mcp-server@latest", "--readonly"],
-      "env": {
-        "AWS_PROFILE": "blackcircles-prod",
-        "AWS_REGION": "ap-northeast-2"
-      },
-      "trust": false
-    },
-    "iam-tirepick": {
-      "command": "uvx",
-      "args": ["awslabs.iam-mcp-server@latest"],
-      "env": {
-        "AWS_PROFILE": "tirepick",
-        "AWS_REGION": "ap-northeast-2"
-      },
-      "trust": false
-    },
-    "iam-control-plane": {
-      "command": "uvx",
-      "args": ["awslabs.iam-mcp-server@latest"],
-      "env": {
-        "AWS_PROFILE": "control-plane",
-        "AWS_REGION": "ap-northeast-2"
-      },
-      "trust": false
     }
   }
 }

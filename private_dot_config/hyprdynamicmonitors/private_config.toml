@@ -1,0 +1,121 @@
+[general]
+destination = "$HOME/.config/hypr/monitors.conf"
+# Hyprland autoreload fires while outputs are still settling (wallpaper/waybar land misplaced); a second reload fixes it.
+
+[power_events]
+
+[power_events.dbus_query_object]
+path = "/org/freedesktop/UPower/devices/line_power_AC0"
+
+[[power_events.dbus_signal_match_rules]]
+object_path = "/org/freedesktop/UPower/devices/line_power_AC0"
+
+
+[profiles.alone-display]
+config_file = "/home/shinjungtae/.config/hyprdynamicmonitors/hyprconfigs/alone-display.go.tmpl"
+config_file_type = "template"
+[profiles.alone-display.conditions]
+
+[[profiles.alone-display.conditions.required_monitors]]
+description = "Samsung Display Corp. ATNA33AA08-0"
+monitor_tag = "monitor0"
+
+
+[profiles.Two-monitors]
+config_file = "/home/shinjungtae/.config/hyprdynamicmonitors/hyprconfigs/Two-monitors.go.tmpl"
+config_file_type = "template"
+[profiles.Two-monitors.conditions]
+
+[[profiles.Two-monitors.conditions.required_monitors]]
+description = "Samsung Display Corp. ATNA33AA08-0"
+monitor_tag = "monitor0"
+
+[[profiles.Two-monitors.conditions.required_monitors]]
+description = "LG Electronics LG ULTRAFINE 210NTGY5V831"
+monitor_tag = "monitor2"
+
+[[profiles.Two-monitors.conditions.required_monitors]]
+description = "LG Electronics LG HDR 4K 307NTGYFT599"
+monitor_tag = "monitor1"
+
+
+[profiles.testify]
+config_file = "/home/shinjungtae/.config/hyprdynamicmonitors/hyprconfigs/testify.go.tmpl"
+config_file_type = "template"
+[profiles.testify.conditions]
+
+[[profiles.testify.conditions.required_monitors]]
+description = "Samsung Display Corp. ATNA33AA08-0"
+monitor_tag = "monitor0"
+
+[[profiles.testify.conditions.required_monitors]]
+description = "LG Electronics LG ULTRAFINE 210NTGY5V831"
+monitor_tag = "monitor2"
+
+
+[profiles.single-monitor-only]
+config_file = "/home/shinjungtae/.config/hyprdynamicmonitors/hyprconfigs/single-monitor-only.go.tmpl"
+config_file_type = "template"
+[profiles.single-monitor-only.conditions]
+
+[[profiles.single-monitor-only.conditions.required_monitors]]
+description = "Samsung Display Corp. ATNA33AA08-0"
+monitor_tag = "monitor0"
+
+[[profiles.single-monitor-only.conditions.required_monitors]]
+description = "LG Electronics LG ULTRAFINE 210NTGY5V831"
+monitor_tag = "monitor1"
+
+
+[profiles.company]
+config_file = "/home/shinjungtae/.config/hyprdynamicmonitors/hyprconfigs/company.go.tmpl"
+config_file_type = "template"
+[profiles.company.conditions]
+
+[[profiles.company.conditions.required_monitors]]
+description = "Samsung Display Corp. ATNA33AA08-0"
+monitor_tag = "monitor0"
+
+[[profiles.company.conditions.required_monitors]]
+name = "HDMI-A-1"
+monitor_tag = "monitor1"
+
+[[profiles.company.conditions.required_monitors]]
+description = "Dell Inc. DELL U2723QE 3HB38H3"
+monitor_tag = "monitor2"
+
+[[profiles.company.conditions.required_monitors]]
+name = "DP-2"
+monitor_tag = "monitor3"
+
+
+[profiles.Single-Monitor-Dell]
+config_file = "/home/shinjungtae/.config/hyprdynamicmonitors/hyprconfigs/Single-Monitor-Dell.go.tmpl"
+config_file_type = "template"
+[profiles.Single-Monitor-Dell.conditions]
+
+[[profiles.Single-Monitor-Dell.conditions.required_monitors]]
+description = "Samsung Display Corp. ATNA33AA08-0"
+monitor_tag = "monitor0"
+
+[[profiles.Single-Monitor-Dell.conditions.required_monitors]]
+description = "Dell Inc. DELL U2723QE 3HB38H3"
+monitor_tag = "monitor3"
+
+
+[profiles.Two-monitor-comp]
+config_file = "/home/shinjungtae/.config/hyprdynamicmonitors/hyprconfigs/Two-monitor-comp.go.tmpl"
+config_file_type = "template"
+[profiles.Two-monitor-comp.conditions]
+
+[[profiles.Two-monitor-comp.conditions.required_monitors]]
+description = "Samsung Display Corp. ATNA33AA08-0"
+monitor_tag = "monitor0"
+
+[[profiles.Two-monitor-comp.conditions.required_monitors]]
+description = "Dell Inc. DELL U2723QE 3HB38H3"
+monitor_tag = "monitor3"
+
+[[profiles.Two-monitor-comp.conditions.required_monitors]]
+description = "JCH LOOK LK2420LA"
+monitor_tag = "monitor1"

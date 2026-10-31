@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "wikiwiki": {
+      "command": "/home/shinjungtae/.local/bin/wikiwiki",
+      "args": [
+        "mcp",
+        "serve"
+      ],
+      "exposure": "deferred",
+      "description": "Wikiwiki resource requests and provisioning agent tasks; human approvals must be performed by the user."
+    }
+  }
+}

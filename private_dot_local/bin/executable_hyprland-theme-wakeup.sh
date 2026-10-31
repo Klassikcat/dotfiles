@@ -6,7 +6,7 @@ max_attempts=10
 attempt=0
 
 while [ $attempt -lt $max_attempts ]; do
-    if hyprctl dispatch dpms on 2>/dev/null; then
+    if hyprctl dispatch 'hl.dsp.dpms({ action = "on" })' 2>/dev/null; then
         # Hyprland is ready, apply current theme/brightness, then reschedule heliocron waiters.
         $HOME/.local/bin/hyprland-theme-init.sh
         $HOME/.local/bin/brightness-init.sh

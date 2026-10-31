@@ -1,0 +1,14 @@
+{
+  "yaml-ls": {
+    "decision": "declined",
+    "decidedAt": "2026-08-10T10:04:05.661Z"
+  },
+  "bash": {
+    "decision": "declined",
+    "decidedAt": "2026-08-11T09:03:43.277Z"
+  },
+  "dockerfile": {
+    "decision": "declined",
+    "decidedAt": "2026-08-11T09:18:49.439Z"
+  }
+}

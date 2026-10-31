@@ -1,0 +1,9 @@
+[Unit]
+Description=Reload Hyprland when hyprdynamicmonitors rewrites monitors.conf
+# hyprland.lua parses monitors.conf itself, so Hyprland no longer watches it (hyprlang `source` did)
+
+[Path]
+PathChanged=%h/.config/hypr/monitors.conf
+
+[Install]
+WantedBy=hyprland-session.target

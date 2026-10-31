@@ -172,7 +172,7 @@ if [ "$next_mode" = "Dark" ]; then
         killall mpvpaper swww-daemon 2>/dev/null
         sleep 0.5
         # Start mpvpaper via hyprctl to ensure proper Wayland context
-        hyprctl dispatch exec "mpvpaper '*' -o 'no-audio --loop --keepaspect --panscan=1.0 --hwdec=auto --scale=bilinear --vd-lavc-dr=no --video-reversal-buffer=100M --demuxer-max-bytes=50M --demuxer-max-back-bytes=10M' '$live_wallpaper'"
+        hyprctl dispatch "hl.dsp.exec_cmd([[mpvpaper '*' -o 'no-audio --loop --keepaspect --panscan=1.0 --hwdec=auto --scale=bilinear --vd-lavc-dr=no --video-reversal-buffer=100M --demuxer-max-bytes=50M --demuxer-max-back-bytes=10M' '$live_wallpaper']])"
         # Update lock screen wallpaper to static image
         mkdir -p "$HOME/.config/hypr/wallpaper_effects"
         cp -f "$HOME/Pictures/wallpapers/Dynamic-Wallpapers/Dark/Screenshot from 2025-11-04 21-19-01.png" "$HOME/.config/hypr/wallpaper_effects/.wallpaper_current"
@@ -193,7 +193,7 @@ else
         killall mpvpaper swww-daemon 2>/dev/null
         sleep 0.5
         # Start mpvpaper via hyprctl to ensure proper Wayland context
-        hyprctl dispatch exec "mpvpaper '*' -o 'no-audio --loop --keepaspect --panscan=1.0 --hwdec=auto --scale=bilinear --vd-lavc-dr=no --video-reversal-buffer=100M --demuxer-max-bytes=50M --demuxer-max-back-bytes=10M' '$live_wallpaper'"
+        hyprctl dispatch "hl.dsp.exec_cmd([[mpvpaper '*' -o 'no-audio --loop --keepaspect --panscan=1.0 --hwdec=auto --scale=bilinear --vd-lavc-dr=no --video-reversal-buffer=100M --demuxer-max-bytes=50M --demuxer-max-back-bytes=10M' '$live_wallpaper']])"
         # Update lock screen wallpaper to static image
         mkdir -p "$HOME/.config/hypr/wallpaper_effects"
         cp -f "$HOME/Pictures/wallpapers/Dynamic-Wallpapers/Light/wallpaper48.png" "$HOME/.config/hypr/wallpaper_effects/.wallpaper_current"

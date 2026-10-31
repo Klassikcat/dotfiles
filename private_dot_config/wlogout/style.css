@@ -1,0 +1,50 @@
+/* Minimal circular power menu. Actions and keyboard shortcuts live in layout. */
+window {
+    font-family: sans-serif;
+    font-size: 14pt;
+    color: #f4f4f5;
+    background-color: rgba(20, 24, 34, 0.9);
+}
+
+button {
+    color: #c9cbd2;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 180px;
+    border: none;
+    box-shadow: none;
+    text-shadow: none;
+    outline-style: none;
+    transition: background-size 300ms cubic-bezier(.55, 0.0, .28, 1.682), color 200ms ease;
+}
+
+button:hover,
+button:focus {
+    color: #ffffff;
+    background-size: 240px;
+}
+
+#lock {
+    background-image: url("./icons/minimal/lock.svg");
+}
+
+#reboot {
+    background-image: url("./icons/minimal/reboot.svg");
+}
+
+#shutdown {
+    background-image: url("./icons/minimal/shutdown.svg");
+}
+
+#logout {
+    background-image: url("./icons/minimal/logout.svg");
+}
+
+#suspend {
+    background-image: url("./icons/minimal/suspend.svg");
+}
+
+#hibernate {
+    background-image: url("./icons/minimal/hibernate.svg");
+}

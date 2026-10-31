@@ -66,10 +66,52 @@ reload_swaync() {
 
 update_sqlit_tui_theme() {
     local theme=$1
+    [ -n "$theme" ] || return 0
+
+    # Hint file kept for reference/debugging; sqlit itself does not read it.
     local theme_dir="$HOME/.config/sqlit-tui"
     local theme_file="$theme_dir/theme"
     mkdir -p "$theme_dir"
     echo "$theme" > "$theme_file"
+
+    # sqlit reads its theme from the "theme" key of ~/.config/sqlit/settings.json.
+    # Merge in place so connections/expanded_nodes survive.
+    local sqlit_settings="$HOME/.config/sqlit/settings.json"
+    mkdir -p "$(dirname "$sqlit_settings")"
+    python3 - "$sqlit_settings" "$theme" <<'PY' || true
+import json, os, sys, tempfile
+
+path, theme = sys.argv[1], sys.argv[2]
+mode = 0o644
+try:
+    mode = os.stat(path).st_mode & 0o777
+    with open(path) as fh:
+        data = json.load(fh)
+    if not isinstance(data, dict):
+        data = {}
+except (OSError, ValueError):
+    data = {}
+
+if data.get("theme") == theme:
+    sys.exit(0)
+
+data["theme"] = theme
+fd, tmp = tempfile.mkstemp(dir=os.path.dirname(path) or ".", prefix=".settings-")
+try:
+    with os.fdopen(fd, "w") as fh:
+        json.dump(data, fh, indent=2)
+    os.chmod(tmp, mode)
+    os.replace(tmp, path)
+except BaseException:
+    os.unlink(tmp)
+    raise
+PY
+
+    # A running sqlit polls Omarchy's theme symlink every 2s, so provide a shim to
+    # get live switching. The resolved *directory name* is the theme name.
+    local omarchy_dir="$HOME/.config/omarchy"
+    mkdir -p "$omarchy_dir/themes/$theme" "$omarchy_dir/current"
+    ln -sfn "$omarchy_dir/themes/$theme" "$omarchy_dir/current/theme"
 }
 
 update_k9s_theme() {
@@ -289,7 +331,7 @@ set_theme_properties() {
         rofi_palette="colors-dark.rasi"
         gtk_search_keywords="*Dark*"
         gsettings_color_scheme='prefer-dark'
-        static_wallpaper_file="$HOME/Pictures/wallpapers/Dynamic-Wallpapers/Dark/wallpapersden.com_windows-11-in-4k_3840x2400.jpg"
+        static_wallpaper_file="$dark_wallpapers/nazuna_dark_winter.png"
     elif [ "$theme_mode" = "Midnight" ]; then
         # Midnight Mode Properties (Dark theme with noa_pajama wallpaper)
         palette="$pallete_dark"
@@ -314,7 +356,7 @@ set_theme_properties() {
         rofi_palette="colors-dark.rasi"
         gtk_search_keywords="*Dark*"
         gsettings_color_scheme='prefer-dark'
-        static_wallpaper_file="$HOME/Pictures/wallpapers/Dynamic-Wallpapers/Dark/wallpapersden.com_windows-11-in-4k_3840x2400.jpg"
+        static_wallpaper_file="$dark_wallpapers/nazuna_dark_winter.png"
     else
         # Light and Intermediate Mode Properties
         palette="$pallete_light"
@@ -339,7 +381,7 @@ set_theme_properties() {
         rofi_palette="colors-light.rasi"
         gtk_search_keywords="*Light*"
         gsettings_color_scheme='prefer-light'
-        static_wallpaper_file="$HOME/Pictures/wallpapers/Dynamic-Wallpapers/Light/windows-11-gradient-background-bloom-light-backgrounds-5k-3840x2160-8411.png"
+        static_wallpaper_file="$light_wallpapers/nazuna_light_winter.png"
     fi
 }
 
@@ -374,13 +416,6 @@ if [ "$skip_theme_change" != "true" ]; then
         sed -i "/@define-color noti-bg-alt/s/#.*;/$ags_bg_alt_color;/" "${ags_style}"
     fi
     
-    # kitty theme change
-    sed -i "s|^include .*kitty-themes/.*\\.conf|include ./kitty-themes/$kitty_theme|" "${kitty_conf}"
-
-    for pid_kitty in $(pidof kitty); do
-        kill -SIGUSR1 "$pid_kitty"
-    done
-
     # ghostty theme change (mirrors kitty: theme.conf is the single source of truth)
     if [ -n "$ghostty_theme" ]; then
         mkdir -p "$(dirname "$ghostty_theme_conf")"
@@ -405,6 +440,13 @@ fi
 
 # Set static wallpaper for Dark, Light, or Intermediate Mode
 set_theme_properties "$next_mode"
+
+# Reapply Kitty even when the cached mode matches; running terminals may be stale.
+sed -i "s|^include .*kitty-themes/.*\\.conf|include ./kitty-themes/$kitty_theme|" "${kitty_conf}"
+for pid_kitty in $(pidof kitty); do
+    kill -SIGUSR1 "$pid_kitty"
+done
+
 update_k9s_theme "$k9s_skin"
 update_sqlit_tui_theme "$sqlit_tui_theme"
 killall mpvpaper 2>/dev/null

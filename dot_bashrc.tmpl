@@ -14,6 +14,8 @@ elif [ -s "$NVM_DIR/nvm.sh" ]; then
   \. "$NVM_DIR/nvm.sh"
 fi
 
+export PATH="$HOME/.npm-global/bin:$PATH"
+
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
@@ -295,8 +297,8 @@ elif [ -x "/usr/local/bin/brew" ]; then
   eval "$(/usr/local/bin/brew shellenv)"
 fi
 
-export EDITOR=vim
-export VISUAL=vim
+export EDITOR=nvim
+export VISUAL=nvim
 export LIBVA_DRIVER_NAME=nvidia
 export NVD_BACKEND=direct
 alias toggle-bar='pkill -SIGUSR1 waybar'
@@ -307,7 +309,7 @@ export SYSTEMD_EDITOR=vim
 
 # opencode
 export OPENCODE_DISABLE_CLAUDE_CODE=1
-export PATH="$HOME/.opencode/bin:$PATH"
+export PATH="$HOME/.config/opencode2/bin:$HOME/.opencode/bin:$PATH"
 alias claude-auto='claude --dangerously-skip-permissions'
 
 # opencode-server helper
@@ -357,4 +359,44 @@ case ":$PATH:" in
 esac
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
-export PATH="$HOME/.npm-global/bin:$PATH"
+
+# git worktree → ../<repo>.worktree/<branch>  (added by Claude)
+gwt() {
+  if [ $# -eq 0 ]; then
+    echo "usage: gwt <branch> [start-point]" >&2
+    return 2
+  fi
+
+  local branch="$1"; shift
+
+  local main_wt
+  main_wt=$(git worktree list --porcelain 2>/dev/null | sed -n '1s/^worktree //p')
+  if [ -z "$main_wt" ]; then
+    echo "gwt: not inside a git repository" >&2
+    return 1
+  fi
+
+  local wt_root="$(dirname "$main_wt")/$(basename "$main_wt").worktree"
+
+  local rel="$branch"
+  while [ "${rel#/}" != "$rel" ]; do rel="${rel#/}"; done
+  case "/$rel/" in
+    */../*) echo "gwt: refusing '..' in branch name" >&2; return 1;;
+  esac
+  [ -z "$rel" ] && { echo "gwt: empty branch name" >&2; return 1; }
+
+  local dest="$wt_root/$rel"
+
+  if git show-ref --verify --quiet "refs/heads/$rel"; then
+    git worktree add "$dest" "$rel"
+  else
+    git worktree add -b "$rel" "$dest" "$@"
+  fi
+}
+
+
+# Added by Antigravity CLI installer
+export PATH="{{ .chezmoi.homeDir }}/.local/bin:$PATH"
+
+# Auto-Warpify
+[[ "$-" == *i* ]] && printf 'P$f{"hook": "SourcedRcFileForWarp", "value": { "shell": "bash", "uname": "Linux" }}\' 
